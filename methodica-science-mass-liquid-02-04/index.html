@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>methodica-science-mass-liquid-02-04</title>
+<link rel="stylesheet" href="css/style.css?v=20261022h">
+<link rel="stylesheet" href="css/motion.css?v=20261022h">
+<link rel="stylesheet" href="../unit-css/25-report.css?v=20261022h">
+</head>
+<body>
+<!-- ═══ Boot cover (ADDING-REPORTING-AND-RESUME.md §8.11) ═══
+     Hides screen 0 while a saved position is read and painted (Phase 4, resume), so the learner never
+     sees the first screen flash before the restored one. A SIBLING of #app (scaleApp transforms #app).
+     unit-js/50-loader.js removes it on every exit path (dropBootCover); this inline net removes it
+     after 800 ms regardless — or, while a restore is in flight (window.__resumeInFlight), waits for
+     it up to a hard 6 s. Copied from methodica-science-body-matter-01 (← mass-weight-01). -->
+<div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
+<script>
+(function () {
+  var t0 = Date.now();
+  function tick() {
+    var c = document.getElementById('boot-cover');
+    if (!c || !c.parentNode) return;
+    if (window.__resumeInFlight && Date.now() - t0 < 6000) { setTimeout(tick, 100); return; }
+    c.parentNode.removeChild(c);
+  }
+  setTimeout(tick, 800);
+})();
+</script>
+<div id="app">
+
+  <!-- Global: Report Problem (Figma 207:3590). Visual only — no behaviour
+       wired yet; the Pop-up variant is intentionally not implemented. -->
+  <button class="flag-btn" id="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+    <span class="flag-btn__icon" aria-hidden="true"></span>
+    <span class="flag-btn__label" aria-hidden="true">هل وجدتم مشكلة؟</span>
+  </button>
+
+  <!-- ============ S0 (screen 0) — TransitionScreen (layout A) — slide 68 ============
+       Source: 6-10-26_מדעים_יעד 7_להפקה_140926.pptx, slide 68 (presentation order;
+       the divider before it, slide 67, reads "ID רכיב 4: methodica-science-mass-liquid-02-04").
+       Slides 67-70 are byte-identical in the older deck, so the deck question does not
+       affect this screen.
+       Presenter note: "מסך מעבר למשימת כיתה", "שם המסך בפיגמה: TransitionScreen",
+       "הגיף הנבחר קורא ספר על כסא נוח".
+       Figma "TransitionScreen - A - Example" (4492:37696) — the layout this lomda's
+       transitions use (parts 02-03, producer 2026-10-05). The slide's shape — one lead-in
+       line, a headline, a closing line — is the shape that node draws.
+       Roles: lead-in -> .s1-subtitle--lead (Body/B-2, 28 SemiBold); headline
+       "זמן טוב ללמוד גם בצורה אחרת" -> .s1-title (Heading/H-4, 64 Bold — the slide's 54pt run
+       snaps to the role's token); closing line -> .s1-subtitle (Body/B-1, 28 Regular — the
+       node's weight, not the slide's bold run). Words as authored; the closing line keeps
+       its final period (a separate 14pt run on the slide).
+       No Continue label is authored on the slide, so the nav buttons carry the standard
+       "המשך" / "חזרה". The slide's picture is a still standing in for the companion clip
+       (note: the selected character reads a book in a rocking chair), not learner media. -->
+  <section class="screen active" data-screen="0" id="s0">
+    <div class="s1-content s1-content--a s1-content--stack">
+      <div class="s1-text" data-reveal="1">
+        <div class="s1-title-group">
+          <p class="s1-subtitle s1-subtitle--lead">أنهيت التمرين بنجاح - كل الاحترام!</p>
+          <h1 class="s1-title s1-title--balance">وقت رائع للتعلم بطريقة مختلفة أيضًا</h1>
+        </div>
+        <p class="s1-subtitle">لأن التعلم يتم بعدّة طرق.</p>
+      </div>
+      <!-- Companion clip: the learner's own character from part 01, resolved by
+           S0_CHARACTER in js/main.js (this markup names no media file).
+           Decorative: autoplay once, muted, no loop, no controls, hidden from AT. -->
+      <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+        <div class="s1-video-clip">
+          <video class="s1-char-media" id="s0-char-video" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), ungated. nav button back
+         (196:6035): first screen of the part, so it is shown only when the session
+         route trail records a part to return to (syncS0Back). -->
+    <button class="btn-continue" id="s0-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" id="s0-back" type="button" hidden onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S1 (screen 1) — TextWithCallout (local variant) — slide 69 ============
+       Source: 6-10-26 deck, slide 69 (identical in the older deck). Presenter note: "שם המסך
+       בפיגמה: TextWithCallout", "מסך הנחיות למשימת כיתה מחוץ למחשב", "לחיצה על אייקון סימן שאלה
+       פותחת את הבועית הסבר" (a click opens the explanation bubble). The slide's comment thread
+       (resolved, 2026-09-14) only settled the task itself (geometric-solid volume), not the layout.
+       Figma "TextWithCallout" frame (5361:36464, inside CycleDiagram - Draft): Section Title
+       Heading/H-6 40 Bold #303030, right edge 1240, as part 01 S12 (slide 39). No Figma screen
+       draws this slide's body or table, so this is a LOCAL VARIANT (no 720-templates reference):
+       - Role mapping: the slide's first bold line = Section Title (H-6, the 20pt run snaps to the
+         token); items א / ב = ordinary text (Body/B-4 24 Regular; the bold run "וחשבו את הנפח שלהם" =
+         Body/B-6); "תעדו את התוצאות בטבלה כזו במחברת:" = Body/B-6 24 Bold.
+       - Table: 4 equal columns, headers bold, as authored (right to left: שם הפריט, מדידת נפח,
+         יחידת מידה מתאימה, המרה), the example row + three empty rows. Text kept as authored,
+         including the straight quotes in ס"מ / סמ"ק and the space before the closing ")".
+         All table text is the one Natural/800 #303030 (producer 2026-10-06): the slide's cyan example
+         text (#00B0F0) and the yellow highlight on the headers "מדידת נפח" / "המרה" are not built —
+         the blue read poorly and the highlight was cancelled. The empty rows are the slide's model of
+         the notebook table and are hidden from assistive tech.
+       - Callout (720-templates _global-components "Inline tooltip icons in RTL Hebrew text"): the bubble
+         explains computing volume, so it hangs on the term it explains — "וחשבו את הנפח שלהם" in item
+         א, the slide's own bold run, the prefix "ו" included (producer 2026-10-06: a prefix left outside
+         looked stray; the skill rule now says inside). The term is bold + Subject/700 + continuous
+         underline (.term-underline); the approved tooltip icon (Figma Tooltip 1580:17042, "i" — the
+         library has no question-mark icon) is anchored above the term's last (leftmost) letter.
+         The bubble opens on HOVER (term or icon) and keyboard focus — never on click (producer
+         2026-10-06; the slide's note says "לחיצה", overruled). Escape dismisses it. Bubble = the global
+         tooltip bubble, opening downward because the term is near the top (an upward bubble would leave
+         the canvas). Text verbatim: "חישוב נפח של גוף הנדסי מתבצע כך:" / "אורך × גובה × רוחב".
+       - Continue = the slide's own label "חזרתי, אפשר להמשיך", ungated (it is the learner's
+         return from the off-computer task). Last screen of the part: hands off to part 05. -->
+  <section class="screen" data-screen="1" id="s1">
+    <div class="s1t-frame">
+      <div class="s1t-title" data-reveal="1">
+        <h2 class="s1t-title-text">مهمة صفية: قياس الأحجام في بيئتي</h2>
+      </div>
+      <div class="s1t-text" data-reveal="2">
+        <p class="item-hang s1t-item"><span class="item-label">أ. </span>اختاروا 4 أجسام هندسية في الصف أو في المدرسة (مثلًا: كتاب، خزانة، مكعب) <span class="tooltip-word"><strong class="term-underline">واحسبوا حجمها</strong><span class="term-info" tabindex="0" role="button" aria-label="حساب حجم جسم هندسي يتم على النحو التالي: الطول × الارتفاع × العرض"><svg class="term-info-i" aria-hidden="true" width="15" height="15" viewBox="0 0 15 15" fill="none"><rect width="15" height="15" rx="7.5" fill="#019DE5"/><path d="M7.12194 12.3271C6.88994 12.3271 6.69394 12.2931 6.53394 12.2251C6.37794 12.1571 6.26394 12.0631 6.19194 11.9431C6.11994 11.8191 6.09394 11.6731 6.11394 11.5051C6.13394 11.3251 6.16194 11.1051 6.19794 10.8451C6.23794 10.5851 6.27994 10.2931 6.32394 9.9691C6.37194 9.6451 6.42394 9.2951 6.47994 8.9191C6.53594 8.5431 6.58994 8.1511 6.64194 7.7431C6.69794 7.3351 6.75394 6.9191 6.80994 6.4951L6.11394 6.1651L6.19794 5.6911L8.27994 5.3971L8.57394 5.5351L7.78194 10.9951C7.76194 11.1391 7.76994 11.2491 7.80594 11.3251C7.84194 11.3971 7.89994 11.4331 7.97994 11.4331C8.05194 11.4331 8.12994 11.4111 8.21394 11.3671C8.30194 11.3191 8.41394 11.2391 8.54994 11.1271L8.70594 11.4931C8.66194 11.5531 8.57194 11.6491 8.43594 11.7811C8.30394 11.9131 8.12794 12.0371 7.90794 12.1531C7.68794 12.2691 7.42594 12.3271 7.12194 12.3271ZM7.84194 4.5931C7.60594 4.5931 7.40394 4.5051 7.23594 4.3291C7.07194 4.1531 6.99594 3.9471 7.00794 3.7111C7.01994 3.4191 7.11594 3.1731 7.29594 2.9731C7.47994 2.7731 7.72594 2.6731 8.03394 2.6731C8.29794 2.6731 8.50794 2.7591 8.66394 2.9311C8.81994 3.0991 8.89594 3.2931 8.89194 3.5131C8.88794 3.8171 8.79794 4.0731 8.62194 4.2811C8.44594 4.4891 8.18594 4.5931 7.84194 4.5931Z" fill="white"/></svg><span class="term-tooltip" role="tooltip"><span class="term-line">حساب حجم جسم هندسي<br>يتم على النحو التالي:</span><span class="term-line">الطول × الارتفاع × العرض</span></span></span></span></span>.<br>يمكنكم الاستعانة بمسطرة، أو بقياسات معروفة مثل طولكم، والبلاطات وما إلى ذلك.</p>
+        <p class="item-hang s1t-item"><span class="item-label">ب. </span>لكل عنصر، حوّلوه إلى وحدة قياس أكبر أو أصغر.</p>
+        <p class="s1t-lead">سجّلوا النتائج في جدول كهذا في الدفتر:</p>
+      </div>
+      <table class="s1t-table" data-reveal="3">
+        <thead>
+          <tr>
+            <th scope="col">اسم العنصر</th>
+            <th scope="col">قياس الحجم</th>
+            <th scope="col">وحدة قياس مناسبة</th>
+            <th scope="col">تحويل</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="s1t-example">
+            <td>مثال: كراسة</td>
+            <td>
+              <span class="s1t-line"><strong>الطول:</strong> 21 سم</span>
+              <span class="s1t-line"><strong>العرض:</strong> 15 سم</span>
+              <span class="s1t-line"><strong>السُّمك:</strong> 0.5 سم</span>
+              <span class="s1t-line"><span class="s1t-ltr">21 × 15 × 0.5 = <strong>157.5</strong></span></span>
+            </td>
+            <td>157.5&nbsp;<strong>سم³</strong></td>
+            <td>
+              <span class="s1t-line"><strong>0.1575 لتر</strong></span>
+              <span class="s1t-line"><span class="s1t-ltr">(157.5 : 1,000 = 0.1575 )</span></span>
+            </td>
+          </tr>
+          <tr aria-hidden="true"><td></td><td></td><td></td><td></td></tr>
+          <tr aria-hidden="true"><td></td><td></td><td></td><td></td></tr>
+          <tr aria-hidden="true"><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027) with the slide's own label, ungated;
+         nav button back (196:6035). -->
+    <button class="btn-continue" id="s1-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>عدتُ، يمكن المتابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+
+  <!-- ═══ "מצאתם בעיה?" — issue-report dialogs (ADDING-REPORTING-AND-RESUME.md §7) ═══
+       Copied verbatim from methodica-science-body-matter-01-02 (2026-10-19 state). Last children of
+       #app, outside every .screen: .report-modal-overlay is position:absolute; inset:0 against #app,
+       so it aligns with the scaled canvas. All three carry `hidden`; behaviour in
+       ../unit-js/25-report.js (wires #flag-btn by delegation — no onclick on the flag), style in
+       ../unit-css/25-report.css. -->
+  <div id="report-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" type="button" onclick="tryCloseReportModal()" aria-label="סגירה">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">דיווח על בעיה</h2>
+      <p class="report-modal-body">משהו לא ברור או לא עובד כמו שצריך?<br>ספרו לנו מה קרה כדי שנטפל.</p>
+
+      <div class="report-field">
+        <label class="report-label" for="report-type"><span class="required-star">*</span> מה סוג הבעיה</label>
+        <div class="report-custom-select" id="report-type-wrapper">
+          <button class="report-select-btn is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="report-select-value">בחרו סוג בעיה</span>
+          </button>
+          <ul class="report-select-list" role="listbox" hidden>
+            <li class="report-select-option" data-value="technical" role="option">תקלה טכנית או שמשהו לא עובד</li>
+            <li class="report-select-option" data-value="unclear" role="option">משהו לא ברור לי</li>
+            <li class="report-select-option" data-value="other" role="option">אחר</li>
+          </ul>
+          <input type="hidden" id="report-type" value="">
+        </div>
+        <span class="report-field-error" id="report-type-error" hidden>בחרו את סוג הבעיה</span>
+      </div>
+
+      <div class="report-field">
+        <label class="report-label" for="report-text"><span class="required-star">*</span> מה קרה?</label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="פרטו מה קרה כדי שנוכל להבין את הבעיה" onblur="reportTextBlur()"></textarea>
+        <span class="report-field-error" id="report-text-error" hidden>כתבו מה קרה</span>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="tryCloseReportModal()">ביטול</button>
+        <button class="report-submit-btn" type="button" onclick="submitReport()" disabled>שליחת דיווח</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מצב "הדיווח נשלח". דיאלוג נפרד מדיאלוג הנטישה שמתחתיו — אין לאחד ביניהם. -->
+  <div id="report-thanks-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-thanks-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-thanks-title">הדיווח נשלח, תודה!</h2>
+      <p class="report-modal-body">קיבלנו את הדיווח שלכם ונטפל בו בהקדם.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" type="button" onclick="closeReportThanks()">סגירה</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- אישור נטישה: נפתח רק כשיש קלט שלא נשלח. -->
+  <div id="report-confirm-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-confirm-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-confirm-title">בטוח לסגור את החלון?</h2>
+      <p class="report-modal-body">בלחיצה על סגירה לא יישלח דיווח</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="forceCloseReportModal()">סגור חלון</button>
+        <button class="report-submit-btn" type="button" onclick="backToReportForm()">אני רוצה לדווח</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+<!-- 720 platform layer (reporting / resume): shared files first, then the part's own scripts
+     (js/motion.js before js/main.js, as before), 90-boot last. Same ?v= in every part
+     (guide §3.4); 90-boot.js is a separate tag on purpose (§3.2). -->
+<script src="../unit-js/10-identity.js?v=20261022h"></script>
+<script src="../unit-js/20-xapi.js?v=20261022h"></script>
+<script src="../unit-js/25-report.js?v=20261022h"></script>
+<script src="../unit-js/40-resume.js?v=20261022h"></script>
+<script src="../unit-js/50-loader.js?v=20261022h"></script>
+<script src="js/motion.js?v=20261022h"></script>
+<script src="js/main.js?v=20261022h"></script>
+<script src="../unit-js/90-boot.js?v=20261022h"></script></body>
+</html>

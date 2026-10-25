@@ -1,0 +1,177 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/",
+  "title": "זמן תרגול",
+  "learningUnitId": "methodica-science-mass-liquid-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 3,
+  "masteryLevel": null,
+  "order": 2,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": ["applying-a-model-or-procedure"],
+  "languages": ["Hebrew"],
+  "skills": [],
+  "estimatedTimeInMinutes": 12,
+  "createdAt": "2026-10-22T12:28:25.445328Z",
+  "updatedAt": "2026-10-22T12:28:25.445345Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-001/",
+      "title": "השלמת פסקה על השיטה המטרית",
+      "informationToBot": "מטרת הפריט: תרגול הבנת הצורך בשיטה המטרית: השלמת פסקה ממחסן מילים. מה התלמיד אמור להבין: בעבר השתמשו ביחידות שונות, מה שהקשה על מסחר, והשיטה המטרית מאפשרת מדידה אחידה. כיווני חשיבה: התלמיד קורא את הפסקה ומתאים לכל מקום ריק את המילה הנכונה, תוך שימת לב למילים מסיחות. טעויות נפוצות: בחירה ב'העשרונית' במקום 'המטרית', או ב'אמה' במקום 'ליטר'. מידע נוסף: מסך מעבר פותח את התרגול (6 שאלות, נדרש לענות נכון על 4). מחסן של 8 מילים ל-5 מקומות; שלוש מילים מסיחות (אמה, להפליג, העשרונית). שני ניסיונות.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-001/q1",
+          "questionType": "matching",
+          "questionText": "גררו את המילים המתאימות כדי להשלים את הפסקה: פעם מקומות שונים בעולם השתמשו ביחידות מידה ___. כך היה קשה ___, להשוות תוצאות ולשתף ידע. ב-1795, הומצאה בצרפת השיטה ___, שמטרתה לאפשר מדידה ___. השיטה הזו משתמשת ביחידות מידה המוכרות כיום (למשל מטר, ___ וגרם).",
+          "answers": {
+            "source": [
+              "לסחור",
+              "המטרית",
+              "אחידה",
+              "שונות",
+              "ליטר",
+              "אמה",
+              "להפליג",
+              "העשרונית"
+            ],
+            "target": [
+              "פעם מקומות שונים בעולם השתמשו ביחידות מידה ___",
+              "כך היה קשה ___, להשוות תוצאות ולשתף ידע",
+              "ב-1795 הומצאה בצרפת השיטה ___",
+              "שמטרתה לאפשר מדידה ___",
+              "למשל מטר, ___ וגרם"
+            ]
+          },
+          "correctAnswers": [
+            {"source": "שונות", "target": "פעם מקומות שונים בעולם השתמשו ביחידות מידה ___"},
+            {"source": "לסחור", "target": "כך היה קשה ___, להשוות תוצאות ולשתף ידע"},
+            {"source": "המטרית", "target": "ב-1795 הומצאה בצרפת השיטה ___"},
+            {"source": "אחידה", "target": "שמטרתה לאפשר מדידה ___"},
+            {"source": "ליטר", "target": "למשל מטר, ___ וגרם"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-002/",
+      "title": "יתרון השיטה המטרית במשלוח תרופות",
+      "informationToBot": "מטרת הפריט: הבנת היתרון של שיטת מדידה אחידה: על בקבוק סירופ שנשלח ל-40 מדינות כתוב 100 מ״ל. מה התלמיד אמור להבין: יחידה אחידה מאפשרת הבנה והשוואה קלה של הכמות. כיווני חשיבה: התלמיד מנתק בין היחידה (מ״ל) לבין כלי המדידה, המחיר ודיוק הכמות. טעויות נפוצות: בחירה בתשובות שמייחסות לשיטה המטרית יתרון בדיוק או במחיר. מידע נוסף: זמין רמז לאחר ניסיון שגוי ראשון. שני ניסיונות.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-002/q1",
+          "questionType": "choice",
+          "questionText": "חברת תרופות בשווייץ מייצרת סירופ ושולחת אותו לבתי מרקחת ב-40 מדינות. על כל בקבוק כתוב: 100 מ״ל. מהו היתרון של השימוש בשיטה המטרית במקרה הזה?",
+          "answers": [
+            "בכל המדינות 100 מ״ל מציינים את אותה כמות, ולכן אפשר להבין ולהשוות את המדידה בקלות.",
+            "בכל המדינות אפשר להשתמש באותו כלי מדידה, ולכן הכמות בבקבוק מדויקת יותר.",
+            "בכל המדינות מחיר הבקבוק יהיה זהה, מפני שהכמות שבו רשומה באותה יחידה.",
+            "בכל המדינות הכמות בבקבוק תהיה מדויקת, גם אם השתמשו בכלי מדידה שונים."
+          ],
+          "correctAnswers": ["בכל המדינות 100 מ״ל מציינים את אותה כמות, ולכן אפשר להבין ולהשוות את המדידה בקלות."]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-003/",
+      "title": "המרות מ״ל וליטר: לימונדה וחלב",
+      "informationToBot": "מטרת הפריט: תרגול המרה בין ליטר למ״ל. מה התלמיד אמור להבין: 1 ליטר = 1,000 מ״ל ו-800 מ״ל = 0.8 ליטר. כיווני חשיבה: התלמיד משלים שני משפטים בעזרת תפריטים נפתחים ברשימות שונות: המרה ל-מ״ל (חלב) והמרה לליטר (לימונדה). טעויות נפוצות: בחירה ב-0.08 או ב-8 (טעות בסדר גודל), או ב-10 / 0.1 בהמרת הליטר. מידע נוסף: זמין תרשים ההמרות. שני ניסיונות. שני התפריטים כוללים רשימות אפשרויות שונות, לכן סוג השאלה performance.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-003/q1",
+          "questionType": "performance",
+          "questionText": "במקרר יש בקבוק לימונדה וקרטון חלב. על בקבוק הלימונדה כתוב 800 מ״ל. על קרטון החלב כתוב 1 ליטר. בצעו את ההמרות, והשלימו את המשפטים: בקרטון החלב יש ___ מ״ל. בבקבוק הלימונדה יש ___ ליטר.",
+          "answers": null,
+          "correctAnswers": [
+            {"stepId": "מ״ל בקרטון החלב", "response": "1,000"},
+            {"stepId": "ליטר בבקבוק הלימונדה", "response": "0.8"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-004/",
+      "title": "אמא ואבא ומנת החלב",
+      "informationToBot": "מטרת הפריט: הבנה שהמרת יחידות אינה משנה את הכמות: 2 ליטר = 2,000 מ״ל. מה התלמיד אמור להבין: שני הדוברים מתארים אותה כמות ביחידות שונות. כיווני חשיבה: התלמיד מבצע המרה (2 ליטר ל-מ״ל) ומשווה את דברי שני הדוברים. טעויות נפוצות: בחירה ב'אבא צודק' או 'אמא צודקת' מתוך הנחה שיחידה אחת נכונה, או 'לא ניתן לדעת'. מידע נוסף: זמין רמז לאחר ניסיון שגוי ראשון. שני ניסיונות.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-004/q1",
+          "questionType": "choice",
+          "questionText": "הסתכלו בתמונה וקראו את בועיות הדיבור. מי צודק – אמא או אבא? (קניתי 2 ליטר חלב / אתה מתכוון שקנית 2,000 מ״ל חלב)",
+          "answers": ["אבא צודק.", "אמא צודקת.", "שניהם צודקים.", "לא ניתן לדעת."],
+          "correctAnswers": ["שניהם צודקים."]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-005/",
+      "title": "יחידות נפח למקומות המתאימים",
+      "informationToBot": "מטרת הפריט: התאמת יחידת נפח לסדר הגודל של נפח בקבוק מים, אמבטיה, דלי ובריכה. מה התלמיד אמור להבין: נפחים קטנים במ״ל או סמ״ק, בינוניים בליטר וגדולים במ״ק. כיווני חשיבה: התלמיד מעריך את נפח כל אחד מארבעת המקומות ומתאים יחידה. טעויות נפוצות: בחירה במ״ל לבריכה או במ״ק לדלי. מידע נוסף: יש שני כרטיסי 'ליטר' (אמבטיה ודלי) הניתנים להחלפה. שני ניסיונות.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-005/q1",
+          "questionType": "matching",
+          "questionText": "גררו את יחידות המידה למקומות המתאימים להם",
+          "answers": {
+            "source": ["מ״ל או סמ״ק", "ליטר", "מ״ק"],
+            "target": ["בקבוק מים", "אמבטיה", "דלי", "בריכה"]
+          },
+          "correctAnswers": [
+            {"source": "מ״ל או סמ״ק", "target": "בקבוק מים"},
+            {"source": "ליטר", "target": "אמבטיה"},
+            {"source": "ליטר", "target": "דלי"},
+            {"source": "מ״ק", "target": "בריכה"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-006/",
+      "title": "דרך מדידת נפח לפי סוג הגוף",
+      "informationToBot": "מטרת הפריט: בחירת שיטת המדידה לפי סוג הגוף: חישוב לפי מידות (אורך × רוחב × גובה) לגוף הנדסי, ומדידה בכלי עם שנתות לנוזל. מה התלמיד אמור להבין: השיטה נקבעת לפי מצב הצבירה וצורת הגוף. כיווני חשיבה: התלמיד מסווג כל אחד משישה גופים (קופסת נעליים, קובייה הונגרית, קוביית משחק, מים, בושם, בנזין). טעויות נפוצות: סיווג קובייה הונגרית או קוביית משחק למדידה בכלי עם שנתות, או נוזל למדידה לפי מידות. מידע נוסף: זו השאלה השישית; בסיומה ציון עובר של 4 מתוך 6, ומתחתיו הלומד נשאר בלומדה לתגבור בפלטפורמה. שני ניסיונות.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/methodica-science-mass-liquid-02-02-006/q1",
+          "questionType": "matching",
+          "questionText": "כיצד נמדוד את נפח הגופים הבאים? גררו כל גוף לדרך המדידה המתאימה לו.",
+          "answers": {
+            "source": [
+              "קופסת נעליים",
+              "קובייה הונגרית",
+              "קוביית משחק",
+              "מים",
+              "בושם",
+              "בנזין"
+            ],
+            "target": [
+              "מדידה לפי מידות הגוף (אורך × רוחב × גובה)",
+              "מדידה בכלי מדידה עם שנתות"
+            ]
+          },
+          "correctAnswers": [
+            {"source": "קופסת נעליים", "target": "מדידה לפי מידות הגוף (אורך × רוחב × גובה)"},
+            {"source": "קובייה הונגרית", "target": "מדידה לפי מידות הגוף (אורך × רוחב × גובה)"},
+            {"source": "קוביית משחק", "target": "מדידה לפי מידות הגוף (אורך × רוחב × גובה)"},
+            {"source": "מים", "target": "מדידה בכלי מדידה עם שנתות"},
+            {"source": "בושם", "target": "מדידה בכלי מדידה עם שנתות"},
+            {"source": "בנזין", "target": "מדידה בכלי מדידה עם שנתות"}
+          ]
+        }
+      ]
+    }
+  ]
+}

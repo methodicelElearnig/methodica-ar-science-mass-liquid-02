@@ -1,0 +1,33 @@
+# Claude Code / editor local settings — never commit
+.claude/
+.vscode/
+.idea/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs / temp files
+*.log
+*.tmp
+npm-debug.log*
+
+# Dependencies (this project has none, but keep the guard)
+node_modules/
+
+# Env / secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Production working notes — extracted from the superseded deck (stale on several slides); the 6-10-26 deck is the source
+_production-reference/
+
+# Skill-maintenance scratch (diffs for the skill library, not part of the module)
+_skill-review/
+
+# Kata catalogue API key for docs-and-tools/send-metadata.ps1 — a live credential, never committed, never shipped (package-allowlist.ps1 excludes it twice over)
+docs-and-tools/kata-api-key.txt
+kata-api-key.txt

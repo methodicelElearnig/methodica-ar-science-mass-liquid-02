@@ -1,0 +1,94 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/",
+  "title": "בואו נאתגר את עצמנו",
+  "learningUnitId": "methodica-science-mass-liquid-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": false,
+  "relativeDifficulty": 5,
+  "masteryLevel": null,
+  "order": 5,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": ["analyzing"],
+  "languages": ["Hebrew"],
+  "skills": [],
+  "estimatedTimeInMinutes": 9,
+  "createdAt": "2026-10-22T12:28:29.221162Z",
+  "updatedAt": "2026-10-22T12:28:29.221189Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-001/",
+      "title": "שיטת מדידה אחידה במחקר משותף",
+      "informationToBot": "מטרת הפריט: הבנת החשיבות של שיטת מדידה אחידה במחקר מדעי משותף (חוקר אמריקאי וחוקרת ישראלית, התפלת מים). מה התלמיד אמור להבין: מדידה אחידה מאפשרת להשוות נתונים בצורה מהימנה. כיווני חשיבה: התלמיד מבחין בין היתרון המרכזי (השוואה מהימנה) לבין טענות על דמיון תוצאות או חיסכון במדידות. טעויות נפוצות: בחירה בתשובה שלפיה מדידה אחידה מבטיחה תוצאות דומות או חוסכת מדידות חוזרות. מידע נוסף: מסך מעבר ('זמן ל-3 שאלות מתקדמות') מקופל לפריט. שני ניסיונות.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-001/q1",
+          "questionType": "choice",
+          "questionText": "ברוב מדינות העולם, ובהן ישראל, משתמשים בשיטה המטרית למדידה. בארצות הברית עדיין משתמשים לרוב בשיטת מדידה אחרת. חוקר אמריקאי וחוקרת ישראלית רוצים לשתף פעולה במחקר בנושא התפלת מים. מדוע שימוש בשיטת מדידה אחידה היא תנאי חשוב למחקר משותף ואמין?",
+          "answers": [
+            "כי שיטת מדידה אחידה תאפשר להשוות נתונים באופן מהימן.",
+            "כי שיטת מדידה אחידה תאפשר לקבל תוצאות דומות.",
+            "כי שיטת מדידה אחידה תאפשר שימוש בכלי מדידה אחידים.",
+            "כי שיטת מדידה אחידה תחסוך את הצורך לבצע מדידות חוזרות."
+          ],
+          "correctAnswers": ["כי שיטת מדידה אחידה תאפשר להשוות נתונים באופן מהימן."]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-002/",
+      "title": "שלושה רישומים לאותה כמות תרופה",
+      "informationToBot": "מטרת הפריט: הבנה ש-0.5 ליטר, 500 מ״ל ו-500 סמ״ק מתארים את אותה כמות. מה התלמיד אמור להבין: כמויות שוות יכולות להיכתב ביחידות שונות. כיווני חשיבה: התלמיד ממיר את שלושת הרישומים ליחידה אחת ומשווה. טעויות נפוצות: בחירה ב'שלוש כמויות שונות' או בטענה שרק יחידה אחת נכונה. מידע נוסף: זמין רמז לאחר ניסיון שגוי ראשון. שני ניסיונות.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-002/q1",
+          "questionType": "choice",
+          "questionText": "במחסן של בית מרקחת מופיעים שלושה רישומים על אותו מיכל תרופה נוזלית: \"0.5 ליטר\", \"500 מ״ל\", \"500 סמ״ק\". מנהל המחסן חושש שמדובר בשלוש כמויות שונות. מה נכון לומר?",
+          "answers": [
+            "מדובר בשלוש כמויות שונות, ולכן יש טעות במלאי.",
+            "זו אותה כמות בדיוק, שנכתבה בשלוש יחידות מידה שונות.",
+            "רק 500 מ״ל היא יחידת מידה נכונה, והשאר שגויות.",
+            "אי אפשר לדעת בלי למדוד את נפח התרופה."
+          ],
+          "correctAnswers": ["זו אותה כמות בדיוק, שנכתבה בשלוש יחידות מידה שונות."]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-003/",
+      "title": "חשבון המים של משפחת כהן",
+      "informationToBot": "מטרת הפריט: קריאת חשבון מים: סעיף א - בחירת יחידת המידה של כמות המים לחיוב (מ״ק); סעיף ב - קביעה אם צריכת המים יציבה יחסית לאורך 4 תקופות חיוב לפי גרף. מה התלמיד אמור להבין: מים נמדדים בחשבון בנפחים גדולים ביחידות מ״ק, והגרף מאפשר לשפוט יציבות. כיווני חשיבה: התלמיד מעריך את סדר הגודל של צריכת מים משפחתית (28.06) ומנתח גרף עמודות לאורך הזמן. טעויות נפוצות: סעיף א - בחירה בסמ״ק, במ״ל או בליטר. סעיף ב - תשובה 'לא' מתוך התעלמות מגודל השינוי היחסי בין התקופות. מידע נוסף: שני הסעיפים מוצגים ברצף כשאלה אחת בהתקדמות הלומד. סעיף א - תפריט נפתח יחיד. סעיף ב - ניסיון מענה אחד.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-003/q1",
+          "questionType": "choice",
+          "questionText": "לפניכם מקטע מחשבון מים של משפחת כהן. א. בחרו ביחידת המידה המתאימה במקום המסומן: יחידת המידה של כמות המים לחיוב, 28.06 ___",
+          "answers": ["סמ\"ק", "מ\"ל", "ליטר", "מ\"ק"],
+          "correctAnswers": ["מ\"ק"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-003/q2",
+          "questionType": "true-false",
+          "questionText": "לפניכם גרף נתוני הצריכה מתוך חשבון המים של משפחת כהן. ב. האם ניתן לטעון שצריכת המים של משפחת כהן יציבה יחסית לאורך 4 תקופות החיוב בשנת 2026?",
+          "answers": ["כן", "לא"],
+          "correctAnswers": ["כן"]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-004/",
+      "title": "צריכת המים היומית בישראל",
+      "informationToBot": "מטרת הפריט: העשרה: פילוח צריכת המים היומית הממוצעת לאדם בישראל (כ-165 ליטרים) לפי שימושים. מה התלמיד אמור להבין: אילו שימושים צורכים את הכמות הגדולה ביותר. כיווני חשיבה: התלמיד לוחץ על חלקי התרשים וקורא כל קטגוריה וערך. טעויות נפוצות: אין הערכה בפריט. מידע נוסף: הנתונים: מקלחת ורחצה 54.4; הדחת אסלה 54.4; מטבח (שתייה, בישול והדחת כלים) 30; כיור האמבטיה 10; כביסה 8; גינון ושטיפת רכב 8 (ליטרים ליום). מסך 'הידעת?' מקופל לפריט. ההמשך נפתח לאחר חשיפת כל הקטגוריות.",
+      "contentType": "motivational",
+      "mediaFormat": "interactive-content",
+      "questions": []
+    }
+  ]
+}

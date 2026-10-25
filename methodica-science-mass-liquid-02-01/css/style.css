@@ -1,0 +1,1561 @@
+/* methodica-science-mass-liquid-02-01
+   Component 01 — יחידות נפח ושימושיהן
+   Built per 720-templates / 720-design-guidelines. No Figma file exists for
+   this module — layout is composed from the template contracts' structural
+   rules (canvas 1280x710, 74px bottom bar, 39px nav pills, RTL) rather than
+   extracted pixel geometry. See ../../_production-reference/ for the script
+   mapping this build traces back to. */
+
+/* ===== Font — Assistant, served locally (assets/fonts) so the text never depends on the school's internet connection
+   (producer 2026-10-06). Only the weights this part uses: 400 / 600 / 700. ===== */
+
+/* ===== Subject theme tokens (Science) — 720-design-guidelines / colors-and-gradients.md ===== */
+:root {
+  --subject-100: #D4F3FF;
+  --subject-200: #C7F0FF;
+  --subject-300: #B9ECFF;
+  --subject-350: #B0DFFF;
+  --subject-400: #00BAFF;
+  --subject-500: #019DE5;
+  --subject-600: #0690D0;
+  --subject-700: #007AC6;
+  --subject-800: #0070C0;
+  --subject-900: #002060;
+  --subject-alpha-100: rgba(0,186,255,0);
+  --subject-alpha-200: rgba(0,186,255,0.3);
+
+  --green-80: #609E12;
+  --green-5:  #EDF8ED;
+  --red-100:  #B20010;
+  --red-5:    #FFF0F4;
+  --red-10:   #FFDBDC;
+  --gray-100: #AEAEAE;
+  --feedback-correct-200:   #F2FFE8; /* Figma Feedback/Correct/200 */
+  --feedback-incorrect-200: #FFDBDC; /* Figma Feedback/Incorrect/200 */
+  --text:     #222222;
+  --black-100:#303030;
+
+  --canvas-w: 1280px;
+  --canvas-h: 710px;
+  --bar-h: 74px;
+}
+
+/* ===== Reset / base ===== */
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  direction: rtl;
+  font-family: Calibri, Arial, sans-serif;
+  background: #fff;
+  color: var(--text);
+}
+button { font-family: inherit; cursor: pointer; }
+img { -webkit-user-drag: none; user-select: none; }
+
+/* ===== Canvas & scaling engine ===== */
+#app {
+  width: var(--canvas-w);
+  height: var(--canvas-h);
+  position: absolute;
+  top: 0; left: 0;
+  transform-origin: top left;
+  background: #fff;
+  overflow: hidden;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background: #fff;
+}
+.screen.active { display: block; }
+/* FixedNavigationBar — Figma 196:6351: 74px, white, 0.4px Natural/600 top line */
+.screen::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: var(--bar-h);
+  background: #fff;
+  border-top: 0.4px solid var(--gray-100);
+  z-index: 5;
+}
+
+/* ===== nav button — Figma 196:6020 =====
+   39px pill, min-width 140px, 20px horizontal padding, label Body/B-7
+   (Regular 20) -> Body/B-8 (SemiBold 20) on hover. Sits in the
+   FixedNavigationBar slot: 24px bar padding + 10px slot padding = 34px
+   from the canvas edge, vertically centred in the 74px bar. */
+.btn-continue, .scq-hint, .btn-back {
+  position: absolute;
+  bottom: calc((var(--bar-h) - 39px) / 2);
+  height: 39px; min-width: 140px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 20px;
+  border-radius: 1000px;
+  font: 400 20px Calibri, Arial, sans-serif;
+  border: none;
+  z-index: 10;
+  white-space: nowrap;
+}
+.btn-continue:not(:disabled):hover,
+.btn-back:hover, .scq-hint:hover { font-weight: 600; }
+/* Hint-style button (Figma nav button hint 196:6024): white, 1px Subject/700, 7.5/20px padding, 6px gap, bulb 26 x 22.3 to the RIGHT of the
+   label (first in the markup, direction rtl). In this part it is S21's bar button (it opens the Recall popup). */
+.scq-hint {
+  left: 190px; gap: 6px; padding: 7.5px 20px; direction: rtl;
+  background: #fff; border: 1px solid var(--subject-700); color: var(--subject-700);
+}
+.scq-hint-ico { flex: 0 0 26px; width: 26px; height: 22.2883px; }
+.btn-continue {
+  left: 34px;
+  background: linear-gradient(to bottom, #005FBE 9%, #0059B2 23.361%, #003971 100%); /* Subject/Gradient/Science */
+  color: #fff;
+}
+.btn-continue:disabled {
+  background: var(--gray-100);
+  color: var(--black-100);
+  cursor: not-allowed;
+}
+.btn-back {
+  right: 34px;
+  background: #fff;
+  border: 1px solid var(--subject-700);
+  color: var(--subject-700);
+}
+.btn-back:hover { border-width: 1.5px; }
+
+/* Figma "nav label" (2567:20391): an invisible SemiBold copy of the label
+   reserves the hover width so the pill never resizes between states.
+   data-label is filled from the visible text by initNavLabels(). */
+.nav-label { display: inline-grid; }
+.nav-label::before {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  block-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.nav-label > span { grid-area: 1 / 1; }
+
+/* ===== Report Problem — Figma 207:3590 (global, outside all screens) =====
+   88x68 component: icon = exact Figma SVG export of "Report Problem icon"
+   207:3567 (default) / 207:3566 (hover); label is live text. Pinned
+   top-left 32/32 — the component's position in every current approved screen
+   template (4492:37696, 4905:25066, 414:4712, 1045:13096; producer 2026-10-06,
+   replacing the earlier 16/16). */
+.flag-btn {
+  position: absolute; top: 32px; left: 32px; z-index: 30;
+  width: 88px; height: 68px;
+  padding: 10px 4px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+}
+.flag-btn__icon {
+  flex: 0 0 38px; width: 38px; height: 38px;
+  background: url('../../unit-assets/img/report-problem-icon-default.svg') no-repeat center / contain;
+}
+.flag-btn__label {
+  display: none;
+  width: 80px;
+  font: 600 14px/10px Calibri, Arial, sans-serif; /* Figma trims the text box to cap height (10px) */
+  color: var(--subject-500);
+  text-align: center;
+  direction: rtl;
+}
+.flag-btn:hover, .flag-btn:focus-visible { padding-bottom: 10px; }
+.flag-btn:hover .flag-btn__icon,
+.flag-btn:focus-visible .flag-btn__icon { background-image: url('../../unit-assets/img/report-problem-icon-hover.svg'); }
+.flag-btn:hover .flag-btn__label,
+.flag-btn:focus-visible .flag-btn__label { display: block; }
+
+/* ===== TwoOptionSelection (720-templates) =====
+   Screen-level layout (810px centred column, 8px head gap, 40px head->cards
+   gap, 24px card gap, 296px card wrapper) follows the two QA-approved 720
+   Science modules — the Figma "Screen Templates/TwoOptionSelection" screen
+   template is not present in the 720 UI Templates file. Every visual on the
+   option itself comes from the Figma ImageContainer component below. */
+.select-content {
+  position: absolute;
+  left: 50%; top: calc(50% - var(--bar-h) / 2); /* centred above the bar */
+  transform: translate(-50%, -50%);
+  width: 810px;
+  display: flex; flex-direction: column; align-items: center; gap: 40px;
+}
+.select-head { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+.select-title    { margin: 0; width: 100%; text-align: center; font: 700 40px Calibri, Arial, sans-serif; color: var(--black-100); } /* Headings/H-6 */
+.select-subtitle { margin: 0; width: 100%; text-align: center; font: 700 28px Calibri, Arial, sans-serif; color: var(--black-100); } /* Body/B-3 */
+
+/* direction:ltr keeps a stable physical order: first DOM child = left. */
+.option-cards { display: flex; direction: ltr; justify-content: center; align-items: flex-start; gap: 24px; }
+
+/* Interaction/wrapper layer only — no border, fill or radius of its own. */
+.option-card {
+  width: 296px;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  cursor: pointer; outline: none;
+}
+
+/* ===== ImageContainer — Figma 196:6045 =====
+   Figma strokes are INSIDE (they take no layout space), so the stroke is an
+   inset box-shadow, never a border. The <img> is the component's inner image
+   window ("Rectangle 521"). Default = size=small. */
+.option-card-img {
+  flex-shrink: 0;
+  width: 220px; padding: 16px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 3px rgba(201, 206, 216, 0.4); /* Natural/Alpha/200 @ 40% */
+  overflow: hidden;
+}
+.option-card-img img {
+  display: block; flex: 0 0 auto;
+  width: 100%; aspect-ratio: 296 / 278;
+  border-radius: 16px; background: #fff;
+  object-fit: contain;
+}
+.option-card:hover .option-card-img,
+.option-card:focus-visible .option-card-img { box-shadow: inset 0 0 0 3px var(--subject-500); }
+.option-card.selected .option-card-img {
+  height: 208.568px; padding: 24px 16px;
+  border-radius: 24px;
+  background: var(--subject-100);
+  box-shadow: inset 0 0 0 2px var(--subject-500);
+}
+
+/* size=character — QA-approved rendered geometry (methodica-math-ratio-03-01
+   #s0, producer 2026-09-30), not the Figma 238x224 frame: a 238x238 SQUARE
+   frame, radius 16 in every state, whose 224x224 square video sits 7px in on
+   every side (the reference's 3px ring + 4px padding). The ring is the
+   module's inset box-shadow, painted inside that 7px, so no state changes
+   padding and the video never shrinks or moves: default = 3px
+   Natural/Alpha/200 @40% ring + 4px white; hover/focus = 3px Subject/500;
+   selected = 2px Subject/500 + Subject/100 fill.
+   Selected mirrors the reference's own mechanism (style.css:344-347 there:
+   the border drops 3px -> 2px inside a fixed border-box, so the media box
+   grows 224 -> 226, 1px per side, centred): padding 7px -> 6px, leaving a
+   2px ring + 4px tint band. */
+.option-card-img--character,
+.option-card.selected .option-card-img--character { width: 238px; height: 238px; padding: 7px; border-radius: 16px; }
+.option-card.selected .option-card-img--character { padding: 6px; }
+/* Companion selection video: a SQUARE centre crop (object-fit: cover) of the
+   1280x720 clip filling the media area (224x224; 226x226 when selected). Both characters sit inside
+   the centred square (x 312-984 / 400-860 of 1280), so no per-character
+   object-position. pointer-events: none keeps clicks on the card and
+   suppresses browser video overlays. */
+.option-card-img--character .option-card-video {
+  display: block; flex: 0 0 auto;
+  width: 100%; aspect-ratio: 1;
+  object-fit: cover; object-position: 50% 50%;
+  border-radius: 16px; background: #fff;
+  pointer-events: none;
+}
+
+/* Layout lock: the card wrapper keeps the row's existing 224.01px footprint
+   and centres the 238px frame in it, so the frame overflows 6.995px above and
+   below symmetrically — the row height, title, subtitle, Continue and
+   neighbouring card cannot move, in any state. */
+.option-card:has(> .option-card-img--character) { height: 224.01px; justify-content: center; }
+
+.option-card-labels { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; color: var(--black-100); }
+.option-card-name { font: 700 32px Calibri, Arial, sans-serif; white-space: nowrap; }
+
+
+/* ===== FlipCardsReveal (S8, slides 12 + 13) — Figma 4943:37313 / 4943:37294 =====
+   Content group = Figma "Frame 2147223539": Text Content Layout (810) + 56 + the
+   Flip Card Row Layout (gap 22, 40px side padding), centred on y = 304.75 of the
+   710 frame (top: calc(50% - 50.25px), -50%), like S4. Card faces = Figma's
+   literal values (approved ratio-03-01 reference): front white, 3px Natural/
+   Alpha/200 @40%, radius 16, 16px inset image slot; back Subject/100, 3px
+   Subject/500, radius 24, 16 / 24px inset. Figma strokes are inside, so CSS
+   padding = inset - 3px border. Cards 400 x 329 (producer 2026-10-01, widened from 386 on 2026-10-11): 400 wide so the
+   24px formula "6000 סמ״ק = 10 ס״מ × 30 ס״מ × 20 ס״מ" (× with spaces: 364px) stays on one line in the 369px column and the liquid sentence
+   sets in two lines; 329 tall (QA comment chen, producer 2026-10-11; was 320) so the bottom-aligned figures sit 21px
+   above the inner edge - the same inset as the text at the top (was ~12px). The block grows downward only: its
+   centre moves 4.5px down (309.25), so the title keeps its place. */
+.frc-content {
+  position: absolute; left: calc(50% - 640px); width: 1280px;
+  top: calc(50% - 355px + 309.25px); transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 56px;
+}
+.frc-head { width: 810px; display: flex; flex-direction: column; gap: 24px; color: var(--black-100); text-align: center; }   /* centred: PPT + Figma (producer 2026-10-01) */
+.frc-title { margin: 0; font: 700 40px/normal Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }
+/* Producer 2026-10-01: the explanatory paragraph is Regular (as the script); the
+   instruction line stays Bold. Same 28px, centred. */
+.frc-text p { margin: 0; font: 400 28px/normal Calibri, Arial, sans-serif; }
+.frc-text p.frc-text__instr { font-weight: 700; }
+/* Gap 36px (producer 2026-10-01): Figma's 22px is a 4-card template value; for these two
+   widened cards the pair reads better with more air. The pair stays centred as one unit. */
+.frc-row { width: 100%; box-sizing: border-box; padding: 0 40px; display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 36px; }
+/* Caption = InfoCardsImage card title (2730:43245): Headings/H-8 32 Bold, Natural/800,
+   centred, 12px under the card. Outside the card, so it never flips or moves. */
+.frc-card-wrap { width: 400px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.frc-card-caption { margin: 0; font: 700 32px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: center; text-box: trim-both cap alphabetic; }
+.frc-card {
+  position: relative; display: block; width: 400px; height: 329px; padding: 0; margin: 0;
+  border: 0; background: transparent; cursor: pointer; outline: none; perspective: 900px;
+  font: inherit; color: inherit; text-align: inherit;
+}
+.frc-card-inner {
+  position: absolute; inset: 0; display: block;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.frc-card.is-flipped .frc-card-inner { transform: rotateY(-180deg); }
+.frc-card-front, .frc-card-back {
+  position: absolute; inset: 0; box-sizing: border-box; overflow: hidden;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+}
+.frc-card-front {
+  display: block; padding: 13px; background: #fff;
+  border: 3px solid rgba(201, 206, 216, 0.4); border-radius: 16px;
+}
+/* Contain on white (producer 2026-10-01): the box is 16:9 artwork whose printed
+   dimensions must stay visible, so the slot does not crop. */
+.frc-card-front img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 16px; background: #fff; pointer-events: none; }
+.frc-card-back {
+  transform: rotateY(180deg);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 21px 13px; background: var(--subject-100);
+  border: 3px solid var(--subject-500); border-radius: 24px;
+}
+/* Body/B-4 24 Regular, right-aligned (Figma side B). The dimension labels keep the
+   slide's proportion (12 pt -> 16 px); the formula is 17 px (slide 14 pt -> 19 px
+   would wrap "ס״מ" onto its own line in the 251 px column: 17 px = 248.7 px, one line).
+   Producer 2026-10-01: everything under the intro on the box card is 24px; the
+   back images sit at the bottom of the card, ~2px above its inner edge (the figure
+   pushes into the 21px bottom padding), and are larger: box 205px wide, cylinder
+   196px tall. */
+.frc-card-back-content { width: 100%; height: 100%; display: flex; flex-direction: column; direction: rtl; text-align: right; font: 400 24px/normal Calibri, Arial, sans-serif; color: var(--black-100); }
+.frc-p { display: block; }
+.frc-formula { white-space: nowrap; }
+.frc-fig { position: relative; display: block; align-self: center; margin-top: auto; }
+/* Back-face images (producer 2026-10-07): during the 3D turn Chrome rasters the face under a
+   perspective transform - images get low filter quality and the layer a different raster
+   scale - so the 925px cylinder was decimated to a pixelated version until the turn ended.
+   Two guards: the images are pre-scaled to 2x their display size (משורה-392, קופסה עם
+   מידות-410), so no visible decimation remains; and each image is its own composited layer
+   (will-change), so it is always rastered through a plain 2D scale and the GPU just
+   transforms the finished texture during the flip. */
+.frc-fig img { display: block; pointer-events: none; will-change: transform; }
+.frc-fig--box { width: 205px; aspect-ratio: 1672 / 941; margin-bottom: 3.7px; }   /* lowest drawn element (the depth arrow) 21px above the inner edge (was 12, -5.3px) */
+.frc-fig--box img { width: 100%; height: 100%; }
+.frc-fig--cyl { margin-bottom: 0; }   /* 21px above the inner edge = the bottom padding (was 12, -9px) */
+.frc-fig--cyl img { height: 196px; width: auto; }
+.frc-dim-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; stroke: var(--black-100); stroke-width: 1.5; fill: none; }
+.frc-dim-svg line { vector-effect: non-scaling-stroke; }
+.frc-dim-svg marker path { fill: var(--black-100); stroke: none; }
+/* Live labels straight on / beside the image, as on the slide (no backing). */
+.frc-dim { position: absolute; font: 400 16px/1 Calibri, Arial, sans-serif; color: var(--black-100); white-space: nowrap; direction: rtl; }
+.frc-dim[data-pos="top"]   { transform: translate(-50%, -140%); }
+.frc-dim[data-pos="right"] { transform: translate(6px, -50%); }
+.frc-dim[data-pos="below"] { transform: translate(-15%, 25%); }
+/* Hover / focus: the approved reference's states. */
+.frc-card:not(.is-flipped):hover .frc-card-front,
+.frc-card:not(.is-flipped):focus-visible .frc-card-front { border-color: var(--subject-500); }
+.frc-card.is-flipped:focus-visible .frc-card-back { box-shadow: 0 0 0 2px var(--subject-700); }
+/* Reduced motion: the face swaps without the 3D turn (MemoryGame.md rule for flip
+   cards; animation-system: no motion under reduce). */
+@media (prefers-reduced-motion: reduce) { .frc-card-inner { transition: none; } }
+
+/* Tap gesture hint — validated flip-card hint (720-templates _gesture-hints.md;
+   ratio-03-01 screen 08 / mass-measure-01-01 S6, verbatim): Figma "Cursor Click"
+   (3287:22205, 28 x 33) + Ripple Ring 1/2 (2904:29927), one fixed anchor 13px from
+   the card's right edge and 16px from its top -> (387, 16) on this 400px card. No
+   particles. Finite: the rings play their 2s cycle twice, then JS hides the whole hint for good (frcGhPlay;
+   _gesture-hints.md "Default lifecycle", producer 2026-10-08 / QA 2026-10-11). JS owns start/stop. */
+.frc-gh { position: absolute; inset: 0; display: block; pointer-events: none; z-index: 5; opacity: 1; transition: opacity 0.3s; }
+.frc-gh.frc-gh-stopped { opacity: 0; }
+.frc-gh-hand { position: absolute; width: 28px; height: 33px; left: 373px; top: 14px; pointer-events: none; }
+.frc-gh-ring { position: absolute; display: block; border-radius: 50%; box-sizing: border-box; pointer-events: none; }
+.frc-gh-ring1 { left: 366px; top: -5.5px; width: 42px; height: 43px; background: #B9ECFF; border: 2.5px solid #00BAFF; animation: frc-gh-ring1 2s linear 2 both; }
+.frc-gh-ring2 { left: 383px; top: 12px; width: 8px; height: 8px; background: transparent; border: 1.5px solid #B9ECFF; animation: frc-gh-ring2 2s linear 2 both; }
+.frc-gh.frc-gh-stopped .frc-gh-ring1, .frc-gh.frc-gh-stopped .frc-gh-ring2 { animation-play-state: paused; }
+@keyframes frc-gh-ring1 {
+  0%   { animation-timing-function: cubic-bezier(0.2, 0.4, 0.4, 1); opacity: 0;    scale: 0.05; }
+  5%   { animation-timing-function: ease-out;                      opacity: 0.85; scale: 0.22; }
+  35%  { animation-timing-function: ease-out;                      opacity: 0.65; scale: 0.6;  }
+  45%  { animation-timing-function: cubic-bezier(0.6, 0, 1, 1);    opacity: 0.35; scale: 0.85; }
+  50%  { opacity: 0; scale: 1; }
+  100% { opacity: 0; scale: 1; }
+}
+@keyframes frc-gh-ring2 {
+  0%   { animation-timing-function: cubic-bezier(0.05, 0.9, 0.1, 1); opacity: 0;    scale: 0.2; }
+  3%   { animation-timing-function: cubic-bezier(0.4, 0, 1, 1);      opacity: 0.75; scale: 1;   }
+  10%  { opacity: 0; scale: 1.1; }
+  100% { opacity: 0; scale: 1.1; }
+}
+@media (prefers-reduced-motion: reduce) { .frc-gh { display: none !important; } }
+
+/* ===== FullImageWithTextOverlay — 720-templates FullImageWithTextOverlay.md =====
+   Band: full canvas width, from below the persistent top chrome down to the
+   bar, expressed as an inset. Top 94 = the Figma template-B band top (93.73),
+   which clears Report Problem (16 + 68 = 84) by 10px. */
+.fito-img {
+  position: absolute; left: 0; right: 0; top: 94px; bottom: var(--bar-h);
+  overflow: hidden;
+}
+.fito-img img { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+/* Staged variant (slide 8): an overlay must stay on a feature of the photo
+   (the blank signboard), so the photo is drawn on a stage with the visible
+   image's own ratio, sized like object-fit: cover (container query units)
+   and centred. Overlays are placed in % of that stage and follow the photo
+   at every canvas shape. The img inside uses cover + centre to reproduce the
+   slide's symmetric srcRect crop (t = b = 11.355% of 941 -> 1672 x 727.3). */
+.fito-img--staged { container-type: size; }
+/* Centred as before, but never so far that the signboard leaves the band:
+   each offset is the centred value, clamped so the whole sign (source
+   x 939-1385, y 378-777 incl. frame and plinth) stays 16px inside the band,
+   and clamped again so the stage still covers the band. Where the sign
+   already fits (every landscape canvas up to ~2.1:1) both clamps are no-ops;
+   they move the photo only on portrait (sign would leave on the right) and
+   ultra-wide (plinth would leave at the bottom) canvases. */
+.fito-stage {
+  --stage-w: max(100cqw, calc(100cqh * 1672 / 727.3));
+  --stage-h: calc(var(--stage-w) * 727.3 / 1672);
+  position: absolute;
+  left: clamp(calc(100cqw - var(--stage-w)),
+              clamp(calc(16px - 0.56160 * var(--stage-w)),
+                    calc(50cqw - var(--stage-w) / 2),
+                    calc(100cqw - 16px - 0.82895 * var(--stage-w))),
+              0px);
+  top: clamp(calc(100cqh - var(--stage-h)),
+             clamp(calc(16px - 0.37282 * var(--stage-h)),
+                   calc(50cqh - var(--stage-h) / 2),
+                   calc(100cqh - 16px - 0.92280 * var(--stage-h))),
+             0px);
+  width: var(--stage-w); aspect-ratio: 1672 / 727.3;
+}
+.fito-stage .fito-stage__img { object-position: 50% 50%; }
+.fito-board { position: absolute; display: flex; align-items: center; justify-content: center; }
+/* Card on a board: the Explanation Text card in flow inside the board, two
+   children (heading, body) on the component's own 16px gap; each child is
+   trimmed (text-box on the children, the card is a flex column). */
+.fito-board .fito-text--board {
+  position: static; width: auto; max-width: calc(100% - 24px);
+  display: flex; flex-direction: column; gap: 16px;
+  text-align: center; text-box: none;
+}
+.fito-board .fito-text--board p { text-box: trim-both cap alphabetic; }
+.fito-board .fito-text__title { font: 700 32px/normal Calibri, Arial, sans-serif; }   /* Headings/H-8 */
+/* Slide 8: the photo's blank signboard. Re-measured on the replacement
+   s6w-supermarket-welcome.png (2026-09-30, near-white run >= 90% per row):
+   white area x 961-1348, y 399-714 of 1672 x 941, i.e. of the cropped
+   1672 x 727.3 stage (y - 106.85). */
+.s6w-board { left: 57.476%; width: 23.206%; top: 40.169%; height: 43.448%; }
+/* Card = Figma "Explanation Text" type=no outline (1038:19390): white, radius
+   12, padding 16, no shadow; one Body/B-4 text node (Assistant Regular 24,
+   #303030, right-aligned, AUTO line height, trimmed to cap height/baseline).
+   Paragraphs have no extra spacing, as in the single Figma text node.
+   Default placement = Screen Template 1268:20702: 40px from the right edge
+   and 40px above the bar. Width hugs content with a max-width guard. */
+.fito-text {
+  position: absolute; z-index: 2;
+  right: calc(50% - 640px + 40px); bottom: calc(50% - 355px + var(--bar-h) + 40px);
+  width: fit-content; max-width: 1200px;
+  padding: 16px; border-radius: 12px; background: #fff;
+  direction: rtl; text-align: right;
+  font: 400 24px/normal Calibri, Arial, sans-serif; color: var(--black-100);
+  text-box: trim-both cap alphabetic;
+}
+.fito-text p { margin: 0; }
+.fito-text strong { font-weight: 700; }
+.nobr { white-space: nowrap; }
+
+/* ── Comic local variant (S3, slide 5): the band is the slide's own row of
+   three portrait panels (962 x 1635 each) instead of one full-bleed photo,
+   and each caption is its own card inside its panel.
+   Row: 348px panels, 8px gaps -> 1060 x 591.4, centred in the 1280 x 710
+   design frame (x 110-1170, y 22-613.4): clears Report Problem (x <= 104,
+   y <= 84) and sits 22.6px above the bar. RTL flex -> panel 1 is rightmost.
+   Cards: 12px inset from the panel edges; paragraphs wrap inside the card's
+   max-width (no pinned breaks — slide 5 authors none). ── */
+.fito-comic {
+  position: absolute;
+  left: calc(50% - 640px + 110px); top: calc(50% - 355px + 22px);
+  display: flex; direction: rtl; gap: 8px;
+}
+.fito-comic__panel { position: relative; flex: 0 0 348px; }
+.fito-comic__img { display: block; width: 100%; height: auto; border-radius: 16px; pointer-events: none; }
+/* Scoped to the panel (not the row) so the zoom clone of a single panel keeps the card placement. */
+.fito-comic__panel .fito-text { right: 12px; bottom: auto; max-width: calc(100% - 24px); }
+.fito-comic__panel .fito-text--top { top: 12px; }
+.fito-comic__panel .fito-text--bottom { top: auto; bottom: 12px; }
+/* Zoom (QA comment chen, producer 2026-10-11): one standard zoom button per panel, each opening that panel with its
+   cards and labels in the tall zoom surface. Same spot in all three (producer 2026-10-11): 6px from the panel's
+   left edge and 8px from its bottom, so in panels 1-2 the button sits over the bottom card's bottom-left corner
+   (card inset 12); the card's lines 3-4 start at x >= 78.5, clear of the button's x 50. Panel 3 = the ocean. */
+.fito-comic__panel .img-zoom-btn { top: auto; bottom: 8px; right: auto; left: 6px; }
+/* Panel 1 art is 992 x 1586 (0.6255), wider than panels 2/3 (962 x 1635).
+   The box keeps the siblings' ratio (348 x 591.5) and the art fills it by
+   height without distortion: scale 0.373, 22px of width cropped, split
+   evenly (29 source px each side: lamp base / wall edge only). */
+.s3-panel--1 .fito-comic__img { aspect-ratio: 962 / 1635; object-fit: cover; object-position: 50% 50%; }
+
+/* S3 panel 3 country labels — SmallSpeechText look (.comic-caption) at the
+   component's own Body/B-7 20px; each centred under its pin's tip
+   (panel-local px, panel scale 348/962). */
+#s3, .fito-comic__panel { --comic-text: 20px; }   /* the panel too, for its zoom clone */
+.s3-pin { transform: translateX(-50%); }
+.s3-pin--usa     { left: 54px;  top: 252px; }
+.s3-pin--liberia { left: 169px; top: 297px; }
+.s3-pin--myanmar { left: 284px; top: 295px; }
+
+/* ===== Info / discovery hotspots (slides 9-10, #s6) =====
+   Local variant: Figma Templates "InfoLayerHotspot" (1731:44472 / 1731:44588).
+   ImageHotspotQuestion.md owns correctness questions only.
+   Instruction: Body/B-6 (24 Bold, #303030) in the white strip above the band. */
+.hs-instruction {
+  position: absolute; top: 42px; right: calc(50% - 640px + 40px); left: calc(50% - 640px + 128px);
+  margin: 0; font: 700 24px/normal Calibri, Arial, sans-serif; color: var(--black-100);
+  text-align: right; direction: rtl; text-box: trim-both cap alphabetic;
+}
+/* Photo band: full width, from below Report Problem (94) to the bar. The photo
+   sits on a stage with the visible image's own ratio (the slides' crop:
+   t 5.049% / b 15.599% of 941 -> 1672 x 746.7), sized like cover, but capped so
+   the outermost dots (y 10.69% .. 86.78% of the stage) stay >= 30px inside the
+   band (hover ring + hit area) and the outermost x (10.6% / 75.05%) >= 60px, so
+   an edge dot's popup tail can still reach it; on very wide canvases that cap can leave white side
+   margins rather than crop a hotspot. Dots and popup live in stage %. */
+.hs-band { position: absolute; left: 0; right: 0; top: 94px; bottom: var(--bar-h); overflow: hidden; container-type: size; }
+.hs-stage {
+  --sw: min(max(100cqw, calc(100cqh * 2.23919)), calc((100cqh - 60px) / 0.7609 * 2.23919), calc((100cqw - 120px) / 0.6445));
+  --sh: calc(var(--sw) / 2.23919);
+  position: absolute; width: var(--sw); height: var(--sh);
+  left: clamp(calc(60px - 0.106 * var(--sw)), clamp(min(0px, calc(100cqw - var(--sw))), calc(50cqw - var(--sw) / 2), max(0px, calc(100cqw - var(--sw)))), calc(100cqw - 60px - 0.7505 * var(--sw)));
+  top: clamp(calc(30px - 0.1069 * var(--sh)), clamp(min(0px, calc(100cqh - var(--sh))), calc(50cqh - var(--sh) / 2), max(0px, calc(100cqh - var(--sh)))), calc(100cqh - 30px - 0.8678 * var(--sh)));
+}
+.hs-stage__img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 24.45%; pointer-events: none; }
+/* Dot — Figma Hotspot-Pulse (126:3144) Type=Shape1. 44px hit area around the
+   32px dot. Default: Subject/300 fill, 2px Subject/700 inside stroke, pulse
+   ring (#00BAFF @30% + 2px #00BAFF) 32 -> 90px (variants 1 / 2 / 3).
+   Hover / focus: core #007AC6 @70%, static 56px ring (variant Hover).
+   Open: 56px Subject/300 core (variant selected). Visited: no pulse. */
+.hs-dot {
+  position: absolute; left: var(--x); top: var(--y); width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; z-index: 2;
+}
+.hs-dot__core, .hs-dot__ring { position: absolute; left: 50%; top: 50%; width: 32px; height: 32px; margin: -16px 0 0 -16px; border-radius: 50%; box-sizing: border-box; }
+.hs-dot__core { background: var(--subject-300); box-shadow: inset 0 0 0 2px var(--subject-700); }
+/* Producer 2026-10-07: the ring pulses twice and stops, clicked or not (a click
+   stops it at once via .is-visited). Delayed past the band's first-visit fade
+   (stagger 180 + 600ms) so both pulses are seen; ends hidden (fill both).
+   .is-settled (set on animationend) keeps a hover-out from replaying it. */
+.hs-dot__ring { background: rgba(0,186,255,.3); box-shadow: inset 0 0 0 2px var(--subject-400); animation: hs-pulse 1.6s ease-out calc(var(--m-reveal-stagger) + var(--m-reveal-duration)) 2 both; }
+@keyframes hs-pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.8125); opacity: 0; } }
+.hs-dot.is-visited .hs-dot__ring, .hs-dot.is-settled .hs-dot__ring { animation: none; opacity: 0; }
+.hs-dot:hover .hs-dot__ring, .hs-dot:focus-visible .hs-dot__ring { animation: none; opacity: 1; width: 56px; height: 56px; margin: -28px 0 0 -28px; }
+.hs-dot:hover .hs-dot__core, .hs-dot:focus-visible .hs-dot__core { background: rgba(0,122,198,.7); }
+.hs-dot:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.hs-dot.is-open .hs-dot__ring { animation: none; opacity: 0; }
+.hs-dot.is-open .hs-dot__core { width: 56px; height: 56px; margin: -28px 0 0 -28px; background: var(--subject-300); }
+@media (prefers-reduced-motion: reduce) { .hs-dot__ring { animation: none; opacity: 0; } }
+/* Popup — Speech Bubbles language (457:6419, BeakAngle=Bottom Wide): white,
+   3px Subject/500 inside stroke, radius 11, Body/B-7 (20 Regular, #000,
+   right-aligned) inset 11.5px; image first, then the live text. The beak is the
+   component's 33 x 15 geometry (.comic-beak), placed by JS on the side facing
+   the dot. No close control (producer 2026-10-01): another dot, a click outside
+   or Escape closes it; focus stays on the dot. 320px is the maximum: JS
+   (hsFitWidth) narrows each popup to its widest rendered line / figure. */
+.hs-pop {
+  position: absolute; z-index: 6; width: 320px;
+  padding: 14px 8.5px 12px; background: #fff; border: 3px solid var(--subject-500); border-radius: 11px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.hs-pop[hidden] { display: none; }
+.hs-pop__fig { position: relative; flex: 0 0 auto; width: var(--fw); height: var(--fh); }
+.hs-pop--text .hs-pop__fig { display: none; }
+.hs-pop__img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+/* Cropped figure: an asset drawn small on a large transparent canvas (the
+   syringe) is shown by its own opaque region; the image keeps its ratio. */
+.hs-pop__fig--crop { overflow: hidden; }
+.hs-pop__fig--crop .hs-pop__img { position: absolute; max-width: none; object-fit: fill; }
+/* Product label (producer: live text on the product's blank label / body). 18.9px = the original 18px x1.05, scaled
+   with the figures (QA comment chen, producer 2026-10-11) so each label keeps its place and proportion on the product. */
+.hs-pop__label {
+  position: absolute; left: var(--lx); top: var(--ly); transform: translate(-50%, -50%);
+  margin: 0; padding: 4px 6px; border-radius: 4px; background: #fff; white-space: nowrap;
+  font: 400 18.9px/1.15 Calibri, Arial, sans-serif; color: var(--black-100); text-align: center; direction: rtl;
+}
+.hs-pop__label:empty { display: none; }
+.hs-pop__text { margin: 0; width: 100%; font: 400 20px/normal Calibri, Arial, sans-serif; color: #000; text-align: right; direction: rtl; text-box: trim-both cap alphabetic; }
+.hs-pop__text strong { font-weight: 700; }
+.hs-pop .comic-beak { left: var(--beak-x, calc(50% - 16.5px)); top: calc(100% - 1.5px); }
+.hs-pop--below .comic-beak { top: auto; bottom: calc(100% - 1.5px); transform: rotate(180deg); }
+.hs-pop--right .comic-beak { left: auto; right: calc(100% - 9px); top: var(--beak-y); transform: rotate(90deg); }
+.hs-pop--left .comic-beak { left: calc(100% - 9px); top: var(--beak-y); transform: rotate(-90deg); }
+.hidden { display: none !important; }
+
+/* ===== SingleChoiceQuestion — Figma Screen Templates/SingleChoiceQuestion (962:23391) =====
+   Content sits in the 1280x710 design frame, centred in the viewport-filling
+   canvas (same model as S1: content centred, chrome at the real edges).
+   calc(50% - 640px) / calc(50% - 355px) are that frame's left / top edges.
+   Figma "question" row: top 139, 40px side padding, 16px gap; image column
+   left, text column right. Figma text boxes are trimmed to cap height /
+   baseline, so the text roles below use text-box trimming to reproduce the
+   component geometry (46px option, 16/24px text gaps). */
+.scq-question {
+  position: absolute;
+  left: calc(50% - 640px + 40px); width: 1200px;
+  top: calc(50% - 355px + 139px);
+  display: flex; gap: 16px; align-items: flex-start; justify-content: space-between;
+}
+/* LOCAL VARIANT "tall media" (S2, producer-approved 2026-09-27): the media
+   group starts at y 16 (level with Report Problem, which it clears
+   horizontally) and ends ~9px above the bar; the text column keeps Figma's
+   139px top and its 792px width (gap 0: the group's own left offset and
+   width fill the rest of the 1200px row exactly). */
+.scq-question--tall-media { top: calc(50% - 355px + 16px); gap: 0; }
+.scq-question--tall-media .scq-main { padding-top: 123px; }
+/* LOCAL VARIANT "text only" (S17, producer 2026-10-05): no image column, so the row's 139px top (set by the 380px image)
+   is not needed; the text column keeps its 792px width and the right edge (x 1240) and starts at y 42 like the other
+   text-first screens (S15), which leaves the block clear of the bar. */
+.scq-question--text { top: calc(50% - 355px + 42px); gap: 0; }
+/* Passage box behind the three sentences (S17, producer 2026-10-05) = Figma "TextBox" 5555:26581: radius 8, 24px / 12px padding,
+   fill Subject/200 (Science #C7F0FF; the frame shows the Math value Purple/200 #CEC7FF). Spans the 792px question column; its text
+   keeps the approved 24px question type and 24px paragraph gap, cap-trimmed so the 12px is measured to the glyphs. */
+.scq-passage { display: flex; flex-direction: column; gap: 24px; padding: 12px 24px; border-radius: 8px; background: var(--subject-200); }
+
+/* Text column (Figma I962:10043;521:13324): gap 24 text -> answers, right-aligned. */
+.scq-main { flex: 1 1 0; min-width: 360px; display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+/* Figma "text" (521:13250): 792px, 16px title -> body; body slots 24px apart. */
+.scq-qtext {
+  width: 792px; max-width: 100%;
+  display: flex; flex-direction: column; gap: 16px;
+  font: 700 24px Calibri, Arial, sans-serif; color: var(--subject-500); text-align: right;
+}
+.scq-qtitle { margin: 0; font: 700 24px Calibri, Arial, sans-serif; color: var(--subject-500); text-box: trim-both cap alphabetic; } /* Body/B-6 */
+.scq-qbody { display: flex; flex-direction: column; gap: 24px; color: var(--black-100); }
+.scq-qbody p { margin: 0; font: 400 24px Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }          /* Body/B-4 */
+.scq-qbody .scq-qstem { font-weight: 700; }                                                                         /* Body/B-6 */
+
+/* Image column — Figma "img" (96:1426): 8px padding, 1px Natural/600 @50%
+   hairline drawn over the image at radius 16. The hairline belongs to the
+   column (::after), not to the zoom wrapper, so the zoom clone never carries it. */
+.scq-img { position: relative; flex: 0 0 auto; width: 380px; height: 380px; padding: 8px; }
+.scq-img::after {
+  content: ''; position: absolute; inset: 8px; border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgba(174,174,174,.5);
+  pointer-events: none; z-index: 2;
+}
+.scq-img-inner { position: relative; width: 100%; height: 100%; border-radius: 16px; overflow: hidden; background: #fff; }
+.scq-img-inner > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+/* Answers column (Figma "answers" 521:13309): fit-content up to the 604px
+   standard width; options stretch to the column so they share one width. */
+.scq-answers { display: flex; flex-direction: column; gap: 12px; width: fit-content; max-width: 604px; }
+
+/* Answer option — Figma "answers" type=one choice (196:6213 Default,
+   462:6728 selected, 196:6216 Correct, 196:6219 Incorrect). Strokes are
+   INSIDE in Figma, so they are inset box-shadows (no geometry change between
+   states). No hover variant is authored. */
+.scq-opt {
+  display: flex; align-items: center; gap: 10px;
+  width: auto; min-height: 46px;
+  padding: 12px 20px;
+  border: none; border-radius: 1000px;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px var(--subject-500);
+  font: 400 22px Calibri, Arial, sans-serif; color: var(--text);
+  text-align: right; direction: rtl;
+  cursor: pointer;
+}
+.scq-opt-text { flex: 1 1 auto; text-box: trim-both cap alphabetic; }
+.scq-opt:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.scq-opt:disabled, .scq-opt.locked { cursor: default; }
+.scq-opt.correct { background: var(--green-5); box-shadow: inset 0 0 0 1.5px var(--green-80); }
+.scq-opt.wrong   { background: var(--red-5);   box-shadow: inset 0 0 0 1.5px var(--red-100); }
+
+/* Radio — Figma "questions icons" 22px: Default (196:6226) ring, selected
+   (196:6228) filled; correct / incorrect are the component's own SVG exports. */
+.scq-radio {
+  flex: 0 0 22px; width: 22px; height: 22px; border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--subject-500);
+}
+.scq-opt.selected .scq-radio { background: var(--subject-500); }
+.scq-opt.correct .scq-radio { box-shadow: none; background: url('../../unit-assets/img/answer-radio-correct.svg') center / 22px 22px no-repeat; }
+.scq-opt.wrong .scq-radio   { box-shadow: none; background: url('../../unit-assets/img/answer-radio-incorrect.svg') center / 22px 22px no-repeat; }
+
+/* ===== MultipleChoiceQuestion options (S20, Figma 5590:25473) =====
+   Same capsule as .scq-opt; the 20px checkbox (radius 2, 2px Subject/500) replaces the radio. Selected = filled Subject/500 + white tick;
+   correct = Feedback/Correct/300 (#609E12) 2px capsule stroke + filled box + tick, incorrect = Feedback/Incorrect/300 (#B20010) + cross.
+   No tint behind the capsule (unlike single choice). The tick / cross are the component's own SVG exports. */
+.scq-check { flex: 0 0 20px; width: 20px; height: 20px; box-sizing: border-box; border-radius: 2px; box-shadow: inset 0 0 0 2px var(--subject-500); background: #fff center / auto no-repeat; }
+.scq-opt--multi.selected .scq-check { background: var(--subject-500) url('../assets/img/checkbox-check.svg') center / 12.73px 9.19px no-repeat; }
+.scq-opt--multi.correct, .scq-opt--multi.wrong { background: #fff; }
+.scq-opt--multi.correct { box-shadow: inset 0 0 0 2px var(--green-80); }
+.scq-opt--multi.wrong   { box-shadow: inset 0 0 0 2px var(--red-100); }
+.scq-opt--multi.correct .scq-check { box-shadow: inset 0 0 0 2px var(--green-80); background: var(--green-80) url('../assets/img/checkbox-check.svg') center / 12.73px 9.19px no-repeat; }
+.scq-opt--multi.wrong .scq-check   { box-shadow: inset 0 0 0 2px var(--red-100);  background: var(--red-100) url('../assets/img/checkbox-cross.svg') center / 10px 10px no-repeat; }
+/* Under the Progress question nav (top 48): the question keeps Figma's 139px row top; no image column, so no gap. */
+.scq-question--progress { gap: 0; }
+
+/* ===== Feedback popup — Figma "Popup Feedback" size=Short (217:4133 Correct / 217:4134 Incorrect) =====
+   426px, 24px padding, 24px title -> body, radius 12, 0.3px Natural/600 inside
+   stroke, no shadow. Title Body/B-9 (Bold 20), body Body/B-7 (Regular 20),
+   both #222. Default position (producer 2026-10-07, every feedback, no exceptions): flush to the
+   viewport's left edge and the top of the bottom bar - the same corner as parts 02-03, 05-06;
+   resetPopupPosition() clears the drag inline styles so every open returns here.
+   No close control (No manual close). (Block restored 2026-10-08 after a cleanup regex removed it.) */
+.scq-popup {
+  position: absolute; z-index: 25;
+  left: 0; top: auto;
+  bottom: var(--bar-h);
+  width: 426px;
+  display: flex; flex-direction: column; gap: 24px;
+  padding: 24px; border-radius: 12px;
+  border: 0.3px solid var(--gray-100);
+  direction: rtl; text-align: right; color: var(--text);
+  cursor: move; touch-action: none; user-select: none;
+}
+.scq-popup-title { margin: 0; font: 700 20px Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }
+.scq-popup-body { font: 400 20px Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }
+.scq-popup-body p { margin: 0; }
+.scq-popup.type-correct { background: var(--feedback-correct-200); }
+.scq-popup.type-retry, .scq-popup.type-wrong2 { background: var(--feedback-incorrect-200); }
+.scq-popup-actions { display: flex; justify-content: flex-end; }
+/* S7 (producer 2026-10-01): the answer-toggle button sits on the RIGHT, at the
+   popup's inner padding (RTL flex start = right). Scoped to S7's popup only. */
+#s7-popup .scq-popup-actions { justify-content: flex-start; }
+/* S2 (producer 2026-10-07): widened so the body's first line keeps "הבנות." on
+   it (line ≈ 419px at Regular 20; 472 - 48 padding leaves ~423px). S2 only. */
+#s2-popup { width: 472px; }
+/* A flex container, like the nav buttons: as a plain block the label grid would sit
+   on the baseline of its zero-height reserve copies and drop below the pill. */
+.popup-action {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 39px; padding: 0 20px; border-radius: 1000px;
+  background: #fff; color: #222; border: 1px solid #484848;
+  font: 400 20px Calibri, Arial, sans-serif;
+}
+.popup-action:hover { font-weight: 600; }
+/* Footprint reserve for popup action buttons (see renderPopupAction): the widest
+   label of the button, in SemiBold, sized but never painted. */
+.nav-label > .nav-label__reserve { font-weight: 600; block-size: 0; visibility: hidden; pointer-events: none; }
+
+
+
+/* ===== Image Zoom — 720-templates _global-components "Image zoom" (as part 02) =====
+   Trigger = Figma "Zoom" (1589:17043): 44px circle, white, 2px inside Subject/500
+   stroke, magnifier from the component (inline SVG, currentColor); hover inverts. */
+.img-zoom-btn {
+  position: absolute; top: 10px; right: 10px; z-index: 3;
+  width: 44px; height: 44px; padding: 0;
+  border: none; border-radius: 100px;
+  background: #fff; box-shadow: inset 0 0 0 2px var(--subject-500);
+  color: var(--subject-500);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.img-zoom-btn:hover { background: var(--subject-500); box-shadow: none; color: #fff; }
+.img-zoom-btn:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.img-zoom-btn__icon { display: block; width: 20.7149px; height: 20.9231px; }
+.img-zoom-modal { position: absolute; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; }
+.img-zoom-modal__backdrop { position: absolute; inset: 0; background: rgba(255,255,255,.8); }
+/* Padding 24 vertical / 72 horizontal (producer 2026-10-13; replaces the equal 64px margin of 2026-10-05).
+   Envelope 1200x690 -> media maximum 1056x642. The Close button keeps its Figma position (16,16), spanning
+   x 16-56, so the 72px left padding leaves it 16px of horizontal clearance from the media. */
+.img-zoom-modal__panel { position: relative; padding: 24px 72px; background: #fff; border-radius: 24px; overflow: hidden; }
+/* "tall" marks the PROJECT DEVIATION path (composite comic zooms: S2 whole comic, S3 panels; producer 2026-10-11)
+   and carries no padding of its own any more — since 2026-10-13 the base padding is already 24 vertical / 72
+   horizontal, so the deviation is purely the height cap applied in openImgZoom (js/main.js). */
+.img-zoom-modal__stage { position: relative; border-radius: 16px; overflow: hidden; }
+.img-zoom-modal__close {
+  position: absolute; top: 16px; left: 16px; z-index: 2;
+  width: 40px; height: 40px; padding: 0;
+  border: none; border-radius: 100px;
+  background: #fff; box-shadow: inset 0 0 0 2px var(--subject-500);
+  color: var(--subject-500);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.img-zoom-modal__close:hover { background: var(--subject-500); box-shadow: none; color: #fff; }
+.img-zoom-modal__close:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.img-zoom-modal__close-icon { display: block; width: 15px; height: 15px; }
+
+/* ===== S2 — "מדידה בעבר" comic (slide 4) =====
+   Three clean producer panels, stacked, no outer frame. One standard zoom
+   button (top-right of panel 1) opens the whole comic with every overlay
+   (producer 2026-10-11). The stack
+   uses the full height: panel aspect ratios 1774x887 / 1721x914 / 1589x990 give
+   1.6543 W + 2 x 6px gap; y 16 -> 630.2 (6px above the bar) -> W = 364 —
+   the height maximum for a reading-order stack inside the producer's comic
+   region (x ~31-587, y ~25-634, 2026-09-27). Flow width: 44 + 364 + the
+   792px text column = the 1200px row, so the question column never
+   changes; a 28px relative shift then puts the group at canvas x 112, clear
+   of Report Problem (x <= 104), and leaves panel 2's arm labels room to sit
+   before the hands. Every overlay is positioned in its own panel's px box;
+   the canvas scales uniformly (scaleApp), so the overlays stay attached to
+   their artwork at every viewport.
+   Comic text size: 18px on every live comic overlay (bubbles, labels,
+   caption, footnote, thought text) — a producer decision (2026-09-27) that
+   deliberately departs from the Speech Bubble component's Body/B-7 20px to
+   reduce crowding on the artwork. Nothing outside the comic uses it. */
+/* Comic reveal pacing (producer 2026-09-28): 375ms between reveal groups on
+   S2 and S3 instead of the engine default 180ms; the per-group fade
+   (--m-reveal-duration) is unchanged. The engine measures the delays in
+   effect, so its cleanup follows this scoped value. */
+#s2, #s3 { --m-reveal-stagger: 375ms; }
+/* S3 7-step reveal (Roni 2026-10-14): the last step (bubble + country names)
+   starts only after the third image has finished, not one stagger after it. */
+#s3.m-animate [data-reveal="7"] { animation-delay: calc(var(--m-reveal-stagger) * 5 + var(--m-reveal-duration, 600ms)); }
+.s2-comic { position: relative; left: 28px; flex: 0 0 auto; width: 364px; margin-left: 44px; display: flex; flex-direction: column; gap: 6px; }
+.s2-panel { position: relative; }
+/* Rounded media corners — the 720 media-viewport language (16px). The
+   radius sits on the image itself so overlays can overhang the panel. */
+.s2-panel__img { display: block; width: 100%; height: auto; border-radius: 16px; }
+/* Panel 1 framing (producer 2026-09-30): the new 2:1 art is shown at 1.2x
+   inside the unchanged 364 x 182 panel — source window x 148-1626,
+   y 74-813 of 1774 x 887 (outer crowd, top of the sky and the table front
+   trimmed; both characters and their headroom kept). A clip box is needed
+   because the art and the panel share one ratio, so object-fit cannot zoom;
+   the image is positioned absolutely so RTL flow cannot shift it. */
+.s2-panel__media { position: relative; aspect-ratio: 1774 / 887; overflow: hidden; border-radius: 16px; }
+.s2-panel__media .s2-panel__img { position: absolute; left: -10%; top: -10%; width: 120%; max-width: none; border-radius: 0; }
+/* Panel 3 framing (producer 2026-10-07): the new 3:2 art (s1-comic-panel-3.png, 1536 x 1024) fills the same 2:1 panel at full
+   width; the window is source y ~13-781, so both faces, both raised hands, the hat and the cloth rolls stay and only the
+   bottom of the table is trimmed. Same clip-box technique as panel 1. */
+.s2-panel--3 .s2-panel__media .s2-panel__img { left: 0; top: -1.3%; width: 100%; }
+/* S2 answers (QA comment, chen, producer 2026-10-11): every option is two lines, broken by hand in the HTML after the
+   period / comma or at a phrase boundary (no one- or two-word lines). One shared capsule width sized to the longest
+   line ("את המוכר למדוד שוב ושוב את אורך הבד." = 331px at 22px) + ~9px slack: 340px text box + 72px radio/padding.
+   Local to S2; the 604px template width is unchanged elsewhere. */
+#s2 .scq-opt { width: 412px; }
+
+/* ── Comic speech bubble — Figma "Speech Bubbles" (457:6419) ──
+   White body, 3px Subject/500 inside stroke, corner radius 11 and a
+   33 x 15 beak (the component's own vector geometry), text Body/B-7
+   (Assistant Regular 20, #000, right-aligned; Figma trims the text box to
+   cap height). The body is sized by its text — typography first — and
+   the beak is an inline SVG on the chosen edge. Padding: the component
+   insets text 11.5 / 13.5px from the outer edge incl. the 3px stroke. */
+.comic-bubble {
+  position: absolute; z-index: 2; margin: 0;
+  width: max-content; max-width: var(--bubble-max, 180px);
+  padding: 10.5px 8.5px;
+  background: #fff; border: 3px solid var(--subject-500); border-radius: 11px;
+  font: 400 var(--comic-text, 18px) Calibri, Arial, sans-serif; color: #000;
+  text-align: right; direction: rtl; text-wrap: balance;
+  text-box: trim-both cap alphabetic;
+}
+.comic-beak { position: absolute; width: 33px; height: 18px; overflow: visible; }
+.comic-beak__fill { fill: #fff; }
+.comic-beak__line { fill: none; stroke: var(--subject-500); stroke-width: 3; stroke-linejoin: miter; }
+/* Beak on the bottom edge; --beak-x = beak's left offset along that edge. */
+.comic-bubble--beak-bottom .comic-beak { left: var(--beak-x, calc(50% - 16.5px)); top: calc(100% - 1.5px); }
+/* Beak on the left edge, pointing left; --beak-y = offset along that edge. */
+.comic-bubble--beak-left .comic-beak { top: var(--beak-y, calc(50% - 9px)); right: calc(100% - 9px); transform: rotate(90deg); transform-origin: 50% 50%; }
+/* Small side beak (S2 bubble 1, producer 2026-09-27): a one-line bubble is
+   only ~40px tall, so the component's 33px beak dominated its side. Same
+   language (white fill cutting the 3px Subject/500 outline), drawn 1:1 at
+   18 x 10 with rounded joins, centred on the side; protrudes ~8.5px. */
+.comic-beak--sm { width: 18px; height: 13px; }
+.comic-beak--sm .comic-beak__line { stroke-linejoin: round; stroke-linecap: round; }
+.comic-bubble--beak-left .comic-beak--sm { top: calc(50% - 6.5px); right: calc(100% - 4px); }
+
+/* ── Comic caption / label / footnote — Science-token box (producer
+   2026-09-27), SmallSpeechText look (1205:20133): Subject/100 fill,
+   radius 12, 16 / 8px padding, Body/B-7 #303030 centred, trimmed. ── */
+.comic-caption {
+  position: absolute; z-index: 2; margin: 0;
+  width: max-content; white-space: nowrap;
+  padding: 16px 8px; border-radius: 12px;
+  background: var(--subject-100);
+  font: 400 var(--comic-text, 18px) Calibri, Arial, sans-serif; color: var(--black-100);
+  text-align: center; direction: rtl;
+  text-box: trim-both cap alphabetic;
+}
+/* White label variant — S3 map country names only (producer 2026-09-28).
+   S2 arm labels, footnote and captions keep Subject/100. */
+.comic-caption--label { background: #fff; }
+
+/* ── Comic thought cloud — no Figma component; drawn in the Speech Bubble
+   graphic language at the producer's request: white fill, 3px Subject/500
+   outline (a 6px stroke behind a white fill of the same circles leaves
+   exactly the outer 3px), Body/B-7 text. ── */
+.comic-thought { position: absolute; z-index: 2; margin: 0; width: 70px; height: 62px; }
+.comic-thought__shape { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.comic-thought__line circle { fill: none; stroke: var(--subject-500); stroke-width: 6; }
+.comic-thought__fill circle { fill: #fff; }
+.comic-thought__text {
+  position: absolute; left: 12px; top: 8px; width: 50px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font: 400 var(--comic-text, 18px) Calibri, Arial, sans-serif; color: #000;
+}
+
+/* ── Per-overlay placement (panel-local px; panels are 364 wide,
+   182 / 193.3 / 226.8 tall). Positions follow the old composite. ── */
+/* Panel 1: the buyer's line in TWO lines (producer 2026-09-30: "תן לי אמה*" /
+   "אחת של בד"), a compact bubble in the sky between the two heads, clear
+   of both faces and the merchant's hat. Small beak on the LEFT side, moved
+   to the lower part of that side so it points down to the buyer's head. */
+.s2-bubble-1 { --bubble-max: none; white-space: nowrap; left: 134px; top: 14px; }
+.s2-bubble-1 .comic-beak--sm { top: calc(100% - 28px); }
+/* Footnote at the bottom of panel 1 (old strip position), one line,
+   centred inside the panel. QA comment (chen, producer 2026-10-11): flush to
+   the panel's bottom edge as a caption strip (square bottom corners, 8px
+   vertical padding) so it covers ~16% of the art instead of ~31% and the
+   merchant's hands and the cloth rolls stay visible. */
+.s2-footnote { left: 50%; transform: translateX(-50%); bottom: 0; border-radius: 12px 12px 0 0; }
+/* One vertical padding for every S2 caption box — footnote, the three arm labels, panel 3 caption (producer
+   2026-10-11): 8px instead of the caption's 16px, so the labels no longer reach into panel 1. */
+.s2-footnote, .s2-label, .s2-caption { padding-block: 8px; }
+/* Panel 2: two-line arm labels flush with the panel's LEFT edge (producer
+   2026-09-27); at 18px each is narrower than the first hand's position
+   (green hand at 25.6% = 93px), so all three hands stay visible. At 8px
+   padding each label is 52.5px, so the stack fits inside the panel: first
+   flush with the top, second centred (70 + 26.25 ~ the panel's 96.7 middle),
+   third flush with the bottom. The merchant's question sits beside his
+   head, one question per line, beak left. */
+/* One shared box size for all three labels (producer 2026-09-27): the width
+   of the widest line ("האמה של") + padding; text stays centred. */
+.s2-label { left: 0; width: 82px; }
+.s2-label--1 { top: 0; }
+.s2-label--2 { top: 70px; }
+.s2-label--3 { bottom: 0; }
+/* top 48: the bubble starts below the question stem line (ink bottom y ~240),
+   so it never sits level with the right-hand text; beak lowered to the
+   merchant's face height (producer 2026-09-27). */
+.s2-bubble-2 { --bubble-max: 130px; left: 350px; top: 48px; --beak-y: 24px; }
+/* Panel 3: the buyer's "?" thought — right of and above his scratching hand
+   (hand 31–40% = 113–146px), tail dots still leading back to his head;
+   clear of the merchant's hat (64%+ = 232px). */
+.s2-thought { left: 152px; top: -3px; }
+/* Panel 3 caption: same caption strip as the panel 1 footnote (producer 2026-10-11) — flush to the bottom edge,
+   square bottom corners, 8px vertical padding (shared rule above). */
+.s2-caption { left: 50%; transform: translateX(-50%); bottom: 0; border-radius: 12px 12px 0 0; }
+
+/* ===== S18 (slide 47) — OrderedDragAndDropQuestion, Figma 1717:39511 (producer 2026-10-05) =====
+   Block anchored at the module standard text start (producer 2026-10-06: first glyph y 42 = S6 / S10 / S11 / S13 / S14 / S15 / S17; Figma frame had it at 139.5): right edge x 1240; text 792 wide; 60px (40 + the drag&drop
+   frame's 20 padding) to the first row. Board = labels + slots on the right, sentence cards on the left, 24px apart.
+   Every visual rule of a card / placed sentence is on its own class (no #s18 scope), so the pointer-drag clone appended
+   to <body> keeps its look (DnD reference). Strokes follow the Drag&Drop State component (1249:32691), as on S7. */
+.ord-main { position: absolute; right: calc(50% - 640px + 40px); top: calc(50% - 355px + 42px); display: flex; flex-direction: column; align-items: flex-start; gap: 60px; direction: rtl; }
+.ord-text { width: 880px; margin: 0; font: 400 24px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: right; text-box: trim-both cap alphabetic; }
+/* The action line is Bold, as on every other screen (S8, S13, S15; QA comment chen, producer 2026-10-11). */
+.ord-text__do { font-weight: 700; }
+.ord-board { display: flex; gap: 24px; align-items: flex-start; }
+.ord-rows { order: 1; display: flex; flex-direction: column; gap: 20px; }
+.ord-row { display: flex; align-items: center; gap: 10px; }
+.ord-label { flex: 0 0 70px; font: 400 24px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: right; text-box: trim-both cap alphabetic; }
+.ord-zone {
+  width: 521px; min-height: 82px; box-sizing: border-box; border-radius: 12px;
+  background: var(--natural-200, #F3F4F5); border: 1px dashed rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; gap: 10px; padding: 12px 20px; direction: rtl; cursor: default; outline: none;
+}
+.ord-zone.drag-over { background: #fff; border: 1px dashed var(--subject-500); }
+.ord-zone.occupied { background: var(--subject-100); border: 1px solid var(--subject-500); }
+.ord-zone.correct, .ord-zone.wrong { background: #fff; }
+.ord-zone.correct { border: 1px solid var(--green-80); }
+.ord-zone.wrong { border: 1px solid var(--red-100); }
+.ord-zone:focus-visible { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--subject-500); }
+.ord-mark { flex: 0 0 26px; width: 26px; height: 26px; background: center / 26px 26px no-repeat; }
+.ord-zone.correct .ord-mark { background-image: url('../../unit-assets/img/answer-radio-correct.svg'); }
+.ord-zone.wrong .ord-mark { background-image: url('../../unit-assets/img/answer-radio-incorrect.svg'); }
+.ord-placed { flex: 1 1 auto; min-width: 0; font: 400 22px/normal Calibri, Arial, sans-serif; color: var(--text); direction: rtl; text-align: right; cursor: grab; touch-action: none; user-select: none; }
+.ord-zone.locked .ord-placed { cursor: default; }
+.ord-bank { order: 2; display: flex; flex-direction: column; gap: 20px; }
+.ord-card {
+  width: 521px; min-height: 82px; box-sizing: border-box; margin: 0; padding: 12px 20px; display: flex; align-items: center;
+  background: #fff; border: 1px solid rgba(174, 174, 174, 0.5); border-radius: 12px;
+  font: 400 22px/normal Calibri, Arial, sans-serif; color: var(--text); direction: rtl; text-align: right;
+  cursor: grab; touch-action: none; user-select: none;
+}
+.ord-card.is-selected, .ord-card.dragging, .ord-card.pointer-drag-ghost, .ord-placed.pointer-drag-ghost { border-color: var(--subject-500); }
+.ord-placed.pointer-drag-ghost { background: #fff; border: 1px solid var(--subject-500); border-radius: 12px; padding: 12px 20px; box-sizing: border-box; }
+.ord-card.is-placed { visibility: hidden; }   /* a placed sentence leaves its spot invisible: nothing reflows */
+.ord-card:focus-visible { outline: 2px solid var(--subject-500); outline-offset: 2px; }
+.ord-card.is-placed:focus-visible { outline: none; }
+/* the answer-toggle button sits on the RIGHT of the popup (as S7) */
+#s18-popup .scq-popup-actions { justify-content: flex-start; }
+
+/* ===== DragAndDropQuestion — Image Top layout (S7, slide 11) =====
+   Figma ImageTopDragAndDropQuestion (5340:25539). Content block = Figma "content"
+   (x 95.5, top 131, 1089 wide, gap 30): head, then four 216px ImageAndDropTarget
+   columns (gap 75), then the 1089 x 110 Draggables row (space-between, so each chip
+   sits under its column). Every visual rule of a chip / placed card is on its own
+   class, so the pointer-drag clone (appended to <body>) keeps it (DnD reference:
+   "The floating drag ghost lives outside the screen"). */
+.itd-content {
+  position: absolute; left: calc(50% - 640px + 95.5px); width: 1089px;
+  top: calc(50% - 355px + 131px);
+  display: flex; flex-direction: column; align-items: center; gap: 30px;
+}
+/* min-height 44 = the Figma "text" frame with both lines (title 18 + 8 + text 18): S7 has the title only, so without it the
+   image row rose 26px (30px under the title instead of 56); kept at the template's y 205 (QA comment chen, producer 2026-10-11). */
+.itd-head { width: 100%; min-height: 44px; padding: 0 10px; box-sizing: border-box; }
+.itd-title { margin: 0; font: 700 24px/normal Calibri, Arial, sans-serif; color: var(--subject-500); text-align: right; text-box: trim-both cap alphabetic; }
+.itd-targets { display: flex; gap: 75px; }
+.itd-col { width: 216px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.itd-frame {
+  position: relative; width: 216px; height: 216px; box-sizing: border-box;
+  background: #fff; border: 3px solid rgba(201, 206, 216, 0.4); border-radius: 16px; overflow: hidden;
+}
+.itd-img { position: absolute; left: 50%; top: 50%; width: 199px; height: 199px; transform: translate(-50%, -50%); object-fit: cover; border-radius: 16px; pointer-events: none; }
+/* Drop zone - Drag&Drop State (1249:32691): Default / Hover / Dropped / Correct / Incorrect.
+   Correct + Incorrect are 52px tall in Figma; the extra 10px hangs into the 30px gap
+   below (margin-bottom -10px) so checking never moves the chip row. */
+/* Two-line labels (unit, then the parenthesised name; QA comment chen, producer 2026-10-11): zone, slot and chip are
+   66px tall instead of 42 (two 22px lines + the 12px vertical padding), the checked zone 76 instead of 52. */
+.itd-zone {
+  width: 216px; height: 66px; box-sizing: border-box; border-radius: 12px;
+  background: var(--natural-200, #F3F4F5); border: 1px dashed rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; gap: 10px; padding: 0 16px; direction: rtl;
+  cursor: default; outline: none;
+}
+.itd-zone.drag-over { background: #fff; border: 1px dashed var(--subject-500); }
+.itd-zone.occupied { background: var(--subject-100); border: 1.5px solid var(--subject-500); }
+/* 12px sides (Figma 20): with the 26px mark + 10px gap the text gets 153px, enough for "(סנטימטר מעוקב)" (145px at 22). */
+.itd-zone.correct, .itd-zone.wrong { height: 76px; margin-bottom: -10px; padding: 12px 12px; background: #fff; }
+.itd-zone.correct { border: 1.5px solid var(--green-80); }
+.itd-zone.wrong { border: 1.5px solid var(--red-100); }
+.itd-zone:focus-visible { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--subject-500); }
+.itd-mark { flex: 0 0 26px; width: 26px; height: 26px; background: center / 26px 26px no-repeat; }
+.itd-zone.correct .itd-mark { background-image: url('../../unit-assets/img/answer-radio-correct.svg'); }
+.itd-zone.wrong .itd-mark { background-image: url('../../unit-assets/img/answer-radio-incorrect.svg'); }
+/* Placed card (the chip's label inside a zone); draggable back out until checked. */
+.itd-placed {
+  flex: 1 1 auto; min-width: 0; height: 100%; display: flex; align-items: center;
+  font: 400 22px/normal Calibri, Arial, sans-serif; color: var(--black-100); direction: rtl; text-align: right;   /* 22 = the chip (was 24): the two-line label fits beside the mark */
+  white-space: nowrap; cursor: grab; touch-action: none; user-select: none;
+}
+.itd-zone.locked .itd-placed { cursor: default; }
+.itd-bank { width: 1089px; height: 110px; display: flex; justify-content: space-between; align-items: center; }
+.itd-slot { width: 216px; height: 66px; }
+.itd-label { display: block; }
+/* Draggable - "answer box" (state=Unfocused / selected). Updated Figma (producer
+   2026-10-01): a placed chip leaves nothing behind - its spot is invisible, and the
+   remaining chips stay where they are (producer: no reflow); once all four are placed
+   the whole Draggables row is gone (States 03-05). While dragged, the source chip
+   shows state=selected (State 02). The content block is top-anchored, so removing
+   the row never moves the images or drop zones above it. */
+.itd-chip {
+  width: 216px; height: 66px; box-sizing: border-box; margin: 0; padding: 0 16px;
+  background: #fff; border: 1.5px solid var(--natural-300, #ECECEC); border-radius: 10px;
+  font: 400 22px/normal Calibri, Arial, sans-serif; color: var(--black-100);   /* drag-and-drop item capsule = 22px (typography.md; QA 2026-10-07) */
+  direction: rtl; text-align: right; white-space: nowrap;
+  display: flex; align-items: center; cursor: grab; touch-action: none; user-select: none;
+}
+.itd-chip.is-selected, .itd-chip.dragging, .itd-chip.pointer-drag-ghost,
+.itd-placed.pointer-drag-ghost { border: 1.5px solid var(--subject-500); }
+.itd-placed.pointer-drag-ghost { background: #fff; border-radius: 10px; padding: 0 16px; box-sizing: border-box; }
+.itd-chip.is-placed { visibility: hidden; }
+.itd-bank.is-empty { display: none; }
+.itd-chip:focus-visible { outline: 2px solid var(--subject-500); outline-offset: 2px; }
+.itd-chip.is-placed:focus-visible { outline: none; }
+
+
+   Default = the ShortText variant, Figma "TransitionScreen - B -
+   SectionIntroScreen-ShortText" (4905:25066); a LongText instance would add
+   a modifier. Composition per the node: the text block's top at y 115 of the
+   centred 1280x710 frame (790 wide), the character box flush with the bar.
+   Text: SelectionScreenTitle Type=Supporting Title — lead-in Body/B-1 (28
+   Regular) in a 10px-padded frame, 24px stack gap, headline Heading/H-4 (64
+   Bold); both trimmed to cap height/baseline, #303030. */
+.s1-content { position: absolute; inset: 0; }
+.s1-text {
+  position: absolute; top: calc(50% - 355px + 115px); left: calc(50% - 395px); width: 790px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  text-align: center; direction: rtl; color: var(--black-100);
+}
+.s1-subtitle { margin: 0; font: 400 28px Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }
+.s1-subtitle--regular { padding: 10px; }
+.s1-title { margin: 0; font: 700 64px Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }
+/* 640x360 companion box (production convention for 16:9 clips; the nodes'
+   304x294 frame is an image placeholder), flush with the bar, centred.
+   .s1-video-clip owns the clipping so an overlay (bubble) can extend past
+   the box. Fit shim: --char-scale / --char-shift-y, no-op by default. */
+.s1-video-wrap { position: absolute; left: calc(50% - 320px); bottom: var(--bar-h); width: 640px; height: 360px; }
+.s1-video-clip { position: absolute; inset: 0; overflow: hidden; }
+.s1-char-media {
+  display: block; width: 100%; height: 100%; object-fit: contain;
+  transform: translateY(var(--char-shift-y, 0px)) scale(var(--char-scale, 1)); transform-origin: center center;
+  pointer-events: none;
+}
+/* Speech bubble — Figma "bubble text" over=open (16:9), as rendered in node
+   4924:25836 (202x94, tail toward the character): white fill, 3px
+   Subject/500 stroke; text Body/B-7 (20 Regular) #000, right-aligned,
+   143px wide from x 20, trimmed. Sibling of .s1-video-clip. */
+.s1-bubble { position: absolute; z-index: 2; width: 202px; height: 94px; }
+.s1-bubble-shape { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.s1-bubble-shape path { fill: #fff; stroke: var(--subject-500); stroke-width: 3; }
+.s1-bubble-text {
+  position: absolute; left: 20px; right: 39px; top: 50%; margin: 0;
+  transform: translateY(-50%);
+  font: 400 20px Calibri, Arial, sans-serif; color: #000;
+  text-align: right; direction: rtl; text-box: trim-both cap alphabetic;
+}
+/* Slide 6 bubble (producer 2026-09-30): two lines ("אבל מה זה" / "בכלל נפח?"), so the
+   body is 141px wide (text 82 + the component's 20 / 21.5px insets + tail).
+   The tail tip (y 46.8 of 94) sits at the characters' mouth height (box y ~153
+   after the ground shift) and 8px+ clear of the hands below it. */
+.s4-bubble { width: 141px; left: -9px; top: 106px; }
+/* A headline wider than the 790px ShortText block wraps into balanced lines
+   instead of orphaning its last word (S9, producer 2026-10-01). Same token. */
+.s1-title--balance { text-wrap: balance; }
+/* Text block placed like the module's question / instruction text (S10 / S11 / S13: 1200 wide from x 40,
+   right-aligned, first glyph cap-top at y 37 = their 24px line top 30 + 7) instead of the node's centred
+   790 block at y 115 (S14, producer 2026-10-05). The lead-in keeps only the top of its 10px frame (first glyph
+   10px below the block top); no side padding, so the text's right edge is x 1240, and no bottom padding, so
+   every line follows the next at the same 24px stack gap (S14: three equal gaps, producer 2026-10-05). */
+.s1-content--text-start .s1-text { top: calc(50% - 355px + 32px); left: calc(50% - 600px); width: 1200px; align-items: stretch; text-align: right; }
+.s1-content--text-start .s1-subtitle--regular { padding-inline: 0; padding-bottom: 0; }
+/* Text-start screens (S14, producer 2026-10-06): the three lines are 24px like the question / instruction text of the other screens
+   (S10, S11, S13), not the template's 28px B-1. Cap-trimmed, so the first glyph (y 37) and the 24px gaps do not move. */
+.s1-content--text-start .s1-subtitle { font-size: 24px; }
+
+/* ===== InfoCardsImage (S4, slide 7) — Figma 2730:43245, local 3-card variant =====
+   The Figma content group (Text Content Layout + 56 + Flip Card Row Layout) is
+   centred on y = 304.75 of the 710 frame (top: calc(50% - 50.25px), -50%), so
+   dropping the unused eyebrow / card body lines re-centres it as auto-layout does. */
+.icx-content {
+  position: absolute; left: calc(50% - 640px); width: 1280px;
+  top: calc(50% - 355px + 304.75px); transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 56px;
+}
+/* Producer 2026-10-07: the text block spans the card row (3 x 283 + 2 x 22 = 893px)
+   so the title and line share the cards' right edge (was 810px, ~41px inset). */
+.icx-head { width: 893px; display: flex; flex-direction: column; gap: 24px; color: var(--black-100); text-align: right; }
+.icx-title { margin: 0; font: 700 40px/normal Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }
+/* QA comment chen, producer 2026-10-11: the line is Regular and only the script's bold words ("מוצק," "נוזל" "גז",
+   slide 7) are Bold — the script's meaningful emphasis wins over the Figma text slot's default 28 Bold. */
+.icx-text { margin: 0; font: 400 28px/normal Calibri, Arial, sans-serif; }
+.icx-text strong { font-weight: 700; }
+.icx-row { margin: 0; padding: 0; list-style: none; width: 100%; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 22px; }
+.icx-card { width: 283px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.icx-media {
+  position: relative; width: 283px; height: 283px; flex: 0 0 auto;
+  border: 3px solid rgba(201, 206, 216, 0.4); border-radius: 16px; overflow: hidden; background: #fff;
+}
+.icx-clip { position: absolute; inset: 0; }
+.icx-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+/* "Play again" (producer 2026-10-01, styled after the reference screenshot: a dark
+   round button with a white line icon). LOCAL control - no Figma component; 40px =
+   the video family's corner-control footprint (Close State=Video). Sits 10px inside
+   the clip's top-right corner, over the video, so it never moves the layout. */
+.icx-replay {
+  position: absolute; top: 10px; right: 10px; z-index: 1;
+  width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(17, 17, 17, 0.82); color: #fff; cursor: pointer;
+  transition: background-color .15s ease;
+}
+.icx-replay svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.icx-replay:hover { background: rgba(17, 17, 17, 0.95); }
+/* Shown only while its clip stands finished (producer 2026-10-05): hidden before and during the first play and
+   during a replay. The class's display:flex would beat the hidden attribute, so restore it; a short fade on
+   appearing (motion vocabulary: fade only), none under reduced motion. */
+.icx-replay[hidden] { display: none; }
+.icx-replay:not([hidden]) { animation: icx-replay-in .2s ease-out; }
+@keyframes icx-replay-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .icx-replay:not([hidden]) { animation: none; } }
+.icx-clip:focus { outline: none; }   /* programmatic focus holder while a replay plays (never in the tab order) */
+.icx-replay:focus-visible { outline: 2px solid var(--subject-500); outline-offset: 2px; }
+.icx-card__title { margin: 0; font: 700 32px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: center; text-box: trim-both cap alphabetic; }
+
+/* ===== Cube/box fill screens (S10, S11): shared bits of the old draft that are still used ===== */
+.fill-clickable { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; border: none; background: none; }
+.fill-clickable img { width: 90px; height: 90px; object-fit: contain; }
+.fill-clickable.pulse img { animation: fillPulse 1.2s ease-in-out 2; }   /* two pulses, then still (producer 2026-10-08 / QA 2026-10-11; replays on each entry) */
+@keyframes fillPulse { 0%,100% { transform: scale(1);} 50% { transform: scale(1.08);} }
+.fill-target { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; }
+
+/* ===== Cube volume (S10 final state) — 10 layer groups x 10x10 cubes =====
+   One cube asset (s10-cube.png, 1304 x 1206) repeated 1,000 times. Each copy is placed
+   by JS along the dice's own three edge vectors (measured from its silhouette), so the
+   angle, proportions and lighting are the asset's own; nearer / higher copies are drawn
+   later and cover the hidden faces. The stack box size comes from JS (--stack-w/-h). */
+#s10 .fill-target { width: var(--stack-w, 220px); height: var(--stack-h, 220px); }
+/* S10 final-state composition (producer 2026-10-01): items placed in design-frame px. */
+.s10-frame { position: absolute; left: calc(50% - 640px); top: calc(50% - 355px); width: 1280px; height: 710px; }
+.s10-text { position: absolute; left: 40px; right: 40px; top: 35px; direction: rtl; text-align: right; color: var(--black-100); }
+.s10-text p { margin: 0; font: 400 24px/normal Calibri, Arial, sans-serif; }
+.s10-text p.s10-text__q { font-weight: 700; }
+.s10-frame > .s10-tower, .s10-frame > .s10-arrow, .s10-frame > .s10-truck, .s10-frame > .s10-cube { position: absolute; }
+.s10-frame > .s10-cube { padding: 0; margin: 0; }
+#s10 .s10-cube img { display: block; width: 90px; height: auto; }
+.s10-arrow, .s10-truck { display: block; pointer-events: none; user-select: none; }
+.s10-truck { width: 460px; height: auto; transform: scaleX(-1); }   /* mirrored as on slide 15 (flipH); step 3: 420 -> 460px */
+/* The truck image has an opaque white ground; keep it under the arrows so its margin never covers one. */
+.s10-frame > .s10-truck { z-index: 0; }
+.s10-frame > .s10-arrow { z-index: 1; }
+.s10-label { position: absolute; margin: 0; transform: translateX(-50%); white-space: nowrap; font: 700 24px/normal Calibri, Arial, sans-serif; color: var(--black-100); direction: rtl; }
+/* Slide-26 conclusion bubble: Subject/500 fill, white live text (slide: #00B0F0 / white 20pt),
+   radius 24, centred like the slide, "מסקנה:" regular and the equation bold. All text is 24px
+   (large text), so white on Subject/500 (3.0:1) meets WCAG AA for large text. */
+/* Conclusion bubble (S10, reused by S11 — class-based) = Figma Speech Bubbles 457:6419, BeakAngle=Bottom / Wide (1731:44994), through
+   the module's .comic-bubble (fill, 3px Subject/500 stroke, radius 11, padding, beak). This instance
+   uses the component's own Body/B-7 20px (the 18px --comic-text default is the S2 comic override),
+   no width cap, one line per authored paragraph. */
+.s10-conclusion { --comic-text: 20px; --bubble-max: none; z-index: 3; white-space: nowrap; pointer-events: none; }
+.s10-conclusion[hidden] { display: none; }
+.s10-conclusion strong { font-weight: 700; }
+/* S10 bubble outline: body + beak are ONE SVG path (Figma Speech Bubbles 457:6419, Bottom/Wide: one
+   stroked path, so the bottom edge is interrupted at the beak and the stroke runs border -> beak side
+   -> tip -> side -> border, with one continuous white fill). The element keeps .comic-bubble's 3px
+   border and padding for identical geometry, but its own border/background are transparent; the path
+   (s10BuildBubbleShape) is sized from the element and drawn behind the text. S10 only. */
+.s10-conclusion { border-color: transparent; background: transparent; }
+.s10-conclusion .s10-bubble-shape { position: absolute; left: -3px; top: -3px; z-index: -1; overflow: visible; pointer-events: none; }
+.s10-conclusion .s10-bubble-shape path { fill: #fff; stroke: var(--subject-500); stroke-width: 3; stroke-linejoin: miter; }
+/* 10 x 10 x 10 dimensions: S8's measurement language (1.5px lines, double triangle heads),
+   in the module's --black-100 (#303030, 12.6:1 on white; slide's yellow not used). */
+.s10-dims { position: absolute; overflow: visible; pointer-events: none; }
+.s10-dims[hidden] { display: none; }
+.s10-dims line { stroke: var(--black-100); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+.s10-dims marker path { fill: var(--black-100); stroke: none; }
+.s10-dims text { fill: var(--black-100); font: 700 20px Calibri, Arial, sans-serif; }
+/* S11: the marks sit over the truck photo, so a thin white halo under the same black lines, heads and labels keeps them legible on its dark parts */
+.s11-dims .s11-dims__halo { stroke: #fff; stroke-width: 4.5px; vector-effect: non-scaling-stroke; fill: none; }
+.s11-dims text { paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+.s11-dims .s11-dims__label--c { stroke: none; }   /* producer 2026-10-04: the vertical "10" sits on white - no halo */
+.s10-conclusion.is-new, .s10-dims.is-new { animation: s10In .3s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .s10-conclusion.is-new, .s10-dims.is-new { animation: none; } }
+.cube-stack { position: relative; width: 100%; height: 100%; }
+.cube-layer { position: absolute; inset: 0; }
+.cube-layer > img { position: absolute; display: block; pointer-events: none; user-select: none; }
+/* S10 transparent 1 ליטר box (step 3, producer 2026-10-01): two SVGs built by buildCubeBox,
+   one behind the cubes (the three hidden faces) and one in front (front, side, top).
+   Each face is its own polygon; the fills differ in opacity so the box reads as glass:
+   top (lit) .34, side .24, front .14, hidden faces .07. Look follows the draft's clear
+   acrylic box: neutral cool tint, thin gray edges. */
+.s10-box { position: absolute; overflow: visible; pointer-events: none; }
+.s10-box__face { fill: #b9d0e6; stroke: #5b7a98; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.s10-box--back .s10-box__face { fill-opacity: .07; stroke-opacity: .28; stroke-width: 1px; }
+.s10-box--front .s10-box__face { stroke-opacity: .6; stroke-width: 1.25px; }
+.s10-box--front .s10-box__face--top { fill: #d6e6f5; fill-opacity: .34; }
+.s10-box--front .s10-box__face--side { fill-opacity: .24; }
+.s10-box--front .s10-box__face--front { fill-opacity: .14; }
+/* S10 running totals (step 4, slides 16-25): one number per revealed layer, left of the box.
+   Slide: 18pt #3CB0F1 regular, 1000 bold -> 22px/24px; right-aligned towards the box. The
+   column is positioned by s10BuildScale from the box geometry (stack-local px). */
+.s10-scale { position: absolute; margin: 0; padding: 0; list-style: none; width: 46px; pointer-events: none; }
+.s10-scale li { position: absolute; right: 0; margin: 0; width: 46px; text-align: right; direction: ltr; white-space: nowrap; font: 400 22px/24px Calibri, Arial, sans-serif; color: #3CB0F1; }
+.s10-scale li.s10-scale__total { font-weight: 700; }
+.s10-scale .s10-scale__unit { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* screen-reader suffix only */
+/* minimal reveal for a newly added layer / total (no authored animation); none under reduced motion */
+@keyframes s10In { from { opacity: 0; } to { opacity: 1; } }
+#s10 .cube-layer.is-new, #s11 .cube-layer.is-new, .s10-scale li.is-new { animation: s10In .25s ease-out both; }
+@media (prefers-reduced-motion: reduce) { #s10 .cube-layer.is-new, #s11 .cube-layer.is-new, .s10-scale li.is-new { animation: none; } }
+#s10 .s10-cube[aria-disabled="true"] { cursor: default; }
+/* S10 tap hint = S8's .frc-gh (same asset, keyframes, timing, stop/reduced-motion rules). Producer 2026-10-11 (as
+   S11, QA comment chen): x1.5 around the fingertip, which moves from the dice's ink centre (46.5, 43.2) to 12px inside
+   the dice's bottom-right corner (78, 71) in the 90 x 83 button, so the hand hangs over the white below it (hand ink
+   x 57-99, y 68-118; the "1 סמ״ק" label starts at y 212, the arrow is on the dice's other side). */
+#s10 .s10-gh { transform: scale(1.5); transform-origin: 78px 71px; }
+#s10 .s10-gh .frc-gh-hand { left: 64px; top: 69px; }
+/* the button's generic img rules (.fill-clickable img 90px / its pulse, #s10 .s10-cube img) must
+   not reach the hand: keep its native 28 x 33 and no pulse, exactly as in S8 */
+#s10 .s10-gh .frc-gh-hand { width: 28px; height: 33px; object-fit: fill; animation: none; }
+#s10 .s10-gh .frc-gh-ring1 { left: 57px; top: 49.5px; }
+#s10 .s10-gh .frc-gh-ring2 { left: 74px; top: 67px; }
+
+/* ===== S11 (slides 27-37): 1 ליטר box -> 1 מ"ק truck (producer 2026-10-04) =====
+   Same family and rules as S10: design-frame positions, equal ink gaps, one centre line.
+   The middle box is the approved S10 object (buildCubeStack/buildCubeBox, cube 22px as in S10) inside a
+   real <button>; the truck load is s11-box.png (one glass 1 ליטר unit drawn in the cargo's own
+   perspective) stacked 10 x 10 x 10 along the cargo's edge vectors. */
+.s11-frame { position: absolute; left: calc(50% - 640px); top: calc(50% - 355px); width: 1280px; height: 710px; }
+.s11-text { position: absolute; left: 40px; right: 40px; top: 35px; direction: rtl; text-align: right; color: var(--black-100); }   /* = .s10-text */
+.s11-text p { margin: 0; font: 400 24px/normal Calibri, Arial, sans-serif; }
+.s11-text p.s11-text__q { font-weight: 700; }
+.s11-frame > .s11-cube, .s11-frame > .s11-arrow, .s11-frame > .s11-box, .s11-frame > .s11-truck, .s11-frame > .s11-cargo { position: absolute; }
+.s11-cube, .s11-arrow, .s11-truck { display: block; pointer-events: none; user-select: none; }
+#s11 .s11-cube { width: 90px; height: auto; }
+.s11-truck { width: 460px; height: auto; transform: scaleX(-1); }   /* mirrored as on slide 15 (same as S10) */
+.s11-frame > .s11-truck { z-index: 0; }
+.s11-frame > .s11-cargo { z-index: 1; }
+.s11-frame > .s11-truck--front { z-index: 2; }   /* the cargo's near post, clipped out of the truck image, in front of the load */
+.s11-frame > .s11-arrow { z-index: 3; }
+#s11 .fill-target { width: var(--stack-w, 220px); height: var(--stack-h, 220px); }
+.s11-box { padding: 0; margin: 0; border: 0; background: none; cursor: pointer; display: block; }
+.s11-box[aria-disabled="true"] { cursor: default; }
+#s11 .s11-box.pulse .s11-box__obj { animation: fillPulse 1.2s ease-in-out 2; }   /* two pulses, as S10 */
+@media (prefers-reduced-motion: reduce) { #s11 .s11-box.pulse .s11-box__obj { animation: none; } }
+.s11-label { position: absolute; margin: 0; transform: translateX(-50%); white-space: nowrap; text-align: center; font: 700 24px/normal Calibri, Arial, sans-serif; color: var(--black-100); direction: rtl; }
+.s11-label__sub { display: block; font: 700 24px/normal Calibri, Arial, sans-serif; margin-top: 2px; }   /* producer 2026-10-04: 24px (was 16px; slide: 9pt under 20pt) */
+/* S11 running totals (slides 28-37) = S10's totals style: 22px/24px Assistant, #3CB0F1, 1000 bold, one line
+   step per layer, left-aligned towards the truck. Positioned by s11Render in frame px (number 1 at layer 1's
+   height on the load's near edge, each next one 24px higher; the layer step is 12.15px, so the column
+   climbs faster than the load, as in the slides). */
+.s11-scale { position: absolute; top: 0; margin: 0; padding: 0; list-style: none; width: 46px; pointer-events: none; z-index: 3; }   /* above the truck image (its white margin lies under the column) and the load */
+.s11-scale li { position: absolute; left: 0; margin: 0; width: 46px; text-align: left; direction: ltr; white-space: nowrap; font: 400 22px/24px Calibri, Arial, sans-serif; color: #3CB0F1; }
+.s11-scale li.s11-scale__total { font-weight: 700; }
+.s11-scale .s11-scale__unit { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.s11-scale li.is-new { animation: s10In .25s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .s11-scale li.is-new { animation: none; } }
+/* S11 tap hint = S8/S10's .frc-gh (same parts and keyframes). QA comment chen, producer 2026-10-11: larger and to the
+   side, where it shows: x1.5 around the fingertip, which moves from the box's centre (92.2, 100.4) on the dotted
+   texture to 12px inside its bottom-right corner (172, 186), so the hand hangs over the white below the corner
+   (hand ink x 151-193, y 183-233; the right arrow starts at x 236, the "1 ליטר" label at y 269). */
+#s11 .s11-gh { transform: scale(1.5); transform-origin: 172px 186px; }
+#s11 .s11-gh .frc-gh-hand { left: 158px; top: 184px; width: 28px; height: 33px; animation: none; }
+#s11 .s11-gh .frc-gh-ring1 { left: 151px; top: 164.5px; }
+#s11 .s11-gh .frc-gh-ring2 { left: 168px; top: 182px; }
+
+/* ===== S12 (slide 39) — Figma "CycleDiagram - approved" 5451:35594 (producer 2026-10-04) ===== */
+.s12-frame { position: absolute; left: calc(50% - 640px); top: calc(50% - 355px); width: 1280px; height: 710px; }
+.s12-title { position: absolute; right: 40px; top: 70px; margin: 0; font: 700 40px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: right; direction: rtl; white-space: nowrap; text-box: trim-both cap alphabetic; }   /* one line (producer 2026-10-05): the 592px title overflows Figma's 540px placeholder box, so it keeps its right edge (1240) and top (70) and grows leftwards */
+.s12-card { position: absolute; top: 212px; width: 233px; height: 233px; box-sizing: border-box; padding: 56.5px 40px; border-radius: 24px; background: var(--s12-card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; color: #fff; font: 600 32px/normal Calibri, Arial, sans-serif; text-align: center; direction: rtl; transition: box-shadow .25s ease; }
+.s12-card span { display: block; white-space: nowrap; text-box: trim-both cap alphabetic; }
+.s12-card--r { --s12-card: #019DE5; }   /* Blue/500 */
+.s12-card--m { --s12-card: #544ADE; }
+.s12-card--l { --s12-card: #0048A7; }
+/* re-emphasis (notes' "הבלטה שוב"): a soft ring in the card's own colour, outside the card - no new colour, no
+   scale/pulse, no layout change (the ring sits in the 32px gap) */
+.s12-card.is-emph { box-shadow: 0 0 0 7px color-mix(in srgb, var(--s12-card) 32%, transparent); }
+.s12-conv { position: absolute; height: 65px; pointer-events: none; }
+.s12-conv__cap { position: absolute; left: 0; right: 0; margin: 0; font: 700 20px/normal Calibri, Arial, sans-serif; text-align: center; direction: rtl; text-box: trim-both cap alphabetic; }
+.s12-conv--up .s12-conv__cap { top: 0; color: #007AC6; }      /* Blue/700 */
+.s12-conv--down .s12-conv__cap { top: 24px; color: #002060; }  /* Blue/900 */
+/* Client round 1 (2026-10-19): the ÷ read like a +, so S12's four captions go 20 -> 24px (S13 reuses these classes at 20px, hence #s12).
+   Nowrap keeps "ליחידה גדולה יותר" (~170px) on its line inside the 152px column (the gaps are 234px wide); the upper caption
+   rises 8px (one line-pair grew 41 -> 49px) so its 13px gap to the arrow stays. */
+#s12 .s12-conv__cap, .recall-diagram .s12-conv__cap { font-size: 24px; white-space: nowrap; left: -20px; right: -20px; }   /* box widened 20px each side so the centred text stays on the arrow's axis */
+#s12 .s12-conv--up .s12-conv__cap, .recall-diagram .s12-conv--up .s12-conv__cap { top: -8px; }
+/* Figma arrow: a 152 x 0 box rotated 180deg, the 153.5 x 22.09 vector overflowing it as in the frame.
+   Fill = Natural/800 #303030 (5451:35712, producer 2026-10-07; was #D4D4D4), set inside the two SVG files. */
+.s12-conv__arrow { position: absolute; width: 152px; height: 0; transform: rotate(180deg); }
+.s12-conv--up .s12-conv__arrow { top: 65px; }
+.s12-conv--down .s12-conv__arrow { top: 0; }
+.s12-conv__arrow img { position: absolute; top: -11.05px; bottom: -11.05px; width: 153.5px; height: 22.0919px; display: block; }
+.s12-conv--up .s12-conv__arrow img { left: 0; }        /* Arrow 2: inset 0 -0.99% 0 0 */
+.s12-conv--down .s12-conv__arrow img { left: -1.5px; } /* Arrow 3: inset 0 0 0 -0.99% */
+/* sequence: steps not yet reached are hidden while it plays; .is-in fades a step in (fade only) */
+#s12.s12-seq .s12-step { opacity: 0; }
+#s12.s12-seq .s12-step.is-in { opacity: 1; transition: opacity .45s ease, box-shadow .25s ease; }
+@media (prefers-reduced-motion: reduce) { #s12.s12-seq .s12-step { opacity: 1; } .s12-card { transition: none; } }
+
+/* ===== S13 (slide 40) — 10-litre bucket conversion practice, on the approved S12 system (producer 2026-10-05) ===== */
+.s13-frame { position: absolute; left: calc(50% - 640px); top: calc(50% - 355px); width: 1280px; height: 710px; }
+.s13-text { position: absolute; left: 40px; right: 40px; top: 35px; direction: rtl; text-align: right; color: var(--black-100); }   /* = .s10-text / .s11-text */
+.s13-text p { margin: 0; font: 400 24px/normal Calibri, Arial, sans-serif; }
+.s13-text p.s13-text__do { font-weight: 700; }
+/* Bucket slots. Every rule is on classes the element itself carries (no #s13 scope), so the drag ghost - a clone
+   appended to <body> - keeps its look (DragAndDropQuestion: "the floating drag ghost lives outside the screen"). */
+.s13-slot { position: absolute; top: 200px; width: 250px; height: 250px; padding: 0; margin: 0; border: 0; border-radius: 24px; background: transparent; color: var(--black-100); -webkit-tap-highlight-color: transparent; }
+.s13-bucket { position: absolute; display: block; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.s13-bucket--full { left: 0; top: 0; width: 250px; height: 250px; }
+.s13-bucket--outline { left: -7.26px; top: -0.24px; width: 266.21px; height: 259.71px; }   /* rim, height, baseline = the blue bucket's */
+.s13-label { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 0; font: 700 26px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: center; direction: rtl; white-space: nowrap; pointer-events: none; }
+.s13-label > span { display: block; text-box: trim-both cap alphabetic; }
+.s13-label--full { top: 166px; }   /* centred in the clear band between the handle (lowest point y 160 in the slot) and the base (233) */
+.s13-label--unit { top: 128px; }   /* on the empty bucket's body */
+/* source */
+.s13-src { cursor: grab; touch-action: none; }
+.s13-src.dragging { opacity: .35; }                  /* DragAndDropQuestion: the origin dims while it is dragged */
+.s13-src.pointer-drag-ghost { cursor: grabbing; }
+/* targets: the white bucket turns blue and shows its result (slide 40 notes) - a cross-fade, no scale/pulse */
+.s13-target .s13-bucket--full, .s13-target .s13-label--full { opacity: 0; }
+.s13-target .s13-bucket, .s13-target .s13-label { transition: opacity .3s ease; }
+.s13-target.is-done .s13-bucket--full, .s13-target.is-done .s13-label--full { opacity: 1; }
+.s13-target.is-done .s13-bucket--outline, .s13-target.is-done .s13-label--unit { opacity: 0; }
+.s13-target.drag-over { outline: 2px dashed var(--subject-500); outline-offset: -2px; }   /* DragAndDropQuestion drop-zone Hover */
+.s13-slot:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--subject-500); }   /* = S7 drop-zone focus */
+.s13-src.is-selected { outline: 2px solid var(--subject-500); outline-offset: -2px; }   /* DragAndDropQuestion Selected (keyboard / tap pick) */
+.s13-instant .s13-bucket, .s13-instant .s13-label { transition: none !important; }
+/* Drag hint = mass-measure-01-04 S1's .s1-gh (asset, ripple keyframes, timing), anchored on the real slots:
+   fingertip (hand +14, +2) from the source (647.5, 290) to the right target (1114.5, 290): the slots' centre lines, on the
+   buckets' upper body so the hand never covers a bucket label. */
+.s13-gh { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+.s13-gh-hand { position: absolute; width: 28px; height: 33px; left: 633.5px; top: 288px; opacity: 0;
+  transition: left .7s cubic-bezier(.4, 0, .2, 1), top .7s cubic-bezier(.4, 0, .2, 1), opacity .3s linear; }
+.s13-gh.s13-gh-show .s13-gh-hand { opacity: 1; }
+.s13-gh.s13-gh-move .s13-gh-hand { left: 1100.5px; top: 288px; }
+.s13-gh-ring { position: absolute; border-radius: 50%; box-sizing: border-box; opacity: 0; }
+.s13-gh-ring1 { left: 626.5px; top: 268.5px; width: 42px; height: 43px; background: #B9ECFF; border: 2.5px solid #00BAFF; }
+.s13-gh-ring2 { left: 643.5px; top: 286px; width: 8px; height: 8px; background: transparent; border: 1.5px solid #B9ECFF; }
+.s13-gh.s13-gh-ripple .s13-gh-ring1 { animation: s13gh-ring1 2s linear; }
+.s13-gh.s13-gh-ripple .s13-gh-ring2 { animation: s13gh-ring2 2s linear; }
+@keyframes s13gh-ring1 {
+  0%   { animation-timing-function: cubic-bezier(.2, .4, .4, 1); opacity: 0;    scale: .05; }
+  5%   { animation-timing-function: ease-out;                    opacity: .85;  scale: .22; }
+  35%  { animation-timing-function: ease-out;                    opacity: .65;  scale: .6; }
+  45%  { animation-timing-function: cubic-bezier(.6, 0, 1, 1);   opacity: .35;  scale: .85; }
+  50%  { opacity: 0; scale: 1; }
+  100% { opacity: 0; scale: 1; }
+}
+@keyframes s13gh-ring2 {
+  0%   { animation-timing-function: cubic-bezier(.05, .9, .1, 1); opacity: 0;   scale: .2; }
+  3%   { animation-timing-function: cubic-bezier(.4, 0, 1, 1);    opacity: .75; scale: 1; }
+  10%  { opacity: 0; scale: 1.1; }
+  100% { opacity: 0; scale: 1.1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .s13-gh { display: none !important; }
+  .s13-target .s13-bucket, .s13-target .s13-label { transition: none; }
+}
+
+/* ===== S15 (slide 42) — AccordionText, Figma 5487:26441 (producer 2026-10-05) =====
+   Block (Figma frame 2147223539): x 42-1238 of the 1280x710 frame, top y 42 in every state (top-anchored, grows
+   downward), right-aligned column: header text (792 wide) > 56px > list. */
+.s15-frame { position: absolute; left: calc(50% - 640px); top: calc(50% - 355px); width: 1280px; height: 710px; }
+.s15-block { position: absolute; left: 42px; right: 42px; top: 42px; display: flex; flex-direction: column; align-items: flex-start; gap: 56px; direction: rtl; }   /* RTL: flex-start = the right edge (x 1238) */
+/* 840 (Figma 792): the body's first line keeps '"ככה זה".' (829px at 24) and breaks after it (QA comment chen, producer
+   2026-10-11); the column grows leftward over empty space. */
+.s15-text { width: 840px; display: flex; flex-direction: column; gap: 24px; text-align: right; color: var(--black-100); }
+.s15-text > * { margin: 0; font: 400 24px/normal Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }
+.s15-text__title { font-weight: 700; color: var(--subject-500); }   /* B-6 Subject/500 */
+.s15-text__do { font-weight: 700; }   /* B-6, the text colour = Black/100 #303030 (producer 2026-10-05) */
+/* Equal spacing (producer 2026-10-05): 24px from every line's baseline to the next line's cap-top - the stack gap
+   between the rows, and inside the 2-line intro a 42px line pitch (cap height 18 + 24). */
+.s15-text__body { line-height: 42px; }
+.s15-text strong { font-weight: 700; }
+/* Accordion Item (component 4120:44736, as drawn in 5487:26441). Canonical class names (720-templates AccordionText).
+   Closed = 50px (16 + 16 padding + trimmed 24px title); hairline = inset shadow (a stroke adds no height in Figma). */
+.acc-list { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; direction: rtl; }
+.acc-item { width: 584px; box-sizing: border-box; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(174, 174, 174, 0.5); }
+.acc-item:hover, .acc-item.open { box-shadow: inset 0 0 0 1.5px var(--subject-500); }   /* Hover / Selected: line only, no fill */
+.acc-head { display: flex; align-items: center; gap: 16px; width: 100%; padding: 16px; margin: 0; border: 0; background: transparent; cursor: pointer; direction: rtl; text-align: right; color: var(--black-100); font: 400 24px/normal Calibri, Arial, sans-serif; }
+.acc-title { flex: 1 0 0; min-width: 0; font-weight: 600; text-box: trim-both cap alphabetic; }   /* SemiBold per Figma (producer 2026-10-05) */   /* the trim is what makes the item 50px */
+.acc-chev { flex: none; width: 16px; height: 8px; display: block; }
+.acc-chev img { display: block; width: 16px; height: 8px; }
+.acc-item.open .acc-chev { transform: scaleY(-1); }   /* the one Figma "v open" asset, flipped when open */
+.acc-head:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+/* no display on .acc-body on purpose: the hidden attribute (display:none) must win */
+.acc-body { padding: 0 16px 16px; }
+/* Horizontal composition (S15, producer 2026-10-05): the items in one RTL row across the whole block (x 42-1238),
+   equal widths, each body = two hand-broken lines (<br>, nowrap) of similar length at natural points. Width from
+   the text: the widest line (ראיות "נתונים או ממצאים מניסוי או תצפית," 311.3px at Regular 24) + 2 x 16 padding
+   = 344; gaps (1196 - 3 x 344) / 2 = 82. Between the items: the approved S12 / S13 arrow (s12-arrow-3.svg, native
+   153.5 x 22.09, #D4D4D4, points left = the reading direction) shortened by a 50px window on its head end - the
+   asset is shown at its native size, uncut head, same stroke, the shaft simply shorter (no scaling, no redraw);
+   16px clear of each item, on the headers' centre line (y +25). */
+.acc-list--row { flex-direction: row; align-items: flex-start; justify-content: space-between; gap: 0; width: 100%; }   /* spacing = space-between: 16px each side of an arrow */
+.acc-list--row .acc-item { width: 344px; flex: none; }
+.acc-list--row .acc-body p { white-space: nowrap; }
+.acc-arrow { flex: none; display: block; width: 50px; height: 22.0919px; margin-top: 13.95px; overflow: hidden; direction: ltr; pointer-events: none; }
+.acc-arrow img { display: block; width: 153.5px; max-width: none; height: 22.0919px; }   /* left-aligned: the head (x 0-12) stays in the window */
+.acc-body p { margin: 0; font: 400 24px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: right; direction: rtl; text-box: trim-both cap alphabetic; }
+
+/* ===== S16 (slides 43-45) — TwoOptionSelection look + a popup per card (producer 2026-10-05) =====
+   Cards reuse S0's classes. Differences: a <button> wrapper (reset below), the photo window = S0's character frame
+   geometry (238 square, 3px ring, 7px inset, radius 16) with object-fit: cover, and DOM order = reading order. */
+.option-cards--rtl { direction: rtl; }
+.option-card--btn { position: relative; padding: 0; margin: 0; border: 0; background: none; font: inherit; color: var(--black-100); text-align: center; }
+.option-card-img--photo img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; background: #fff; }
+/* S0 locks the card to the 224px row (its selected state grows the frame); here nothing grows, so the card is its natural height. */
+.option-card--btn:has(> .option-card-img--photo) { height: auto; justify-content: flex-start; }
+.option-card--btn > .option-card-img, .option-card--btn > .option-card-labels { transition: opacity .3s ease; }
+/* Visited: the opener's content drops to .6 (reference S7, QA round 2) and the Figma feedback icon (Correct, 32px, exported
+   from the component) appears on the image window's top-right corner exactly as in Figma FlipCardStates img/Correct
+   3707:23340: the icon box starts 19px inside the window's right edge and 13px above its top edge (window 238: left =
+   29 + 238 - 19 = 248 in the 296 card). z-index 2: its own top layer - the faded window (opacity < 1 = a stacking context
+   later in the DOM) would otherwise paint over the lower-left of the icon. Still fully clickable. */
+.option-card-check { position: absolute; z-index: 2; left: 248px; top: -13px; width: 32px; height: 32px; pointer-events: none; opacity: 0; transform: scale(.6); transition: opacity .25s ease, transform .25s ease; }
+.option-card-check img { display: block; width: 32px; height: 32px; }
+.option-card--btn.is-visited > .option-card-img, .option-card--btn.is-visited > .option-card-labels { opacity: .6; }
+.option-card--btn.is-visited > .option-card-check { opacity: 1; transform: scale(1); }
+@media (prefers-reduced-motion: reduce) { .option-card--btn > .option-card-img, .option-card--btn > .option-card-labels, .option-card-check { transition: none; } }
+
+/* Popup = Figma RecallPopup 4259:22713 = ContentPopup (white, radius 48, no stroke of its own, 36px padding) + the Recall
+   outline (1px Natural/800, inside) + General Popup Close Btn 249:5259 (30px, white, 1px Natural/800, X 16px at 6/6)
+   24px from the top and the physical LEFT (not mirrored in RTL). Backdrop = the shared popup backdrop, #FFF at 80%,
+   a sibling behind the panel. Panel height follows the content (no scrolling: slides 44 / 45). Motion: .m-popup
+   (fade in 260ms; close is instant). */
+.s16-pop-overlay { position: absolute; inset: 0; z-index: 60; background: rgba(255, 255, 255, 0.8); display: flex; align-items: center; justify-content: center; }
+.s16-pop-overlay.hidden { display: none !important; }
+/* 1161 (was 1121): the moon card's evidence sentence (1013px at 26) fits its 1023px text column on one line (QA comment chen,
+   producer 2026-10-11); about 60px of canvas stays clear on each side. */
+.s16-pop { position: relative; width: 1161px; box-sizing: border-box; background: #fff; border: 1px solid var(--black-100); border-radius: 48px; overflow: hidden; direction: rtl; }
+/* 40 x 40 (was 30; QA comment chen, producer 2026-10-11: an X button is at least 40px including its padding), the same centre
+   (38, 38) as before, so it moves 5px toward the corner; icon scaled with it, 16 -> 21.3px. */
+.s16-pop-close { position: absolute; left: 18px; top: 18px; z-index: 2; width: 40px; height: 40px; padding: 0; margin: 0; box-sizing: border-box; border: 1px solid var(--black-100); border-radius: 100px; background: #fff; cursor: pointer; display: block; }
+.s16-pop-close img { position: absolute; left: 8.35px; top: 8.35px; width: 21.3px; height: 21.3px; display: block; }   /* centred in the 38px inner box (40 - 2 x 1px border) */
+.s16-pop-close:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.s16-pop-body { padding: 36px 68px 36px 68px; display: flex; flex-direction: column; gap: 32px; }   /* 36 + the text column's own 32 side padding */
+.s16-pop-head { display: flex; align-items: center; gap: 10px; }
+.s16-pop-img { flex: none; width: 164px; height: 158px; box-sizing: border-box; padding: 8px; display: block; }
+.s16-pop-img img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
+.s16-pop-title { flex: 1 1 0; min-width: 0; margin: 0; font: 700 40px/normal Calibri, Arial, sans-serif; color: var(--subject-600); text-align: right; text-box: trim-both cap alphabetic; }
+/* Recall popup (RecallPopup, as part 06 and .s16-pop): ContentPopup panel + Recall outline + close X at the physical left; backdrop = the
+   shared 80% white. S21's Recall content = S12's conversion diagram at its true size (see index.html). */
+.recall-overlay { position: absolute; inset: 0; z-index: 60; background: rgba(255, 255, 255, 0.8); display: flex; align-items: center; justify-content: center; }
+.recall-overlay.hidden { display: none !important; }
+.recall-popup { position: relative; box-sizing: border-box; background: #fff; border: 1px solid var(--black-100); border-radius: 48px; overflow: hidden; direction: rtl; }
+.recall-popup-close { position: absolute; left: 18px; top: 18px; z-index: 2; width: 40px; height: 40px; padding: 0; margin: 0; box-sizing: border-box; border: 1px solid var(--black-100); border-radius: 100px; background: #fff; cursor: pointer; display: block; }
+.recall-popup-close img { position: absolute; left: 8.35px; top: 8.35px; width: 21.3px; height: 21.3px; display: block; }
+.recall-popup-close:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+/* Refinement (client, 2026-10-19): +52px of height - side padding 36 -> 52 (the close button keeps 18px from the edges, 40px tall, clear of the title)
+   and the heading-to-diagram gap 28 -> 48. Height follows the content but never exceeds the canvas minus 24px each side; if it ever would,
+   only the body scrolls (the close button stays put, outside the scrolled box). */
+.recall-popup--conv { width: 1161px; display: flex; flex-direction: column; max-height: calc(100% - 48px); }
+.recall-body { padding: 36px 30px; display: flex; align-items: center; justify-content: center; gap: 40px; }
+.recall-body--conv { flex-direction: column; align-items: stretch; gap: 48px; padding: 52px 29px; min-height: 0; overflow-x: hidden; overflow-y: auto; }   /* 29px sides: the 1100px board fits the 1159px inner width exactly (30px would add a horizontal scrollbar) */
+.recall-title { margin: 0; font: 700 40px/normal Calibri, Arial, sans-serif; color: var(--subject-600); text-align: right; text-box: trim-both cap alphabetic; }
+.recall-diagram { position: relative; width: 1100px; height: 233px; align-self: center; direction: rtl; }
+.recall-diagram .s12-card { position: absolute; }
+.recall-diagram .s12-conv { position: absolute; }
+.s16-pop-sec { display: flex; flex-direction: column; gap: 8px; }
+.s16-pop-sec p { margin: 0; font: 400 26px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: right; text-wrap: balance; }   /* no one-word last lines */
+.s16-pop-sec p.s16-pop-label { font-weight: 700; color: var(--subject-600); }
+
+/* ===== Progress question nav — Figma "Progress question" (525:9105; items 96:972 …, NavLine 96:925 / 96:926) =====
+   RTL: question 1 is first in the DOM and sits rightmost. Group centred at the frame's x, top 48; item = 24px status icon (the
+   component's own SVG exports: not-answered / current / correct / incorrect), 8px, 15px label (not visited #ECECEC, visited #222);
+   items 43px wide, 4px apart, 64px NavLine (1.5px; #ECECEC, visited rgba(0,0,0,.6)) with 11.5px above it. */
+.progress-question { position: absolute; top: calc(50% - 355px + 48px); left: 50%; transform: translateX(-50%); display: flex; direction: rtl; align-items: flex-start; gap: 4px; z-index: 4; }
+.progress-question__item { width: 43px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.progress-question__icon { width: 24px; height: 24px; background: url('../assets/img/progress-not-answered.svg') center / 24px 24px no-repeat; }
+.progress-question__icon--current   { background-image: url('../assets/img/progress-current.svg'); }
+.progress-question__icon--correct   { background-image: url('../assets/img/progress-correct.svg'); }
+.progress-question__icon--incorrect { background-image: url('../assets/img/progress-incorrect.svg'); }
+.progress-question__label { height: 11px; font: 400 15px/normal Calibri, Arial, sans-serif; color: var(--natural-300, #ECECEC); white-space: nowrap; text-align: center; text-box: trim-both cap alphabetic; }
+.progress-question__label--visited { color: #222; }
+.progress-question__connector { width: 64px; height: 1.5px; margin-top: 11.5px; border-radius: 2px; background: var(--natural-300, #ECECEC); }
+.progress-question__connector--visited { background: rgba(0, 0, 0, 0.6); }
+
+/* ===== DropdownQuestion (S21, Figma 5596:25961 "Single Paragraph" + the module's Dropdown Menu reference, math-ratio-03-02 S7) =====
+   Sentences: Figma "fill sentence" row (words 1 | dropdown | words 2), 24px type, 16px gaps, 42px row, in the 792px text column; the
+   slide's two sentences are 24px apart. Trigger 180 x 42, white, 1px Natural/Alpha/300, radius 10, padding 0 17, chevron (16 x 8, the
+   Figma export) at the physical left, value right-aligned; open = 1.5px Subject/500 (box-sizing keeps the size); "בחרו תשובה" shows
+   at 50% only while open and empty (state 02). Verdict = white capsule + 1px #609E12 / #B20010 + the Type 1 icon, chevron removed.
+   List: 180 wide, tucked 15px under the trigger (trigger stacked above), padding 24 / 8 / 8, 8px gaps with 1px Natural/300 dividers,
+   radius 8, options right-aligned with 20 x 8 padding, Subject/300 on the active / selected option. */
+.dq-sentences { display: flex; flex-direction: column; gap: 24px; width: 792px; max-width: 100%; }
+.dq-row { display: flex; align-items: center; justify-content: flex-start; gap: 16px; min-height: 42px; direction: rtl; }
+.dq-words { flex: 0 0 auto; margin: 0; font: 400 24px/normal Calibri, Arial, sans-serif; color: var(--black-100); white-space: nowrap; text-box: trim-both cap alphabetic; }
+.dq-dropdown-wrap { position: relative; flex: 0 0 180px; width: 180px; height: 42px; }
+.dq-dropdown-wrap.is-open { z-index: 30; }               /* an open list stays above the other sentence's trigger */
+.dq-btn {
+  box-sizing: border-box; width: 180px; height: 42px; padding: 0 17px;
+  display: flex; direction: ltr; align-items: center; gap: 16px;
+  background: #fff; border: 1px solid rgba(174, 174, 174, 0.5); border-radius: 10px; overflow: hidden;
+  cursor: pointer; font: 400 24px/normal Calibri, Arial, sans-serif; color: var(--black-100);
+  position: relative; z-index: 21;
+}
+.dq-chevron { flex: 0 0 16px; width: 16px; height: 8px; display: block; }
+.dq-selected { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: flex-end; font-size: 24px; text-box: trim-both cap alphabetic; }
+.dq-btn[aria-expanded="true"] { border: 1.5px solid var(--subject-500); }
+.dq-btn[data-empty="true"] .dq-selected { justify-content: center; }
+.dq-btn[data-empty="true"] .dq-selected::before { content: 'اختاروا إجابة'; opacity: 0.5; direction: rtl; }
+.dq-btn:hover:not(:disabled) { border-color: var(--subject-500); }
+.dq-btn:focus-visible { outline: 3px solid var(--subject-700); outline-offset: 2px; }
+.dq-btn:disabled { cursor: default; }
+.dq-correct { border: 1px solid #609E12 !important; background: #fff; gap: 10px; }
+.dq-wrong   { border: 1px solid #B20010 !important; background: #fff; gap: 10px; }
+.dq-correct .dq-chevron, .dq-wrong .dq-chevron { display: none; }
+.dq-check-ico, .dq-wrong-ico { flex: 0 0 16px; width: 16px; height: 16px; display: block; }
+.dq-list {
+  position: absolute; top: calc(100% - 15px); left: 0; right: 0; z-index: 20; box-sizing: border-box;
+  margin: 0; padding: 24px 8px 8px; list-style: none;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid #ECECEC; border-radius: 8px;
+}
+.dq-list.hidden { display: none !important; }
+.dq-option {
+  box-sizing: border-box; width: 100%; flex: 0 0 auto; display: block; /* block, not flex: text-box trim applies to the line -> 33px option */
+  padding: 8px 20px; background: #fff; border-radius: 8px; cursor: pointer; direction: rtl; text-align: right;
+  font: 400 24px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-box: trim-both cap alphabetic;
+}
+.dq-option:hover, .dq-option.is-active, .dq-option[aria-selected="true"] { background: var(--subject-300); }
+.dq-option:focus-visible { outline: 3px solid var(--subject-700); outline-offset: -3px; }
+.dq-divider { flex: 0 0 1px; width: 100%; height: 1px; background: #ECECEC; list-style: none; }
+/* popup: the answer-toggle button on the RIGHT (as S7 / S18); the explanation's two blocks 20px apart */
+#s21-popup .scq-popup-actions { justify-content: flex-start; }
+#s21-popup .scq-popup-body p + p { margin-top: 20px; }
+
+/* ===== Utility ===== */
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }

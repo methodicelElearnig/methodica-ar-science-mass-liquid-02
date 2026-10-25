@@ -1,0 +1,6 @@
+<!-- Figma 720 UI Templates: questions icons / type=Circlesingle choicecorrect, state=correct (196:6229). SVG export, canvas artifacts removed. -->
+<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="1" y="1" width="20" height="20" rx="10" fill="#609E12"/>
+<rect x="1" y="1" width="20" height="20" rx="10" stroke="#609E12" stroke-width="2"/>
+<path d="M9.10917 15.1876C8.7479 15.1877 8.40142 15.0442 8.14618 14.7885L5.23471 11.8781C4.92144 11.5647 4.92144 11.0567 5.23471 10.7434C5.54809 10.4301 6.05607 10.4301 6.36945 10.7434L9.10917 13.4831L16.3573 6.23493C16.6707 5.92165 17.1787 5.92165 17.4921 6.23493C17.8053 6.5483 17.8053 7.05628 17.4921 7.36966L10.0722 14.7885C9.81693 15.0442 9.47045 15.1877 9.10917 15.1876Z" fill="white"/>
+</svg>
