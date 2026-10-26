@@ -105,7 +105,7 @@ img { -webkit-user-drag: none; user-select: none; }
 /* Hint-style button (Figma nav button hint 196:6024): white, 1px Subject/700, 7.5/20px padding, 6px gap, bulb 26 x 22.3 to the RIGHT of the
    label (first in the markup, direction rtl). In this part it is S21's bar button (it opens the Recall popup). */
 .scq-hint {
-  left: 190px; gap: 6px; padding: 7.5px 20px; direction: rtl;
+  left: 250px; gap: 6px; padding: 7.5px 20px; direction: rtl;   /* was 190px: the longer Arabic check label ("هل إجابتي صحيحة؟", ~181px) overlapped it */
   background: #fff; border: 1px solid var(--subject-700); color: var(--subject-700);
 }
 .scq-hint-ico { flex: 0 0 26px; width: 26px; height: 22.2883px; }
@@ -161,12 +161,12 @@ img { -webkit-user-drag: none; user-select: none; }
 .flag-btn__label {
   display: none;
   width: 80px;
-  font: 600 14px/10px Calibri, Arial, sans-serif; /* Figma trims the text box to cap height (10px) */
+  font: 600 14px/18px Calibri, Arial, sans-serif; /* 18px line box: the 10px cap-height box made the two Arabic lines collide (producer 2026-10-26) */
   color: var(--subject-500);
   text-align: center;
   direction: rtl;
 }
-.flag-btn:hover, .flag-btn:focus-visible { padding-bottom: 10px; }
+.flag-btn:hover, .flag-btn:focus-visible { padding-bottom: 10px; height: auto; }
 .flag-btn:hover .flag-btn__icon,
 .flag-btn:focus-visible .flag-btn__icon { background-image: url('../../unit-assets/img/report-problem-icon-hover.svg'); }
 .flag-btn:hover .flag-btn__label,
@@ -801,7 +801,7 @@ img { -webkit-user-drag: none; user-select: none; }
 /* S3 7-step reveal (Roni 2026-10-14): the last step (bubble + country names)
    starts only after the third image has finished, not one stagger after it. */
 #s3.m-animate [data-reveal="7"] { animation-delay: calc(var(--m-reveal-stagger) * 5 + var(--m-reveal-duration, 600ms)); }
-.s2-comic { position: relative; left: 28px; flex: 0 0 auto; width: 364px; margin-left: 44px; display: flex; flex-direction: column; gap: 6px; }
+.s2-comic { position: relative; left: -42px;   /* was 28px: moved 70px left (producer 2026-10-26) to free room for wider options */ flex: 0 0 auto; width: 364px; margin-left: 44px; display: flex; flex-direction: column; gap: 6px; }
 .s2-panel { position: relative; }
 /* Rounded media corners — the 720 media-viewport language (16px). The
    radius sits on the image itself so overlays can overhang the panel. */
@@ -822,7 +822,8 @@ img { -webkit-user-drag: none; user-select: none; }
    period / comma or at a phrase boundary (no one- or two-word lines). One shared capsule width sized to the longest
    line ("את המוכר למדוד שוב ושוב את אורך הבד." = 331px at 22px) + ~9px slack: 340px text box + 72px radio/padding.
    Local to S2; the 604px template width is unchanged elsewhere. */
-#s2 .scq-opt { width: 412px; }
+#s2 .scq-answers { max-width: 690px; }
+#s2 .scq-opt { width: 690px; }   /* widened 412 -> ... -> 636 -> 690px (producer 2026-10-26): no orphan words in options 1-2; column cap raised from 604px */
 
 /* ── Comic speech bubble — Figma "Speech Bubbles" (457:6419) ──
    White body, 3px Subject/500 inside stroke, corner radius 11 and a
@@ -1091,7 +1092,8 @@ img { -webkit-user-drag: none; user-select: none; }
    body is 141px wide (text 82 + the component's 20 / 21.5px insets + tail).
    The tail tip (y 46.8 of 94) sits at the characters' mouth height (box y ~153
    after the ground shift) and 8px+ clear of the hands below it. */
-.s4-bubble { width: 141px; left: -9px; top: 106px; }
+.s4-bubble { width: 171px; left: -39px; top: 106px; }   /* body widened 141 -> 171px, tail anchored (producer 2026-10-26): no extra wrap inside the text */
+.s4-bubble .s1-bubble-text { white-space: nowrap; }
 /* A headline wider than the 790px ShortText block wraps into balanced lines
    instead of orphaning its last word (S9, producer 2026-10-01). Same token. */
 .s1-title--balance { text-wrap: balance; }

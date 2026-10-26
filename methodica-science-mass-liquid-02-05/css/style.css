@@ -96,7 +96,7 @@ img { -webkit-user-drag: none; user-select: none; }
    (first in the markup, direction rtl); hover = SemiBold label only. Sits 16px left
    of the 140px check button in the bar's left slot (34 + 140 + 16). */
 .scq-hint {
-  left: 190px; gap: 6px; padding: 7.5px 20px; direction: rtl;
+  left: 250px; gap: 6px; padding: 7.5px 20px; direction: rtl;   /* was 190px: the longer Arabic check label ("هل إجابتي صحيحة؟", ~181px) overlapped it */
   background: #fff; border: 1px solid var(--subject-700); color: var(--subject-700);
 }
 .scq-hint-ico { flex: 0 0 26px; width: 26px; height: 22.2883px; }
@@ -152,12 +152,12 @@ img { -webkit-user-drag: none; user-select: none; }
 .flag-btn__label {
   display: none;
   width: 80px;
-  font: 600 14px/10px Calibri, Arial, sans-serif; /* Figma trims the text box to cap height (10px) */
+  font: 600 14px/18px Calibri, Arial, sans-serif; /* 18px line box: the 10px cap-height box made the two Arabic lines collide (producer 2026-10-26) */
   color: var(--subject-500);
   text-align: center;
   direction: rtl;
 }
-.flag-btn:hover, .flag-btn:focus-visible { padding-bottom: 10px; }
+.flag-btn:hover, .flag-btn:focus-visible { padding-bottom: 10px; height: auto; }
 .flag-btn:hover .flag-btn__icon,
 .flag-btn:focus-visible .flag-btn__icon { background-image: url('../../unit-assets/img/report-problem-icon-hover.svg'); }
 .flag-btn:hover .flag-btn__label,
