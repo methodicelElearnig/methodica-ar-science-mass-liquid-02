@@ -2205,7 +2205,7 @@ function syncPracticeProgressNav(sectionEl) {
    shown green and the wrong picks red, all locked. Titles per attempt: any pick right = "התשובה אינה נכונה במלואה.". No hint, no
    View My Answer Toggle. Re-entry: resolved -> locked + feedback on Back; left mid-way -> as left. */
 const S20Q = { correct: new Set(['l', 'ml', 'cc', 'm3']), maxAttempts: 2 };
-const S20_EXPL = ['مل، سم³، لتر وم³ هي وحدات تقيس <strong>الحجم.</strong> كغ والغرام هما وحدتا قياس الكتلة، وسم هي وحدة قياس الطول.'];
+const S20_EXPL = ['مل، سم³، لتر، وم³ هي وحدات تقيس <strong>الحجم.</strong> كغم والغرام هما وحدتا قياس الكتلة، وسَم هي وحدة قياس الطول.'];
 const S20_FEEDBACK = {
   retry:         { title: 'الإجابة غير صحيحة.', body: ['هل نحاول مرة أخرى؟'] },
   retryPartial:  { title: 'الإجابة ليست صحيحة بالكامل.', body: ['هل نحاول مرة أخرى؟'] },
