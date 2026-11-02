@@ -1121,8 +1121,9 @@ function s5Check() {
   s5Attempts++;
   const right = {};
   S5_SLOTS.forEach(n => { right[n] = s5Sel[n] === S5Q.correct[n]; });
-  /* xAPI: matching — one pair per dropdown: source = the chosen value (answers.source), target = the unit by slot index (answers.target: מ״ל, סמ״ק, מ״ק; the DOM's dq-words carry a trailing "="). */
-  xapiAnswered('004', 'q1', S5_SLOTS.every(n => right[n]), S5_SLOTS.every(n => right[n]) || s5Attempts >= S5Q.maxAttempts, { pairs: S5_SLOTS.map(n => ({ source: s5Sel[n], target: n - 1 })) });
+  /* xAPI: performance (content team, MOE QA 2026-10-25) — one step per dropdown, in slot order; the step names come from the metadata
+     (correctAnswers[].stepId: مل, سم³, م³), the values are the chosen strings as shown ("3,000", "0.003"). */
+  xapiAnswered('004', 'q1', S5_SLOTS.every(n => right[n]), S5_SLOTS.every(n => right[n]) || s5Attempts >= S5Q.maxAttempts, { steps: S5_SLOTS.map(n => s5Sel[n]) });
   if (S5_SLOTS.every(n => right[n])) { s5Finish('correct'); return; }
   if (s5Attempts >= S5Q.maxAttempts) {
     s5Answer = {};
@@ -1376,7 +1377,7 @@ var SCREEN_TO_SUBCONTENT = {
   2: ['002', 1],               // the water bottle (single choice)
   3: ['003', 1],               // litre ↔ ml both ways (two numeric fields)
   4: null,                     // "יופי של עבודה" transition into the advanced practice
-  5: ['004', 1],               // 3 litres in ml / cm³ / m³ (three dropdowns — matching)
+  5: ['004', 1],               // 3 litres in ml / cm³ / m³ (three dropdowns — performance)
   6: ['005', 1]                // 5 litres for a portion? (single choice)
 };
 

@@ -2303,9 +2303,6 @@ function s20Enter() {
    changing a dropdown dismisses a retry popup. No hint. Re-entry: resolved -> locked, solution view + feedback on Back; left
    mid-way -> as left. */
 const S21Q = { correct: { 1: '1,000', 2: '1,000' }, slots: [1, 2], maxAttempts: 2 };
-/* xAPI slot names = metadata 014/q1 answers.target, byte for byte. The UI renders each sentence split around its dropdown
-   ("1 ליטר שווה ל -" … "מ״ל או סמ״ק."), so no DOM node carries a slot's name as one string; the catalogue's wording is the identifier. */
-const S21_XAPI_SLOT = { 1: '1 ליטר שווה ל- ___ מ״ל או סמ״ק', 2: '1 מ״ק שווה ל- ___ ליטר' };
 const S21_EXPL = ['1 لتر = 1,000 مل = 1,000 سم³.<br>1 م³ = 1,000 لتر.', 'التحويلات مبنية على <strong>النظام العشري</strong>، حيث تتم الانتقالات بين الوحدات بمضاعفات 1,000.'];
 const s21ToggleA = { label: 'الانتقال إلى إجابتي', view: 'answer' }, s21BackA = { label: 'الإجابة الصحيحة', view: 'solution' };
 const S21_FEEDBACK = {
@@ -2409,9 +2406,11 @@ function s21Check() {
   s21CloseAll(false);
   s21Attempts++;
   const right = n => s21Sel[n] === S21Q.correct[n];
-  /* xAPI: the graded answer — after the guards, before the finish/retry branch; metadata matching: source = the chosen value, target = the slot's sentence as the catalogue names it (S21_XAPI_SLOT) (guide §6.3). */
-  xapiAnswered('014', 'q1', S21Q.slots.every(right), S21Q.slots.every(right) || s21Attempts >= S21Q.maxAttempts,
-    { pairs: S21Q.slots.map(n => ({ source: s21Sel[n], target: S21_XAPI_SLOT[n] })) });
+  /* xAPI: the graded answer — after the guards, before the finish/retry branch (guide §6.3). The catalogue has one choice question per
+     dropdown (014/q1 = slot 1, 014/q2 = slot 2; split by the content team, MOE QA 2026-10-25), each judged on its own slot; both share
+     isLast — the screen is resolved or not as a whole (cf. 03-003 q1/q2). */
+  xapiAnswered('014', 'q1', right(1), S21Q.slots.every(right) || s21Attempts >= S21Q.maxAttempts, { choices: [s21Sel[1]] });
+  xapiAnswered('014', 'q2', right(2), S21Q.slots.every(right) || s21Attempts >= S21Q.maxAttempts, { choices: [s21Sel[2]] });
   if (S21Q.slots.every(right)) { s21Finish('correct'); }
   else if (s21Attempts >= S21Q.maxAttempts) {
     s21Answer = {}; S21Q.slots.forEach(n => { s21Answer[n] = { value: s21Sel[n], correct: right(n) }; });    // taken BEFORE the reveal
@@ -2443,7 +2442,7 @@ function s21SyncHint() {
 }
 function s21OpenHint() {
   if (s21Done) return;
-  xapiRequestedHint('014', 'q1');   /* xAPI: the Recall popup lives in the bar's hint slot — the open path only, never the close */
+  xapiRequestedHint('014', 'q1');   /* xAPI: the Recall popup lives in the bar's hint slot — the open path only, never the close; one popup for both blanks, reported on q1 */
   openRecallPopup(document.getElementById('s21-hint'));
 }
 function s21ApplyView() { if (s21Answer === null) return; s21Render(); s21ShowPopup('wrong2', s21View); }

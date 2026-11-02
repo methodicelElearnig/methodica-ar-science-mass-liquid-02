@@ -353,13 +353,15 @@ function xapiChoiceResponse(item, qKey, selected) {
   return { response: texts.join(XAPI_SEP_LIST), readable: texts.join(', ') };
 }
 
-/* matching: pairs → [{source, target}] (strings or indexes). Emitted in answers.source order, then
-   answers.target order; a source the learner left unmatched → 'S[.]'.
-   mass-liquid-02 (2026-10-22): one entry per PLACED pair, not one per source. This unit's catalogue
-   repeats a source — a dropdown VALUE that is the right answer in two slots (01/014: "1,000" for
-   both sentences; 03/004: "3,000" for מ״ל and for סמ״ק) — and the donor's one-slot-per-source map
-   silently dropped the second placement. Kata compares the pairs against correctAnswers, which lists
-   the repeated source twice as well. */
+/* matching: pairs → [{source, target}] (strings or indexes). Only the pairs the learner PLACED are
+   emitted — a source left unmatched (a distractor, a spare option) is not reported at all (MOE QA
+   2026-10-25, monday: 02-001, 06-001 q2/q4 — a 'S[.]' entry made a right answer differ from the
+   catalogue). Order: the pairs that are in correctAnswers first, in correctAnswers order — the order
+   Kata builds correctXapiResponsesPattern in, so a right answer is byte-identical to it — then the
+   wrong pairs in answers.source, answers.target order.
+   mass-liquid-02 (2026-10-22): one entry per placed pair, not one per source. This unit's catalogue
+   repeats a source — a value that is right for two targets (02/005: "ליטר" for אמבטיה and for
+   דלי) — and the donor's one-slot-per-source map silently dropped the second placement. */
 function xapiMatchingResponse(item, qKey, pairs) {
   var m = xapiQMeta(item, qKey);
   var src = (m.answers && m.answers.source) || [], tgt = (m.answers && m.answers.target) || [];
@@ -372,18 +374,21 @@ function xapiMatchingResponse(item, qKey, pairs) {
       var s2 = _xapiPick(p.target, src, item, qKey, 'answers.source'), t2 = _xapiPick(p.source, tgt, item, qKey, 'answers.target');
       if (s2.idx !== 1e9 && t2.idx !== 1e9) { console.warn('[xAPI] matching pair reversed — swapped', item, qKey); s = s2; t = t2; }
     }
-    if (s.text !== '' || t.text !== '') placed.push({ s: s, t: t });
+    if (s.text !== '') placed.push({ s: s, t: t });   // an empty slot / an unplaced card is not a pair
   });
-  placed.sort(function (a, b) { return (a.s.idx - b.s.idx) || (a.t.idx - b.t.idx); });
+  /* rank = position in correctAnswers (each entry claimed once); wrong pairs rank after every right one */
+  var ca = Array.isArray(m.correctAnswers) ? m.correctAnswers : [], claimed = {};
+  placed.forEach(function (p) {
+    p.rank = 1e9;
+    for (var j = 0; j < ca.length; j++) {
+      if (claimed[j] || !ca[j] || String(ca[j].source) !== p.s.text || String(ca[j].target) !== p.t.text) continue;
+      claimed[j] = true; p.rank = j; break;
+    }
+  });
+  /* a pair whose source is not in the metadata (idx 1e9) sorts last, so nothing the learner did is lost */
+  placed.sort(function (a, b) { return (a.rank - b.rank) || (a.s.idx - b.s.idx) || (a.t.idx - b.t.idx); });
   var out = [], readable = [];
-  for (var i = 0; i < src.length; i++) {
-    var s0 = String(src[i]);
-    var mine = placed.filter(function (p) { return p.s.text === s0; });
-    if (!mine.length) { out.push(s0 + XAPI_SEP_PAIR); readable.push(s0 + ' → —'); continue; }
-    mine.forEach(function (p) { out.push(s0 + XAPI_SEP_PAIR + p.t.text); readable.push(s0 + ' → ' + (p.t.text || '—')); });
-  }
-  /* pairs whose source is not in the metadata are appended, so nothing the learner did is lost */
-  placed.forEach(function (p) { if (src.indexOf(p.s.text) < 0 && p.s.text !== '') { out.push(p.s.text + XAPI_SEP_PAIR + p.t.text); readable.push(p.s.text + ' → ' + (p.t.text || '—')); } });
+  placed.forEach(function (p) { out.push(p.s.text + XAPI_SEP_PAIR + p.t.text); readable.push((p.s.text || '—') + ' → ' + (p.t.text || '—')); });
   return { response: out.join(XAPI_SEP_LIST), readable: readable.join(' | ') };
 }
 
