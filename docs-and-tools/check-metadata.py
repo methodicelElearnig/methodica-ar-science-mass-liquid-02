@@ -55,7 +55,7 @@ IRI_BASE = 'https://lomdot.education.gov.il/metodica/720active/science/mass-liqu
 PART_SCRIPT = os.path.join('js', 'main.js')
 KATA_TYPES = {'fill-in', 'true-false', 'choice', 'numeric', 'sequencing',
               'matching', 'performance', 'other'}
-EXPECTED_GRADED = 31   # 01: 6, 02: 6, 03: 6, 04: 0, 05: 4, 06: 5, 07: 4 (census 2026-10-22)
+EXPECTED_GRADED = 32   # 01: 7, 02: 6, 03: 6, 04: 0, 05: 4, 06: 5, 07: 4 (census 2026-10-25: 01-014 split into q1 + q2)
 XAPI_SEPS = ('[,]', '[.]', '[:]')
 
 errors = []
@@ -449,9 +449,9 @@ def check_question(where, q):
                     err(f'{where}.correctAnswers[{i}].{k} {p[k]!r} not in answers.{k}')
         # This unit's catalogue is not one-to-one by design: a word bank / a dropdown's value list
         # carries DISTRACTOR sources with no correct pair (02/001, 06/q2, 06/q4), and one value can
-        # be right in two slots (01/014 "1,000", 02/005 "ליטר", 03/004 "3,000"). Both are legal
-        # (Kata compares the response pairs to correctAnswers; unit-js/20-xapi.js emits every
-        # placed pair). Reported as notes, so a genuinely wrong catalogue still stands out.
+        # be right for two targets (02/005 "ליטר"). Both are legal (Kata compares the response to
+        # correctXapiResponsesPattern, built from correctAnswers; unit-js/20-xapi.js emits only the
+        # placed pairs, in correctAnswers order). Reported as notes, so a genuinely wrong catalogue still stands out.
         srcs = [p.get('source') for p in ca if isinstance(p, dict)]
         dup = sorted({s for s in srcs if srcs.count(s) > 1})
         if dup:

@@ -101,6 +101,14 @@ const stub = read(path.join(REPO, '_test', 'xapi-720-k.js'));
 ok('stub', '__reset clears this unit\'s keys', stub.includes("'" + CHAR_KEY + "'") && RESULT_KEYS.every((k) => stub.includes("'" + k + "'")) && stub.includes("lomda_nav_edges::" + UNIT_SLUG));
 ok('stub', '__reset names no donor unit', !/volume-solid|body-matter|ratio-01|mass-measure/.test(stripComments(stub).split('__reset')[1] || ''));
 
+/* Kata's correctXapiResponsesPattern per questionId (retrieve of 2026-10-25), and the Kata-side errors it still carries */
+const KATA_PATTERNS = fs.existsSync(path.join(REPO, '_test', 'kata-patterns.json')) ? readJson(path.join(REPO, '_test', 'kata-patterns.json')) : {};
+const KATA_KNOWN = {
+  '006/q1': 'Kata lists both alternatives in ONE 6-pair pattern string (01-006, reported 2026-10-25)'
+  /* '004/q1' was here until 2026-10-29: Kata had סמ"ק/מ"ק swapped, 3000 without the comma and mixed ״/" stepIds.
+     Fixed by a questions-only PATCH of item 03-004 (נמרוד approved, monday item 13378313536); kata-patterns.json carries the corrected pattern. */
+};
+
 const META = {};
 for (const c of COMPONENTS) {
   META[c] = readJson(path.join(BASE, 'metadata', compSlug(c) + '.json'));
@@ -422,12 +430,16 @@ if (JSDOM) for (const c of COMPONENTS) {
         ok(c, 'H12 no DOM-id syntax in response ' + suf + '/' + k, !/=|\s\|\s/.test(resp));
       } else if (q.questionType === 'matching') {
         const resp = w.xapiResponse(suf, k, { pairs: q.correctAnswers.slice().reverse() }).response;
-        /* one entry per PLACED pair, in source order then target order; a source with no pair → 'S[.]'
-           (this unit's catalogue repeats a source: a dropdown value that is right in two slots) */
-        const canon = q.answers.source.map((s) => { const ps = q.answers.target.filter((t) => q.correctAnswers.some((p) => p.source === s && p.target === t)); return ps.length ? ps.map((t) => s + '[.]' + t).join('[,]') : s + '[.]'; }).join('[,]');
-        ok(c, 'H10 matching canonical (source order, repeated sources kept) ' + suf + '/' + k, resp === canon, resp + ' vs ' + canon);
+        /* only the PLACED pairs, right ones in correctAnswers order (= Kata's correctXapiResponsesPattern); no 'S[.]' for an
+           unplaced source (MOE QA 2026-10-25); a source right for two targets is kept twice */
+        const canon = q.correctAnswers.map((p) => p.source + '[.]' + p.target).join('[,]');
+        ok(c, 'H10 matching canonical (correctAnswers order, placed pairs only) ' + suf + '/' + k, resp === canon, resp + ' vs ' + canon);
         const partial = w.xapiResponse(suf, k, { pairs: [] }).response;
-        ok(c, 'H9 matching with nothing placed yields S[.] per source ' + suf + '/' + k, partial === q.answers.source.map((s) => s + '[.]').join('[,]'));
+        ok(c, 'H9 matching with nothing placed yields an empty response ' + suf + '/' + k, partial === '', partial);
+        const unplaced = q.answers.source.filter((s) => !q.correctAnswers.some((p) => p.source === s));
+        if (unplaced.length) ok(c, 'H9b an unplaced distractor is not reported ' + suf + '/' + k, !unplaced.some((s) => (resp + '[,]').includes(s + '[.][,]')));
+        const wrong = w.xapiResponse(suf, k, { pairs: [{ source: q.answers.source[q.answers.source.length - 1], target: q.answers.target[0] }].concat(q.correctAnswers.slice(1)) }).response;
+        ok(c, 'H9c a wrong pair follows the right ones ' + suf + '/' + k, wrong.split('[,]').length === q.correctAnswers.length, wrong);
         const _warn = w.console.warn; w.console.warn = () => {};   // the guard warns by design
         const rev = w.xapiResponse(suf, k, { pairs: [{ source: q.correctAnswers[0].target, target: q.correctAnswers[0].source }] }).response;
         w.console.warn = _warn;
@@ -442,6 +454,15 @@ if (JSDOM) for (const c of COMPONENTS) {
         ok(c, 'numeric formats as a plain number ' + suf + '/' + k, w.xapiResponse(suf, k, { value: '1,5' }).response === '1.5');
       } else if (q.questionType === 'true-false') {
         ok(c, 'true-false formats as true/false ' + suf + '/' + k, w.xapiResponse(suf, k, { value: true }).response === 'true' && w.xapiResponse(suf, k, { value: false }).response === 'false');
+      }
+      /* H14 — the right answer, built by the real builders, is one of Kata's correctXapiResponsesPattern strings
+         (_test/kata-patterns.json, from a Kata retrieve). KATA_KNOWN: Kata-side errors reported to the content team. */
+      const pat = KATA_PATTERNS[q.questionId];
+      if (pat && ['choice', 'matching', 'performance'].includes(q.questionType)) {
+        const spec = q.questionType === 'choice' ? { choices: q.correctAnswers } : q.questionType === 'matching' ? { pairs: q.correctAnswers } : { steps: m.steps.map((s) => s.correctAnswer != null ? String(s.correctAnswer) : String(s.min)) };
+        const built = w.xapiResponse(suf, k, spec).response;
+        if (KATA_KNOWN[suf + '/' + k] && !pat.includes(built)) skip(c, 'H14 Kata pattern ' + suf + '/' + k + ' — ' + KATA_KNOWN[suf + '/' + k]);
+        else ok(c, 'H14 right answer = Kata correctXapiResponsesPattern ' + suf + '/' + k, pat.includes(built), built + ' vs ' + JSON.stringify(pat));
       }
     }
   }

@@ -14,10 +14,14 @@ plus: O-8 from mass-measure-03 (`_xapiDeclaredQs` / `_xapiDefaultItemResult`), `
 volume-solid-01, `UNIT_CHARACTERS` validation from volume-solid-01, the `_test/xapi-720-k.js` stub
 from volume-solid-01 (its `__reset` clears the right keys). Two changes of our own:
 
-- `xapiMatchingResponse` emits **one entry per placed pair** instead of one per source: this
-  catalogue repeats a source (01/014 `"1,000"` is right in both sentences; 03/004 `"3,000"` for מ״ל
-  and for סמ״ק; 02/005 `"ליטר"` for אמבטיה and for דלי) and the donor's source-keyed map dropped
-  the second placement silently.
+- `xapiMatchingResponse` emits **only the placed pairs, one entry each**, instead of one per source:
+  this catalogue repeats a source (02/005 `"ליטר"` for אמבטיה and for דלי) and the donor's
+  source-keyed map dropped the second placement silently. Since 2026-10-25 (MOE QA, monday: 02-001,
+  06-001 q2/q4) an unplaced source (a distractor, a spare option) sends **nothing** — the donor's
+  `S[.]` entry made a right answer differ from the catalogue — and the right pairs come first, **in
+  `correctAnswers` order**, the order Kata builds `correctXapiResponsesPattern` in; wrong pairs follow
+  in source, target order. `_test/kata-patterns.json` holds Kata's patterns and the harness (H14)
+  checks every right answer against them.
 - `sendStatementOnce` marks nothing when there is no sender (`sendStatement720` undefined) — the
   ledger must never claim a statement that never left.
 
@@ -36,9 +40,9 @@ per unit, not underscored), `UNIT_CHARACTERS = ['character-1', 'character-2']`, 
 
 | Part | Screens | Items (catalogue) | Graded questions (xapiAnswered) | Hints | Last click → `completed` | Result |
 |---|---|---|---|---|---|---|
-| 01 | 22 | 14 (001–014); screen 19 is a narrative lead-in, `null` | 6: 002 choice (S2, **one** attempt), 006 matching (S7 DnD), 011 choice (S17), 012 matching (S18 ordered DnD), 013 choice multi (S20), 014 matching (S21 two dropdowns) | S21 Recall (014/q1) | S21 "שנמשיך?" (`s21Primary`) / ArrowLeft | `{success:true}` — no pass condition (producer 2026-10-06) |
+| 01 | 22 | 14 (001–014); screen 19 is a narrative lead-in, `null` | 7: 002 choice (S2, **one** attempt), 006 matching (S7 DnD), 011 choice (S17), 012 matching (S18 ordered DnD), 013 choice multi (S20), 014 **q1 + q2 choice** (S21 two dropdowns, one per question, shared `isLast`; split by the content team 2026-10-25) | S21 Recall (014/q1) | S21 "שנמשיך?" (`s21Primary`) / ArrowLeft | `{success:true}` — no pass condition (producer 2026-10-06) |
 | 02 | 7 | 6 (001–006) | 6: 001 matching (word bank, targets by blank index), 002 choice, 003 performance (two dropdowns, `steps[]`), 004 choice, 005 matching, 006 matching (bin titles read from the DOM) | S2, S3 (Recall), S4 | S6 "שנמשיך?" on pass **and** fail | success = 4 of 6, scaled = correct/6 |
-| 03 | 7 | 5 (001–005); S4 transition `null` | 6: 001 choice (dropdown), 002 choice, 003 **numeric q1 + q2** (two fields, per-field `correct`, shared `isLast`), 004 matching (three dropdowns, targets by slot index), 005 choice | S2, S3 (Recall), S5 (Recall), S6 | S6 "שנמשיך?" on pass; **S3 "שנמשיך?" ends the component below 2 of 3** (success:false; Kata routes on `recommendedAfterFail` → 02) | success = 2 of 3 basic, scaled = correct/5 (gate narrower than the denominator — §6.4, documented in code) |
+| 03 | 7 | 5 (001–005); S4 transition `null` | 6: 001 choice (dropdown), 002 choice, 003 **numeric q1 + q2** (two fields, per-field `correct`, shared `isLast`), 004 **performance** (three dropdowns, step names from the metadata `stepId`s; was matching until 2026-10-25), 005 choice | S2, S3 (Recall), S5 (Recall), S6 | S6 "שנמשיך?" on pass; **S3 "שנמשיך?" ends the component below 2 of 3** (success:false; Kata routes on `recommendedAfterFail` → 02) | success = 2 of 3 basic, scaled = correct/5 (gate narrower than the denominator — §6.4, documented in code) |
 | 04 | 2 | 1 (001) | — | — | S1 "חזרתי, אפשר להמשיך" | `{success:true}` (off-computer task, no score) |
 | 05 | 7 | 4 (001–004) | 4: 001 choice, 002 choice, 003 choice q1 (unit dropdown) + **true-false q2** (yes/no, one attempt) | S2 | S6 "המשך" after all six pie slices | success:true (no pass mark), scaled = correct/3 (q3 = both halves) |
 | 06 | 7 | 1 (001, five questions) | 5: q1 choice, q2 matching (dropdowns), q3 choice, q4 matching (dropdowns), q5 choice | S3, S4, S5 (Recall, gated like a hint), S6 | S6 "סיימתי" (pass) / "שנמשיך?" (fail) — both end the component | success = 4 of 5, scaled = correct/5; `setUnitResult('mass-liquid-02_moedAPassed')`; the item mirrors the component (`XAPI_ITEM_RESULT`) |
@@ -61,8 +65,9 @@ video object, guide §13). No YouTube in the unit (no D-1 exposure).
 Every `xapiAnswered` passes a spec by the metadata `questionType`; the builders emit the catalogue
 string byte for byte (NFC + whitespace-collapsed lookup — three UI strings carry U+00A0 where the
 catalogue has a space, which `_xapiNorm` absorbs). Where the DOM renders a sentence around a
-dropdown (01 S21, 02 S1, 03 S5), the call site passes the catalogue's slot string or the slot index
-(`_xapiPick` accepts an index into `answers.target`). 02 S6's bin titles are read from the DOM
+dropdown (02 S1), the call site passes the catalogue's slot string or the slot index (`_xapiPick`
+accepts an index into `answers.target`); 01 S21 (two choice questions) and 03 S5 (performance) pass
+the chosen values only. 02 S6's bin titles are read from the DOM
 (`#s6-b-*-title`) because the a11y constant is the short name. 03 S3's numeric values are passed
 parsed (`s3Num`) so `"3,000"` is not read as `3` by the numeric builder's `,`→`.` rule.
 
@@ -78,7 +83,7 @@ builders.
   dev bridge, a slash-less component id, a raw-localStorage verdict, the results write inside the
   try) — each detected.
 - `node _test/verify-assets.js` — 1185/1185.
-- `python -I -X utf8 docs-and-tools/check-metadata.py` — census 31 = 31 = 31; the SCREEN_MAP table
+- `python -I -X utf8 docs-and-tools/check-metadata.py` — census 32 = 32 = 32; the SCREEN_MAP table
   it prints is the authority for screen ↔ item ↔ question.
 - Browser, part 02 with the stub (`?xapiLib=../_test/xapi-720-k.js&registration=QA1`): library
   loaded, `METADATA.id === XAPI_COMP_ID`, `DEV_NAV` false, `#s0-back` hidden, boot cover gone;
@@ -93,6 +98,14 @@ builders.
   item: focus does not return to the flag after the thank-you closes (QA O-10, family-wide).
 
 ## 6. Open items
+
+- **Arabic unit, 2026-11-02:** synced with the Hebrew unit's MOE QA round of 2026-10-25
+  (`?v=20261102a`): matching builder (only placed pairs, `correctAnswers` order), 01-014 → q1 + q2
+  choice, 03-004 → performance (stepIds `مل`, `سم³`, `م³`); `metadata/` takes the same shapes with
+  the Arabic texts (01-006 alternative pairs, 05-003 q2 `true`/`false`). `_test/kata-patterns.json`
+  is **derived from this unit's own `metadata/`** with Kata's pattern rule (the rule reproduces the
+  Hebrew unit's retrieved patterns byte for byte) — replace it with a real Kata retrieve once the
+  Arabic catalogue is in Kata. Hebrew Kata history (03-004 PATCH 2026-10-29) does not apply here.
 
 - Catalogue: pushed 2026-10-22 as authored (`METADATA-AUDIT.md`); the routing fields — P06 and P07
   both `order: 6`, P02 and P06 `recommendedAfterFail: []`, P07 `isRequired: true` — are with the
