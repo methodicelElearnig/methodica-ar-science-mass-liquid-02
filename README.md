@@ -21,7 +21,7 @@ Arabic unit: the seven Arabic components join the Hebrew unit `methodica-science
 `methodica-ar-science-mass-liquid-02`. The character and nav-edge storage keys and the resume state keys
 (from the folder names) carry `ar`, so Hebrew and Arabic state never mix in one browser. Hosting
 (content, not ids): `https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/` —
-**to be confirmed before the first Kata create** (hostedContentRef is one-way).
+confirmed 2026-11-02.
 
 **Arabic-only differences from Hebrew** (deliberate):
 - Fonts: `Calibri, Arial, sans-serif` everywhere; the Assistant TTFs are not shipped.

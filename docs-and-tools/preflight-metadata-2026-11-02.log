@@ -1,0 +1,13 @@
+=== send-metadata PREFLIGHT (read-only GETs) ===
+[INFO] Base URL     : https://kata.cet.ac.il
+[INFO] Metadata dir : C:\Users\Vadim\OneDrive - methodic.co.il\Projects_ACTIVE\MOE\720\2026\methodica-ar-science-mass-liquid-02\git-repo\methodica-ar-science-mass-liquid-02\metadata
+[INFO] Mode         : PREFLIGHT (read-only GETs)
+[INFO] EXISTS  parent unit methodica-science-mass-liquid-02 (HTTP 200)
+[INFO] ABSENT  component methodica-ar-science-mass-liquid-02-01 (HTTP 404)
+[INFO] ABSENT  component methodica-ar-science-mass-liquid-02-02 (HTTP 404)
+[INFO] ABSENT  component methodica-ar-science-mass-liquid-02-03 (HTTP 404)
+[INFO] ABSENT  component methodica-ar-science-mass-liquid-02-04 (HTTP 404)
+[INFO] ABSENT  component methodica-ar-science-mass-liquid-02-05 (HTTP 404)
+[INFO] ABSENT  component methodica-ar-science-mass-liquid-02-06 (HTTP 404)
+[INFO] ABSENT  component methodica-ar-science-mass-liquid-02-07 (HTTP 404)
+[INFO] Preflight done. absent=7 exists=0 other=0 — nothing was written.

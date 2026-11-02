@@ -8,8 +8,8 @@
 > - `-Preflight` requires the parent unit to EXIST (exit 1 if not) and reports the components only;
 >   `-Status` / `-Publish` read / publish the components.
 > - `ContentBaseUrl` = `https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02` (Hebrew is
->   served from `…/720/science/mass-liquid/02/`) — **assumed from the Arabic twins, NOT yet confirmed**;
->   confirm before the first live create (hostedContentRef is one-way).
+>   served from `…/720/science/mass-liquid/02/`) — confirmed 2026-11-02
+>   by the unit owner (hostedContentRef is one-way).
 > - Titles are sent under the ISO key `ar`.
 > - `retrieve-metadata.ps1` reads the parent unit by default, so its snapshot also holds the seven
 >   Hebrew components (warnings for them are expected), and Kata reports `learningUnitId` as the parent.
@@ -17,8 +17,10 @@
 > Order: `-DryRun`, `-Preflight`, live create, `retrieve-metadata.ps1`, `-Status`, `-Publish` — each
 > live step only on an explicit go.
 >
-> **2026-11-02:** `-DryRun` only — parent read-only, 7 components + 32 items created under it, 03 → 02
-> linked, failed=0. **Nothing has been sent to Kata.** Everything below this note is the Hebrew unit's
+> **2026-11-02:** `-DryRun` — parent read-only, 7 components + 32 items created under it, 03 → 02
+> linked, failed=0. `-Preflight` (`preflight-metadata-2026-11-02.log`) — parent unit
+> `methodica-science-mass-liquid-02` EXISTS (200), all 7 Arabic components ABSENT (404), exit 0.
+> **Nothing has been written to Kata.** Everything below this note is the Hebrew unit's
 > history (its runs, logs and Kata state), kept as the record of the shared tooling.
 
 # Sending metadata to the Kata catalog

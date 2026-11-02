@@ -130,8 +130,7 @@ if ($Status -or $Publish) { $LogFile = Join-Path $RepoRoot 'publish-metadata.log
 # Take this from the unit's own DEPLOY.md deploy target. No trailing slash.
 # Arabic hosting path, as the Arabic twins (.../720/ar/science/volume-liquid/01, confirmed 2026-11-02);
 # the Hebrew parts are served from .../720/science/mass-liquid/02/.
-# ⚠️ NOT YET CONFIRMED for this unit — confirm with the hosting owner before the first live create:
-# hostedContentRef is one-way (see -ItemHostedRefOnly).
+# Confirmed for this unit 2026-11-02 (unit owner). hostedContentRef is one-way (see -ItemHostedRefOnly).
 $ContentBaseUrl = 'https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02'
 # Title language key: wraps a string title into the API object, e.g.
 #   "מדידת מסה" -> { "Hebrew": "מדידת מסה" }. Change only for non-Hebrew content.
