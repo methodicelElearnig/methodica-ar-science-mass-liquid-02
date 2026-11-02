@@ -15,7 +15,10 @@
 >   Hebrew components (warnings for them are expected), and Kata reports `learningUnitId` as the parent.
 >
 > Order: `-DryRun`, `-Preflight`, live create, `retrieve-metadata.ps1`, `-Status`, `-Publish` — each
-> live step only on an explicit go.
+> live step only on an explicit go. **`-Publish` needs MOE approval of the Arabic version first**
+> (rule 2026-11-02): the components sit in the MOE-approved Hebrew unit, so publishing them approves them
+> without MOE testing. Record the approval here before publishing. See
+> `Documentation/KATA/KATA-API.md` → "Arabic components in a Hebrew unit".
 >
 > **2026-11-02:** `-DryRun` — parent read-only, 7 components + 32 items created under it, 03 → 02
 > linked, failed=0. `-Preflight` (`preflight-metadata-2026-11-02.log`) — parent unit
