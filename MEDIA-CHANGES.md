@@ -284,3 +284,29 @@ By `docs-and-tools/reencode-media.py videos` (ffmpeg 9.0, libx264 crf 26 preset 
 |---|---|---|---|---|---|---|
 | 175 | hoist | `methodica-science-mass-liquid-02-02/assets/video/character-1-workout.mp4` | `unit-assets/video/character-1-workout.mp4` | 253,858 | `methodica-science-mass-liquid-02-02/js/main.js (1)` | 2 |
 | 176 | hoist | `methodica-science-mass-liquid-02-03/assets/video/character-1-workout.mp4` | `unit-assets/video/character-1-workout.mp4` | 253,858 | `methodica-science-mass-liquid-02-03/js/main.js (1)` | 2 |
+
+## 9. Arabic localized rasters re-encoded in place, PNG->PNG / JPG->JPG (Arabic unit, 2026-11-02) — 9 files, 12,672,173 bytes saved
+
+The Arabic localization (commits `7fb352e`, `2b89582`) replaced 9 images that contain text with Arabic versions committed at full export size. They were re-encoded by `docs-and-tools/reencode-media.py images --only …`, using the step 1.8 rules and the same `media-display-boxes.json`. The output dimensions match the Hebrew unit's files, except that `s4-water-chart.png` and `s2-water-bill-levi.png` keep their Arabic export size because it is already within 2 x the box. File names and types are unchanged, and no code reference changed.
+
+| # | op | path | new path | before | after | before (WxH mode) | after (WxH mode) | display box (design px) | tool + parameters | verified |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 177 | resize+quantize | `methodica-science-mass-liquid-02-01/assets/img/s7-perfume.png` | `methodica-science-mass-liquid-02-01/assets/img/s7-perfume.png` | 1,689,203 | 76,570 | 1254x1254 | 398x398 | 199x199 (measured in the page) | LANCZOS 1254x1254 -> 398x398 (2 x box 199x199); libimagequant 256 colours, dither 1.0, quality 70-95; oxipng -o4 --strip safe | written |
+| 178 | resize+quantize | `methodica-science-mass-liquid-02-01/assets/img/s8-box-dimensions-410.png` | `methodica-science-mass-liquid-02-01/assets/img/s8-box-dimensions-410.png` | 2,024,478 | 42,063 | 1670x942 | 411x232 | 205x116 (measured in the page) | LANCZOS 1670x942 -> 411x232 (2 x box 205x116); libimagequant 256 colours, dither 1.0, quality 70-95; oxipng -o4 --strip safe | written |
+| 179 | resize+quantize | `methodica-science-mass-liquid-02-01/assets/img/s8-box-dimensions.png` | `methodica-science-mass-liquid-02-01/assets/img/s8-box-dimensions.png` | 1,947,813 | 245,545 | 1670x941 | 1054x594 | 368x297 (measured in the page) | LANCZOS 1670x941 -> 1054x594 (2 x box 368x297); libimagequant 256 colours, dither 1.0, quality 70-95; oxipng -o4 --strip safe | written |
+| 180 | quantize | `methodica-science-mass-liquid-02-02/assets/img/s3-milk-lemonade-fridge.png` | `methodica-science-mass-liquid-02-02/assets/img/s3-milk-lemonade-fridge.png` | 1,806,682 | 500,577 | 1370x1148 | 1370x1148 | 766x642 (measured in the page) | libimagequant 256 colours, dither 1.0, quality 70-95; oxipng -o4 --strip safe | written |
+| 181 | resize+quantize | `methodica-science-mass-liquid-02-02/assets/img/s6-fuel.png` | `methodica-science-mass-liquid-02-02/assets/img/s6-fuel.png` | 1,559,795 | 30,294 | 1254x1254 | 280x280 | 140x140 (measured in the page) | LANCZOS 1254x1254 -> 280x280 (2 x box 140x140); libimagequant 256 colours, dither 1.0, quality 70-95; oxipng -o4 --strip safe | written |
+| 182 | resize+quantize | `methodica-science-mass-liquid-02-02/assets/img/s6-perfume.png` | `methodica-science-mass-liquid-02-02/assets/img/s6-perfume.png` | 1,339,001 | 24,803 | 1254x1254 | 280x280 | 140x140 (measured in the page) | LANCZOS 1254x1254 -> 280x280 (2 x box 140x140); libimagequant 256 colours, dither 1.0, quality 70-95; oxipng -o4 --strip safe | written |
+| 183 | reencode | `methodica-science-mass-liquid-02-05/assets/img/s3a-water-bill-v2.jpg` | `methodica-science-mass-liquid-02-05/assets/img/s3a-water-bill-v2.jpg` | 1,557,193 | 143,670 | 1702x924 | 1702x924 | 1056x573 (measured in the page) | Pillow JPEG q82 progressive optimize, EXIF dropped | written |
+| 184 | quantize | `methodica-science-mass-liquid-02-05/assets/img/s4-water-chart.png` | `methodica-science-mass-liquid-02-05/assets/img/s4-water-chart.png` | 1,106,267 | 288,585 | 1880x837 | 1880x837 | 1057x471 (measured in the page) | libimagequant 256 colours, dither 1.0, quality 70-95; oxipng -o4 --strip safe | written |
+| 185 | quantize | `methodica-science-mass-liquid-02-07/assets/img/s2-water-bill-levi.png` | `methodica-science-mass-liquid-02-07/assets/img/s2-water-bill-levi.png` | 1,570,059 | 576,211 | 1198x1313 | 1198x1313 | 740x811 (measured in the page) | libimagequant 256 colours, dither 1.0, quality 70-95; oxipng -o4 --strip safe | written |
+
+## 10. Removed unused fonts (Arabic unit, 2026-11-02) — 3 files, 149,348 bytes
+
+The Arabic unit sets every font to `Calibri, Arial, sans-serif`, and the Assistant fonts have no Arabic glyphs, so nothing references the three hoisted TTFs any more. `_test/verify-assets.js` flagged them as unreferenced.
+
+| # | op | old path | new path | before | after | reason | verified |
+|---|---|---|---|---|---|---|---|
+| 186 | remove | `unit-assets/fonts/assistant-bold.ttf` | — | 49,752 | 0 | unreferenced (Arabic uses Calibri) | verify-assets |
+| 187 | remove | `unit-assets/fonts/assistant-regular.ttf` | — | 49,792 | 0 | unreferenced (Arabic uses Calibri) | verify-assets |
+| 188 | remove | `unit-assets/fonts/assistant-semibold.ttf` | — | 49,804 | 0 | unreferenced (Arabic uses Calibri) | verify-assets |
