@@ -28,7 +28,7 @@ from PIL import Image, ImageOps
 import imagequant
 
 ROOT = Path(__file__).resolve().parent.parent
-UNIT = 'methodica-science-mass-liquid-02'
+UNIT = 'methodica-ar-science-mass-liquid-02'
 PARTS = [f'{UNIT}-0{n}' for n in range(1, 8)]
 BOXES = json.loads((ROOT / 'docs-and-tools' / 'media-display-boxes.json').read_text('utf-8'))
 ROWS_OUT = ROOT / 'docs-and-tools' / 'reencode-rows.md'

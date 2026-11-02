@@ -1,4 +1,5 @@
-/* Structural + headless verification for methodica-science-mass-liquid-02 — the reporting /
+/* Structural + headless verification for methodica-ar-science-mass-liquid-02 (the Arabic twin of
+   methodica-science-mass-liquid-02) — the reporting /
    issue-reporting / resume layer and the invariants it depends on.
 
    Every assertion corresponds to a failure that is SILENT at runtime: the lomda keeps working, the
@@ -25,9 +26,9 @@ const vm = require('vm');
 
 const BASE = process.argv[2] || path.join(__dirname, '..');
 const REPO = path.join(__dirname, '..');
-const UNIT_SLUG = 'methodica-science-mass-liquid-02';
+const UNIT_SLUG = 'methodica-ar-science-mass-liquid-02';
 const COMPONENTS = ['01', '02', '03', '04', '05', '06', '07'];
-const PREFIX = 'https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/';
+const PREFIX = 'https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/';
 const SHARED = ['10-identity', '20-xapi', '25-report', '40-resume', '50-loader', '90-boot'];
 const HOOKS = ['capturePartPayload', 'applyResumeVars', 'applyResumeDom', 'restoreScreenUI'];
 const CHAR_KEY = UNIT_SLUG + '_selectedCharacter';
@@ -272,7 +273,7 @@ for (const c of COMPONENTS) {
     if (HOOKS.includes(m[1])) continue;
     ok(c, 'no identifier declared in both layers: ' + m[1], !sharedNames.has(m[1]));
   }
-  ok(c, 'no capitalised unit slug', !/Methodica-Science-Mass-Liquid/i.test(jsc.replace(/methodica-science-mass-liquid/g, '')));
+  ok(c, 'no capitalised unit slug', !/Methodica-(Ar-)?Science-Mass-Liquid/i.test(jsc.replace(/methodica-(ar-)?science-mass-liquid/g, '')));
   ok(c, 'motion.js declares no top-level name (IIFE)', !/^(?:function|var|let|const)\s/m.test(stripComments(read(path.join(compDir(c), 'js', 'motion.js')))));
 }
 for (const [n, vs] of Object.entries(versions)) ok('versions', 'one ?v= for ' + n + ' across parts', vs.size === 1, [...vs].join(','));
@@ -295,7 +296,7 @@ const boot = read(path.join(BASE, 'unit-js', '90-boot.js'));
 ok('shared', '90-boot calls bootXAPI last', /initReportModal\(\);[\s\S]*bootXAPI\(\);\n\}\)\(\);/.test(boot));
 ok('shared', '90-boot hides #s0-back unless DEV_NAV', /querySelectorAll\('#s0-back'\)/.test(boot) && /if \(DEV_NAV\) return;/.test(boot));
 ok('shared', '40-resume validates the character against UNIT_CHARACTERS', /function _validChar\(c\)/.test(resumeJs) && /return _validChar\(c\) \? c : null;/.test(resumeJs) && /if \(!_validChar\(c\)\) c = null;/.test(resumeJs));
-ok('shared', 'no donor slug left in the shared layer', !/body-matter|volume-solid|mass-weight|ratio-01/.test(stripComments(identity + resumeJs + loader + boot + read(path.join(BASE, 'unit-js', '25-report.js'))).replace(/methodica-science-mass-liquid-02/g, '')) || true);
+ok('shared', 'no donor slug left in the shared layer', !/body-matter|volume-solid|mass-weight|ratio-01/.test(stripComments(identity + resumeJs + loader + boot + read(path.join(BASE, 'unit-js', '25-report.js'))).replace(/methodica-(ar-)?science-mass-liquid-02/g, '')) || true);
 
 /* ══════════════════ 4. runtime (jsdom) ══════════════════ */
 section('4. runtime (jsdom)');
@@ -501,6 +502,53 @@ if (JSDOM) for (const c of COMPONENTS) {
     for (const n of screens) { try { w5.goTo(n); } catch (e) { ok(c, 'sweep(clean): goTo(' + n + ') throws', false, String(e)); } }
     ok(c, 'sweep(clean): no console.error', r5.errors.length === 0, r5.errors.slice(0, 2).join(' | '));
   } else skip(c, 'resume stage A / painter sweeps (Phase 4)');
+}
+
+/* ═══════════════════════ 8. Arabic build ═══════════════════════
+   Ported 2026-11-02 from methodica-ar-science-volume-liquid-01 _test/verify-report.js §8.
+   What a learner sees must be Arabic. Hebrew is allowed only in comments, in console messages
+   (developer-facing) and in REPORT_TYPE_LABELS — the value posted to the issue form all 720 units
+   share, kept Hebrew so the sheet stays filterable; the learner sees REPORT_TYPE_DISPLAY. */
+section('8. Arabic build');
+{
+  const HEB = /[֐-׿]/;
+  const stripHtmlComments = (s) => s.replace(/<!--[\s\S]*?-->/g, '');
+  const hebLines = (s, f) => s.split('\n').map((l, i) => [f + ':' + (i + 1), l]).filter(([, l]) => HEB.test(l)).map(([w, l]) => w + ' ' + l.trim().slice(0, 80));
+  const IS_REPO = path.resolve(BASE) === path.resolve(REPO);
+  /* this file's stripComments drops whole-line // comments only; §8 also drops trailing ones (a // not
+     preceded by ':' — so 'https://…' in a string survives) */
+  const stripAll = (s) => stripComments(s).replace(/(^|[^:])\/\/.*$/gm, '$1');
+  for (const c of COMPONENTS) {
+    const html = indexHtml(c);
+    ok(c, 'index.html is lang="ar" dir="rtl"', /<html lang="ar" dir="rtl">/.test(html));
+    if (IS_REPO) ok(c, 'index_dev.html is lang="ar"', /<html lang="ar"/.test(read(path.join(compDir(c), 'index_dev.html'))));
+    const heb = [].concat(
+      hebLines(stripHtmlComments(html), 'index.html'),
+      hebLines(stripAll(partJs(c)), 'main.js'),
+      hebLines(stripAll(read(path.join(compDir(c), 'css', 'style.css'))), 'style.css'));
+    ok(c, 'no Hebrew outside comments', heb.length === 0, heb.slice(0, 3).join(' | '));
+  }
+  for (const f of fs.readdirSync(path.join(BASE, 'unit-css'))) {
+    const heb = hebLines(stripComments(read(path.join(BASE, 'unit-css', f))), f);
+    ok('unit-css', f + ': no Hebrew outside comments', heb.length === 0, heb.slice(0, 3).join(' | '));
+  }
+  const unitJs = {};
+  for (const n of SHARED) unitJs[n + '.js'] = read(path.join(BASE, 'unit-js', n + '.js'));
+  for (const [f, code] of Object.entries(unitJs)) {
+    const c = stripAll(code)
+      .replace(/console\.\w+\([\s\S]*?\);/g, '')
+      .replace(/var REPORT_TYPE_LABELS = \{[\s\S]*?\};/, '')
+      .replace(/\[׳’ʼ\]/g, '');   // 20-xapi.js _xapiNorm folds the Hebrew geresh — a character class, not text
+    const heb = hebLines(c, f);
+    ok('unit-js', f + ': no Hebrew outside comments, console and REPORT_TYPE_LABELS', heb.length === 0, heb.slice(0, 3).join(' | '));
+  }
+  const report = unitJs['25-report.js'];
+  ok('report', 'the type dropdown shows REPORT_TYPE_DISPLAY (Arabic)', /valSpan\.textContent = REPORT_TYPE_DISPLAY\[hidden\.value\]/.test(report) && /'technical':\s*'[؀-ۿ]/.test(report.slice(report.indexOf('var REPORT_TYPE_DISPLAY'))));
+  ok('report', 'REPORT_TYPE_LABELS (posted to the shared form) stays Hebrew', /var REPORT_TYPE_LABELS = \{\s*'technical':\s*'[֐-׿]/.test(report));
+  ok('resume', 'NAV_EDGE_KEY is the Arabic unit key', /var NAV_EDGE_KEY = 'lomda_nav_edges::methodica-ar-science-mass-liquid-02';/.test(unitJs['40-resume.js']));
+  const allSrc = Object.assign({}, ...COMPONENTS.map((c) => ({ ['main.js ' + c]: partJs(c), ['index.html ' + c]: indexHtml(c) })), unitJs);
+  const heIds = Object.entries(allSrc).filter(([, c]) => /methodica[-_]science[-_]mass[-_]liquid|720active\/science\/mass-liquid/.test(stripAll(stripHtmlComments(c)))).map(([f]) => f);
+  ok('identity', 'no Hebrew-unit slug or prefix left in code (outside comments)', heIds.length === 0, heIds.join(', '));
 }
 
 /* ═══════════════════════════════ summary ═══════════════════════════════ */

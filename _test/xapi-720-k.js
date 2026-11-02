@@ -221,15 +221,15 @@
         .forEach(function (k) { sessionStorage.removeItem(k); });
       sessionStorage.removeItem(LOG_KEY);
       sessionStorage.removeItem(FAIL_KEY);
-      sessionStorage.removeItem('lomda_nav_edges::methodica-science-mass-liquid-02');
-      sessionStorage.removeItem('methodica-science-mass-liquid-02_navStack');
+      sessionStorage.removeItem('lomda_nav_edges::methodica-ar-science-mass-liquid-02');
+      sessionStorage.removeItem('methodica-ar-science-mass-liquid-02_navStack');
     } catch (e) {}
     /* The character and the מועד א verdict live in the State document; localStorage is a cache
        only. Clear it too — otherwise __reset() leaves the previous run's character and verdict
        alive in the window before the document is read. Same cleanup as initResumeResetHatch:
        UI_CHARACTER_KEY and RESULT_KEYS in unit-js/40-resume.js. */
     try {
-      localStorage.removeItem('methodica-science-mass-liquid-02_selectedCharacter');
+      localStorage.removeItem('methodica-ar-science-mass-liquid-02_selectedCharacter');
       ['mass-liquid-02_moedAPassed', 'mass-liquid-02_moedBPassed'].forEach(function (k) { localStorage.removeItem(k); });
     } catch (e) {}
     return 'cleared';

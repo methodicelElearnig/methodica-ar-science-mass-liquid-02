@@ -26,7 +26,7 @@
     byte-identical to body-matter-01's copies — only this file differs, in the places this unit's
     shape forces:
 
-      1. $ComponentGlob is subject-locked to methodica-science-mass-liquid-02-NN.
+      1. $ComponentGlob is subject-locked to methodica-ar-science-mass-liquid-02-NN.
       2. Each component keeps its code in SUBFOLDERS: css/style.css + css/motion.css and
          js/main.js + js/motion.js (the animation system, one copy per part — see
          OPTIMIZATION-REPORT.md "Not done"). $ComponentSubdirFiles below is the rule; index.html
@@ -78,7 +78,7 @@ $UnitDirs = @{
 # everything under assets/.
 $ComponentFiles       = @('index.html')
 $ComponentSubdirFiles = @{ 'css' = @('style.css', 'motion.css'); 'js' = @('main.js', 'motion.js') }
-$ComponentGlob        = 'methodica-science-mass-liquid-02-[0-9][0-9]'
+$ComponentGlob        = 'methodica-ar-science-mass-liquid-02-[0-9][0-9]'
 
 # ── Sub-apps: a self-contained site inside a component, loaded by <iframe> ───
 $ComponentSubApps = @()

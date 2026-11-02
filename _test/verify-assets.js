@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* =====================================================================
-   methodica-science-mass-liquid-02 — asset contract (guide §15.2 / §15.4 step 6)
+   methodica-ar-science-mass-liquid-02 — asset contract (guide §15.2 / §15.4 step 6)
    Adapted from methodica-science-body-matter-01 _test/verify-assets.js for this
    unit's layout: each part keeps its own assets/, css/{style,motion}.css and
    js/{main,motion}.js; only byte-identical files live in unit-assets/.
@@ -34,7 +34,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const ROOT = path.resolve(__dirname, '..');
-const UNIT = 'methodica-science-mass-liquid-02';
+const UNIT = 'methodica-ar-science-mass-liquid-02';
 const PARTS = [1, 2, 3, 4, 5, 6, 7].map(n => `${UNIT}-0${n}`);
 
 /* Runtime-built names: none in this unit (verified by grep for "' +" into an

@@ -50,8 +50,8 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 META = os.path.join(ROOT, 'metadata')
-UNIT = 'methodica-science-mass-liquid-02'
-IRI_BASE = 'https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/'
+UNIT = 'methodica-ar-science-mass-liquid-02'
+IRI_BASE = 'https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/'
 PART_SCRIPT = os.path.join('js', 'main.js')
 KATA_TYPES = {'fill-in', 'true-false', 'choice', 'numeric', 'sequencing',
               'matching', 'performance', 'other'}
