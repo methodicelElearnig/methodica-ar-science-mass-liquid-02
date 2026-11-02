@@ -500,7 +500,7 @@ function resetScreenState(n) {
 function syncAllCharacterMedia() {
   document.querySelectorAll('[data-char-slot]').forEach(el => {
     const char = window.lomdaState.selectedCharacter;
-    el.textContent = char ? ('דמות: ' + char + ' (נכס חסר — ראו דוח)') : 'נכס דמות חסר';
+    el.textContent = char ? ('الشخصية: ' + char + ' (ملف مفقود — انظروا التقرير)') : 'ملف الشخصية مفقود';
   });
 }
 
@@ -684,20 +684,20 @@ function s2ShowPopup(type) {
    No close button (producer 2026-10-01): focus stays on the dot, which is described
    by the popup text while open; Escape / click outside / another dot close it. */
 const HS_ITEMS = {
-  vanilla: { name: 'תמצית וניל', img: 'assets/img/s6-vanilla.png', alt: 'قنينة خلاصة الفانيليا', fw: 119.7, fh: 178.5, label: 'خلاصة<br>الفانيليا<br>30 مل', lx: '50%', ly: '66.8%',
+  vanilla: { name: 'خلاصة الفانيليا', img: 'assets/img/s6-vanilla.png', alt: 'قنينة خلاصة الفانيليا', fw: 119.7, fh: 178.5, label: 'خلاصة<br>الفانيليا<br>30 مل', lx: '50%', ly: '66.8%',
     text: '<strong>الأحجام الصغيرة</strong> (مثل مستخلصات النكهات،<br>ومنتجات التجميل والأدوية) تُقاس<br><strong>بالمل (مليلتر) وبالسم³<br>(سنتيمتر مكعب).</strong>' },
   water: { name: 'قنينة ماء', img: 'assets/img/s6-water-bottle.png', alt: 'قنينة ماء', fw: 118.65, fh: 178.5, label: '1.5<br>لتر', lx: '50%', ly: '76.8%',
     text: '<strong>الأحجام المتوسطة</strong> (مثل قناني الشراب، والإبريق، والدلو) تُقاس <strong>باللتر.</strong>' },
   bucket: { name: 'دلو', img: 'assets/img/bucket.png', alt: 'دلو', fw: 178.5, fh: 178.5, label: '6 لترات', lx: '50%', ly: '80%',
     text: '<strong>الأحجام المتوسطة</strong> (كالدلو، وقناني الشراب، والإبريق) تُقاس <strong>باللتر.</strong>' },
-  box: { name: 'קופסת אחסון', img: 'assets/img/s6-storage-box.png', alt: 'علبة تخزين الطعام', fw: 210, fh: 139.65, label: 'علبة تخزين<br>500 سم³', lx: '50%', ly: '62%',
+  box: { name: 'علبة تخزين', img: 'assets/img/s6-storage-box.png', alt: 'علبة تخزين الطعام', fw: 210, fh: 139.65, label: 'علبة تخزين<br>500 سم³', lx: '50%', ly: '62%',
     text: '<strong>الأجسام الهندسية الصغيرة</strong>،<br>(مثل علب تخزين الطعام) تُقاس<br><strong>بالسم³ (السنتيمتر المكعب)</strong>' },
   /* Syringe: 1254 x 1254 canvas, the syringe itself at x 97-1157 / y 532-773 ->
      shown by that region at 297 px wide (k 0.2802, 297 x 67.5) so the scale reads — the popup's
      inner width, so it grows +3% where the others grow +5%. */
-  syringe: { name: 'מזרק', img: 'assets/img/s6-syringe.png', alt: 'محقنة مدرَّجة بتدريجات من 0 إلى 1', fw: 297, fh: 67.5, crop: { w: 1254, h: 1254, x0: 97, y0: 532, x1: 1157 }, label: '', lx: '50%', ly: '50%',
+  syringe: { name: 'محقنة', img: 'assets/img/s6-syringe.png', alt: 'محقنة مدرَّجة بتدريجات من 0 إلى 1', fw: 297, fh: 67.5, crop: { w: 1254, h: 1254, x0: 97, y0: 532, x1: 1157 }, label: '', lx: '50%', ly: '50%',
     text: 'نفس الحجم يمكن أن يظهر على المحقنة<br>\nسواء كـ-1 مل (مليلتر) أو كـ-1 سم³<br>\n(سنتيمتر مكعب).<br>\n<strong>1 سم³ = 1 مل</strong>' },
-  cabinet: { name: 'ארון אחסון', img: null,
+  cabinet: { name: 'خزانة تخزين', img: null,
     text: '<strong>الأحجام الكبيرة جدًا</strong> (مثل الخزائن والغرف وخزانات المياه وأحواض السباحة) تُقاس <strong>بالمتر المكعب (م³)</strong>' }
 };
 const hsVisited = new Set();

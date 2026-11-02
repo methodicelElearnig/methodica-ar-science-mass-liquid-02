@@ -69,10 +69,10 @@ function syncS0Back() {
 const peakProgress = {
   kind: 'peak',
   questions: [
-    { number: 1, letter: 'א', screens: [2] },
-    { number: 2, letter: 'ב', screens: [3] },
-    { number: 3, letter: 'ג', screens: [4] },
-    { number: 4, letter: 'ד', screens: [5] }
+    { number: 1, letter: 'أ', screens: [2] },
+    { number: 2, letter: 'ب', screens: [3] },
+    { number: 3, letter: 'ج', screens: [4] },
+    { number: 4, letter: 'د', screens: [5] }
   ]
 };
 /* Each sub-part screen's own result: null while unresolved, else 'correct' | 'incorrect'. A peak
