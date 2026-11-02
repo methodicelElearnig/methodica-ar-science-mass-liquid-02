@@ -103,9 +103,9 @@ builders.
   (`?v=20261102a`): matching builder (only placed pairs, `correctAnswers` order), 01-014 → q1 + q2
   choice, 03-004 → performance (stepIds `مل`, `سم³`, `م³`); `metadata/` takes the same shapes with
   the Arabic texts (01-006 alternative pairs, 05-003 q2 `true`/`false`). `_test/kata-patterns.json`
-  is **derived from this unit's own `metadata/`** with Kata's pattern rule (the rule reproduces the
-  Hebrew unit's retrieved patterns byte for byte) — replace it with a real Kata retrieve once the
-  Arabic catalogue is in Kata. Hebrew Kata history (03-004 PATCH 2026-10-29) does not apply here.
+  was **derived from this unit's own `metadata/`** with Kata's pattern rule; after the Kata create
+  of 2026-11-02 the retrieved `correctXapiResponsesPattern` equals it for all 32 questions, so it is
+  now Kata's own (H14 checks against Kata). Hebrew Kata history (03-004 PATCH 2026-10-29) does not apply here.
 - **Arabic identity, 2026-11-02:** ids `…/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-…`
   (`XAPI_ID_PREFIX`, every `metadata/` id), `XAPI_UNIT_ID` = `methodica-ar-science-mass-liquid-02`, part
   folders and storage keys with `ar` (`?v=20261102b`). In Kata the seven components join the Hebrew

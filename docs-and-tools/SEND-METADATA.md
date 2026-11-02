@@ -20,7 +20,14 @@
 > **2026-11-02:** `-DryRun` — parent read-only, 7 components + 32 items created under it, 03 → 02
 > linked, failed=0. `-Preflight` (`preflight-metadata-2026-11-02.log`) — parent unit
 > `methodica-science-mass-liquid-02` EXISTS (200), all 7 Arabic components ABSENT (404), exit 0.
-> **Nothing has been written to Kata.** Everything below this note is the Hebrew unit's
+> **Live create** (`send-metadata-2026-11-02-create.log`) — **created=39 (7 components, 32 items, all
+> HTTP 201), 03 → 02 `recommendedAfterFail` linked (200), failed=0**; the parent unit was only read.
+> Retrieve (`retrieve-metadata-2026-11-02-after-create.log`, written to a scratch folder so the supplied
+> `metadata-from/` stays as it is) — the unit now holds 14 components (7 Hebrew + 7 Arabic) and 64 items;
+> the 39 warnings are the Hebrew records, absent from this repo's `metadata/`. The Arabic records equal
+> `metadata/` except `learningUnitId` (Kata sets the parent, expected), the timestamps and the fields
+> Kata computes; Kata's `correctXapiResponsesPattern` equals `_test/kata-patterns.json` for all 32
+> questions. Status (`publish-metadata-2026-11-02-status.log`) — 7 × draft. **Not published.** Everything below this note is the Hebrew unit's
 > history (its runs, logs and Kata state), kept as the record of the shared tooling.
 
 # Sending metadata to the Kata catalog
