@@ -1,11 +1,11 @@
 {
-  "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/",
+  "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/",
   "title": "وقت التدريب 2",
-  "learningUnitId": "methodica-science-mass-liquid-02",
+  "learningUnitId": "methodica-ar-science-mass-liquid-02",
   "componentPurpose": "practice",
   "isAssessment": false,
   "recommendedAfterFail": [
-    "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-02/"
+    "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-02/"
   ],
   "isRequired": false,
   "relativeDifficulty": 2,
@@ -24,14 +24,14 @@
   "updatedAt": "2026-11-02T00:00:00.000Z",
   "subContent": [
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-001/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-001/",
       "title": "تحويل المل إلى سم³",
       "informationToBot": "מטרת הפריט: זכירת השוויון 1 מ״ל = 1 סמ״ק. מה התלמיד אמור להבין: מ״ל וסמ״ק הן שתי יחידות בגודל זהה. כיווני חשיבה: התלמיד משלים משפט בעזרת תפריט נפתח יחיד. טעויות נפוצות: בחירה ב-1,000, 10 או 0.1. מידע נוסף: מסך מעבר פותח את התרגול הבסיסי (3 שאלות, ציון עובר 2). שני ניסיונות.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-001/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-001/q1",
           "questionType": "choice",
           "questionText": "أكملوا: 1 مل = ___ سم³.",
           "answers": [
@@ -47,14 +47,14 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-002/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-002/",
       "title": "حجم قنينة مياه شخصية",
       "informationToBot": "מטרת הפריט: הערכת סדר גודל של נפח בקבוק מים אישי בהתבסס על ידע יומיומי. מה התלמיד אמור להבין: בקבוק מים אישי הוא בערך חצי ליטר. כיווני חשיבה: התלמיד משווה בין האפשרויות לאחר המרה ליחידה אחידה (0.5 ליטר = 500 מ״ל). טעויות נפוצות: בחירה בנפח קטן מדי (5 סמ״ק או 0.05 ליטר) או גדול מדי (5,000 מ״ל). מידע נוסף: זמין רמז לאחר ניסיון שגוי ראשון. שני ניסיונות.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-002/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-002/q1",
           "questionType": "choice",
           "questionText": "أمامكم قنينة مياه شخصية. بناءً على معرفتكم الشخصية، ما حجمها؟",
           "answers": [
@@ -70,14 +70,14 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-003/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-003/",
       "title": "التحويل بين اللتر والمل",
       "informationToBot": "מטרת הפריט: תרגול המרה בין ליטר למ״ל בשני כיוונים בהינתן 1 ליטר = 1,000 מ״ל: סעיף א - 3 ליטר ל-מ״ל (3,000); סעיף ב - 500 מ״ל לליטר (0.5). מה התלמיד אמור להבין: כפל ב-1,000 ליחידה קטנה וחילוק ב-1,000 ליחידה גדולה. כיווני חשיבה: התלמיד מקליד את התוצאה בכל סעיף. טעויות נפוצות: סעיף א - 300 או 30 במקום 3,000. סעיף ב - 5 או 0.05 במקום 0.5. מידע נוסף: ציון עובר ברכיב: 2 מתוך 3 שאלות. זמין תרשים ההמרות. הקלדה כמספר (3,000 / 3000 זהים).",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-003/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-003/q1",
           "questionType": "numeric",
           "questionText": "أ. في 3 لترات يوجد ___ مل.",
           "answers": [],
@@ -86,7 +86,7 @@
           ]
         },
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-003/q2",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-003/q2",
           "questionType": "numeric",
           "questionText": "ب. 500 مل هي ___ لتر.",
           "answers": [],
@@ -97,14 +97,14 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-004/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-004/",
       "title": "تحويل 3 لترات إلى وحدات حجم مختلفة",
       "informationToBot": "מטרת הפריט: המרת 3 ליטר למ״ל, לסמ״ק ולמ״ק. מה התלמיד אמור להבין: 3 ליטר = 3,000 מ״ל = 3,000 סמ״ק = 0.003 מ״ק. כיווני חשיבה: התלמיד בוחר ערך מתאים בכל אחד משלושת התפריטים (אותה רשימה) תוך מעבר בין היחידות. טעויות נפוצות: בחירה ב-300 / 3 במקום 3,000, או ב-3,000 במקום 0.003 עבור מ״ק. מידע נוסף: מסך מעבר ('הנה עוד 2 תרגילים ברמת קושי גבוהה יותר') מקופל לפריט זה. זמין תרשים ההמרות. שני ניסיונות.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-004/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-004/q1",
           "questionType": "performance",
           "questionText": "أكملوا القيم: 3 لترات = ___ مل = ___ سم³ = ___ م³.",
           "answers": null,
@@ -126,14 +126,14 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-005/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-005/",
       "title": "وحدة اللتر لجرعة الدواء",
       "informationToBot": "מטרת הפריט: בחינת התאמת יחידת המידה לנפח: 5 ליטר הוא נפח לא סביר למנת תרופה. מה התלמיד אמור להבין: יש לבחור יחידה בסדר גודל מתאים (מ״ל לנפחים קטנים). כיווני חשיבה: התלמיד שואל האם הערך סביר והאם היחידה נבחרה נכון. טעויות נפוצות: בחירה ב'אין בעיה', או בהמרה ל-5,000 סמ״ק שאינה פותרת את בעיית סדר הגודל. מידע נוסף: זמין רמז לאחר ניסיון שגוי ראשון. שני ניסיונות. בסיום הלומד ממשיך לחלק הבא ללא ציון מעבר.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-03/methodica-science-mass-liquid-02-03-005/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-03/methodica-ar-science-mass-liquid-02-03-005/q1",
           "questionType": "choice",
           "questionText": "كُتب في مقال صحفي: \"تلقّى المريض جرعة مقدارها 5 لترات من الشراب الدوائي\". ما المشكلة في هذه الجملة؟",
           "answers": [

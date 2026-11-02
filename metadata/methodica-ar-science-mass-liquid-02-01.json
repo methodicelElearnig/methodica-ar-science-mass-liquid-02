@@ -1,7 +1,7 @@
 {
-  "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/",
+  "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/",
   "title": "تعالوا نتعلم شيئًا جديدًا",
-  "learningUnitId": "methodica-science-mass-liquid-02",
+  "learningUnitId": "methodica-ar-science-mass-liquid-02",
   "componentPurpose": "instruction",
   "isAssessment": false,
   "recommendedAfterFail": [],
@@ -22,7 +22,7 @@
   "updatedAt": "2026-11-02T00:00:00.000Z",
   "subContent": [
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-001/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-001/",
       "title": "اختيار شخصية مرافقة",
       "informationToBot": "מטרת הפריט: בחירת דמות מלווה שתלווה את הלומד לאורך כל חלקי היחידה. כיווני חשיבה: אין חשיבה לימודית - בחירה טכנית. טעויות נפוצות: אין הערכה בפריט. מידע נוסף: הבחירה נשמרת ועוברת לכל חלקי היחידה. אין שאלה מוערכת (פעולת Selected).",
       "contentType": "motivational",
@@ -30,14 +30,14 @@
       "questions": []
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-002/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-002/",
       "title": "الذراع – وحدة قياس غير موحّدة",
       "informationToBot": "מטרת הפריט: הוק מוטיבציוני: הכרת הבעיה שבשימוש ביחידות מידה לא אחידות (אמה) כבסיס לצורך בשיטת מדידה אחידה. מה התלמיד אמור להבין: כשאין יחידת מידה מוסכמת, אותה מדידה נותנת תוצאות שונות מאדם לאדם. כיווני חשיבה: התלמיד קורא קומיקס שבו מוכר ולקוחות מודדים בד ב'אמה' של אנשים שונים, ובוחר מהי הבעיה. טעויות נפוצות: בחירה באפשרות 'לא עולה בעיה' או באפשרות שמתארת מדידה חוזרת בלבד, במקום בעובדה שאורך האמה שונה מאדם לאדם. מידע נוסף: ניסיון מענה אחד בלבד. הערה: האפשרות 'אמה היא יחידת מידה לא מהימנה...' מנוסחת קרוב לתשובה הנכונה אך אינה מזהה את הסיבה (אורך שונה לכל אדם).",
       "contentType": "motivational",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-002/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-002/q1",
           "questionType": "choice",
           "questionText": "اقرأوا القصة المصورة. ما المشكلة التي تنشأ عن استخدام وحدة قياس الذراع؟",
           "answers": [
@@ -53,7 +53,7 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-003/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-003/",
       "title": "النظام المتري",
       "informationToBot": "מטרת הפריט: הצגת הרקע ההיסטורי להמצאת השיטה המטרית (צרפת, 1795) והסיבה לצורך במדידה אחידה. כיווני חשיבה: אין שאלה - מסך קריאה. טעויות נפוצות: אין הערכה בפריט. מידע נוסף: מוזכרות שלוש המדינות שאינן משתמשות בשיטה המטרית: ארה״ב, ליבריה ומיאנמר.",
       "contentType": "motivational",
@@ -61,7 +61,7 @@
       "questions": []
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-004/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-004/",
       "title": "ما هو الحجم",
       "informationToBot": "מטרת הפריט: פתיחת נושא הנפח והגדרתו: המקום שגוף מוצק, נוזל או גז תופסים במרחב. מה התלמיד אמור להבין: לכל שלושת מצבי הצבירה יש נפח. כיווני חשיבה: התלמיד מעיין בהגדרה ובדוגמאות למוצק, לנוזל ולגז. טעויות נפוצות: אין הערכה בפריט. מידע נוסף: מסך מעבר ('מה זה בכלל נפח?') מוביל למסך ההגדרה ומקופל לאותו פריט.",
       "contentType": "instruction",
@@ -69,7 +69,7 @@
       "questions": []
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-005/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-005/",
       "title": "سوبرماركت الأحجام",
       "informationToBot": "מטרת הפריט: היכרות עם יחידות הנפח דרך מוצרים מסופרמרקט והקשר בין סדר הגודל של הנפח ליחידה. מה התלמיד אמור להבין: נפחים קטנים נמדדים במ״ל או סמ״ק, בינוניים בליטר וגדולים מאוד במ״ק. כיווני חשיבה: התלמיד לוחץ על כל הנקודות (תמצית וניל, בקבוק מים, דלי, קופסת אחסון, מזרק, ארון אחסון) וקורא באיזו יחידה נמדד כל מוצר ומתי משתמשים בה. טעויות נפוצות: אין הערכה בפריט. מידע נוסף: ההמשך נפתח רק לאחר שנחשפו כל הנקודות. מסך הפתיחה 'ברוכים הבאים לסופרמרקט הנפחים' מקופל לפריט זה.",
       "contentType": "instruction",
@@ -77,14 +77,14 @@
       "questions": []
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-006/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-006/",
       "title": "مطابقة وحدة الحجم للمنتج",
       "informationToBot": "מטרת הפריט: תרגול התאמת יחידת הנפח המתאימה לפריט מהסופרמרקט. מה התלמיד אמור להבין: בחירת יחידה לפי סדר הגודל של הנפח. כיווני חשיבה: התלמיד מעריך את סדר הגודל של כל פריט (בושם, קוביית משחק, דלי, משאית) ובוחר יחידה מתאימה. טעויות נפוצות: בלבול בין ליטר לסמ״ק בפריטים קטנים, או בחירת ליטר למשאית במקום מ״ק. מידע נוסף: לבושם ולקוביית משחק מתקבלת כל אחת מהיחידות מ״ל וסמ״ק (1 מ״ל = 1 סמ״ק); מפתח הפתרון ב-correctAnswers הוא הפתרון המוצג בשקף (בושם = מ״ל, קוביית משחק = סמ״ק). שני ניסיונות.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-006/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-006/q1",
           "questionType": "matching",
           "questionText": "اسحبوا إلى كل عنصر وحدة الحجم الأنسب له",
           "answers": {
@@ -131,7 +131,7 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-007/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-007/",
       "title": "كيف نقيس الحجم",
       "informationToBot": "מטרת הפריט: היכרות עם שתי שיטות למדידת נפח: חישוב נפח גוף הנדסי (אורך × רוחב × גובה) ומדידת נפח נוזל בכלי עם שנתות. מה התלמיד אמור להבין: השיטה נבחרת לפי מצב הצבירה וצורת הגוף. כיווני חשיבה: התלמיד הופך שני קלפים ומעיין בדוגמה המספרית (10 × 30 × 20 = 6,000 סמ״ק). טעויות נפוצות: אין הערכה בפריט. מידע נוסף: ההמשך נפתח לאחר הפיכת שני הקלפים.",
       "contentType": "instruction",
@@ -139,7 +139,7 @@
       "questions": []
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-008/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-008/",
       "title": "مكعبات وصناديق وشاحنة",
       "informationToBot": "מטרת הפריט: הבנת הקשרים 1 ליטר = 1,000 סמ״ק ו-1 מ״ק = 1,000 ליטר דרך מילוי הדרגתי. מה התלמיד אמור להבין: כל מעבר בין יחידות סמוכות הוא פי 1,000 (10 × 10 × 10). כיווני חשיבה: התלמיד לוחץ וממלא קופסה בנפח 1 ליטר בקוביות של 1 סמ״ק (10 שכבות של 100), ואחר כך משאית בנפח 1 מ״ק בקופסאות של 1 ליטר. טעויות נפוצות: אין הערכה בפריט. מידע נוסף: מסך מעבר ('איך נמיר מיחידה אחת לאחרת?') מקופל לפריט זה. ההמשך נפתח רק אחרי מילוי מלא.",
       "contentType": "instruction",
@@ -147,7 +147,7 @@
       "questions": []
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-009/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-009/",
       "title": "مخطط التحويلات",
       "informationToBot": "מטרת הפריט: הצגת כלל ההמרה בין יחידות הנפח והתנסות בהמרת 10 ליטר: חלוקה ב-1,000 ליחידה גדולה יותר, כפל ב-1,000 ליחידה קטנה יותר. מה התלמיד אמור להבין: 10 ליטר = 10,000 מ״ל / סמ״ק = 0.01 מ״ק. כיווני חשיבה: התלמיד גורר את הדלי הכחול (10 ליטר) לשני דליים לבנים ורואה את התוצאה. טעויות נפוצות: אין הערכה בפריט. מידע נוסף: גרירה חקרנית ללא משוב נכון/לא נכון. ההמשך נפתח לאחר שנוסו שני הדליים.",
       "contentType": "instruction",
@@ -155,7 +155,7 @@
       "questions": []
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-010/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-010/",
       "title": "ما هي الحجة العلمية",
       "informationToBot": "מטרת הפריט: הצגת המושגים נתונים כראיות מדעיות וטיעון מדעי בן שלושה חלקים: טענה, ראיות, נימוק. מה התלמיד אמור להבין: טענה היא משפט שניתן להתווכח עליו, ראיות הן נתונים מניסוי או תצפית, ונימוק מסביר מדוע הראיות תומכות או מפריכות את הטענה. כיווני חשיבה: התלמיד קורא על שלושת החלקים ובוחן שתי דוגמאות (מסה ומשקל בירח, פריחת אצות). טעויות נפוצות: אין הערכה בפריט. מידע נוסף: שלושה מסכים (ראיות מדעיות, חלקי הטיעון, דוגמאות) מקופלים לפריט אחד.",
       "contentType": "instruction",
@@ -163,14 +163,14 @@
       "questions": []
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-011/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-011/",
       "title": "تحديد الادعاء في الحجة",
       "informationToBot": "מטרת הפריט: זיהוי משפט ה'טענה' בין שלושה משפטים בנושא העלייה בטמפרטורת המים באגם. מה התלמיד אמור להבין: הטענה היא משפט שאפשר להתווכח על אמיתותו, ואינה נתון מדוד או הסבר. כיווני חשיבה: התלמיד מבחין בין משפט שהוא נתון מדוד (ראיות), הסבר מנגנוני (נימוק) ומשפט שנתון לוויכוח (טענה). טעויות נפוצות: בחירה במשפט הראיות (משפט ג) או הנימוק (משפט א) כטענה. מידע נוסף: הטענה היא משפט ב: 'העלייה בטמפרטורת המים באגם גרמה למותם של הדגים'. שני ניסיונות.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-011/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-011/q1",
           "questionType": "choice",
           "questionText": "اقرأوا الجمل الثلاث التالية التي تتناول تأثير ارتفاع درجة حرارة الماء في البحيرة، وأجيبوا على السؤال. أي من الجمل التالية يعرض \"الادعاء\" في الحجة؟",
           "answers": [
@@ -185,14 +185,14 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-012/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-012/",
       "title": "بناء حجة علمية من كرتين",
       "informationToBot": "מטרת הפריט: סידור שלושת המשפטים של טיעון מדעי (טענה, ראיות, נימוק) בהשוואת המסה של שני כדורים. מה התלמיד אמור להבין: ההבדל בין הטענה, הראיה (תצפית) והנימוק (עיקרון כללי). כיווני חשיבה: התלמיד מזהה את המשפט הכללי על מאזני כפות (נימוק), את התצפית על שני הכדורים (ראיות) ואת המסקנה על מסת כדור המתכת (טענה). טעויות נפוצות: החלפה בין ראיות לנימוק. מידע נוסף: שני ניסיונות; בניסיון האחרון מוצג הפתרון.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-012/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-012/q1",
           "questionType": "matching",
           "questionText": "أمامكم حجة علمية تقارن بين كتلة كرتين، غير أن الجمل الثلاث التي تتكون منها قد اختلطت. اسحبوا كل جملة إلى المكوّن المناسب: طرح (ادعاء)، أو دليل، أو تبرير.",
           "answers": {
@@ -225,14 +225,14 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-013/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-013/",
       "title": "سؤال إحماء: وحدات قياس الحجم",
       "informationToBot": "מטרת הפריט: חימום: זיהוי יחידות המידה שמודדות נפח. מה התלמיד אמור להבין: ליטר, מ״ל, סמ״ק ומ״ק הן יחידות נפח; ק״ג ו-ס״מ אינן. כיווני חשיבה: התלמיד סורק את הרשימה ובוחר את כל יחידות הנפח. טעויות נפוצות: בחירת ק״ג (יחידת מסה) או ס״מ (יחידת אורך). מידע נוסף: בחירה מרובה; ארבע תשובות נכונות מתוך שש. מסך מעבר ('מה נשאר לנו בראש?') מקופל לפריט זה. שני ניסיונות.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-013/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-013/q1",
           "questionType": "choice",
           "questionText": "أشيروا إلى جميع وحدات القياس التي تقيس الحجم من القائمة التالية:",
           "answers": [
@@ -253,14 +253,14 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-014/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-014/",
       "title": "سؤال إحماء: التحويل بين اللتر والمل والمتر المكعب",
       "informationToBot": "מטרת הפריט: חימום: זכירת יחסי ההמרה 1 ליטר = 1,000 מ״ל / סמ״ק ו-1 מ״ק = 1,000 ליטר. כיווני חשיבה: התלמיד משלים שני משפטים בעזרת תפריטים נפתחים (אותה רשימת אפשרויות בשני התפריטים). טעויות נפוצות: בחירה ב-100 או ב-10 (טעות בסדר גודל) או 10,000. מידע נוסף: זמין תרשים ההמרות. שני ניסיונות.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-014/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-014/q1",
           "questionType": "choice",
           "questionText": "أكملوا: 1 لتر يساوي - ___ مل أو سم³.",
           "answers": [
@@ -274,7 +274,7 @@
           ]
         },
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-01/methodica-science-mass-liquid-02-01-014/q2",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-01/methodica-ar-science-mass-liquid-02-01-014/q2",
           "questionType": "choice",
           "questionText": "أكملوا: 1 م³ يساوي - ___ لتر.",
           "answers": [

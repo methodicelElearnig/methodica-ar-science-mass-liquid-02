@@ -1,5 +1,5 @@
 {
-  "id": "methodica-science-mass-liquid-02",
+  "id": "methodica-ar-science-mass-liquid-02",
   "title": "وحدات الحجم واستخداماتها",
   "subTopic": "MOE.SCI.G7.CHEM.BODY-MAT-PROP.VOLUME",
   "learningObjective": "MOE.SCI.G7.CHEM.BODY-MAT-PROP.VOLUME.UNIT-CONV",
@@ -8,5 +8,8 @@
     "state-religious"
   ],
   "targetAudience": "general",
-  "manufacturer": "310"
+  "manufacturer": "310",
+  "languages": [
+    "Arabic"
+  ]
 }

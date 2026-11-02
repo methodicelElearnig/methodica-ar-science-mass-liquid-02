@@ -1,7 +1,7 @@
 {
-  "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/",
+  "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-05/",
   "title": "لنتحدَّ أنفسنا",
-  "learningUnitId": "methodica-science-mass-liquid-02",
+  "learningUnitId": "methodica-ar-science-mass-liquid-02",
   "componentPurpose": "practice",
   "isAssessment": false,
   "recommendedAfterFail": [],
@@ -22,14 +22,14 @@
   "updatedAt": "2026-11-02T00:00:00.000Z",
   "subContent": [
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-001/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-05/methodica-ar-science-mass-liquid-02-05-001/",
       "title": "نظام قياس موحّد في بحث مشترك",
       "informationToBot": "מטרת הפריט: הבנת החשיבות של שיטת מדידה אחידה במחקר מדעי משותף (חוקר אמריקאי וחוקרת ישראלית, התפלת מים). מה התלמיד אמור להבין: מדידה אחידה מאפשרת להשוות נתונים בצורה מהימנה. כיווני חשיבה: התלמיד מבחין בין היתרון המרכזי (השוואה מהימנה) לבין טענות על דמיון תוצאות או חיסכון במדידות. טעויות נפוצות: בחירה בתשובה שלפיה מדידה אחידה מבטיחה תוצאות דומות או חוסכת מדידות חוזרות. מידע נוסף: מסך מעבר ('זמן ל-3 שאלות מתקדמות') מקופל לפריט. שני ניסיונות.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-001/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-05/methodica-ar-science-mass-liquid-02-05-001/q1",
           "questionType": "choice",
           "questionText": "في معظم دول العالم، ومنها إسرائيل، يُستخدم النظام المتري للقياس. أما في الولايات المتحدة الأمريكية، فلا يزال يُستخدم في الغالب نظام قياس آخر. باحث أمريكي وباحثة إسرائيلية يريدان التعاون في بحث حول تحلية المياه. لماذا يُعدّ استخدام نظام قياس موحّد شرطًا مهمًا للبحث المشترك والموثوق؟",
           "answers": [
@@ -45,14 +45,14 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-002/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-05/methodica-ar-science-mass-liquid-02-05-002/",
       "title": "ثلاث تسميات لكمية الدواء نفسها",
       "informationToBot": "מטרת הפריט: הבנה ש-0.5 ליטר, 500 מ״ל ו-500 סמ״ק מתארים את אותה כמות. מה התלמיד אמור להבין: כמויות שוות יכולות להיכתב ביחידות שונות. כיווני חשיבה: התלמיד ממיר את שלושת הרישומים ליחידה אחת ומשווה. טעויות נפוצות: בחירה ב'שלוש כמויות שונות' או בטענה שרק יחידה אחת נכונה. מידע נוסף: זמין רמז לאחר ניסיון שגוי ראשון. שני ניסיונות.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-002/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-05/methodica-ar-science-mass-liquid-02-05-002/q1",
           "questionType": "choice",
           "questionText": "في مستودع صيدلية، تظهر ثلاث تسميات على وعاء الدواء السائل نفسه: \"0.5 لتر\"، \"500 مل\"، \"500 سم³\". يخشى مدير المستودع أن يتعلق الأمر بثلاث كميات مختلفة. ما الصحيح الذي يمكن قوله؟",
           "answers": [
@@ -68,14 +68,14 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-003/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-05/methodica-ar-science-mass-liquid-02-05-003/",
       "title": "فاتورة المياه لعائلة حداد",
       "informationToBot": "מטרת הפריט: קריאת חשבון מים: סעיף א - בחירת יחידת המידה של כמות המים לחיוב (מ״ק); סעיף ב - קביעה אם צריכת המים יציבה יחסית לאורך 4 תקופות חיוב לפי גרף. מה התלמיד אמור להבין: מים נמדדים בחשבון בנפחים גדולים ביחידות מ״ק, והגרף מאפשר לשפוט יציבות. כיווני חשיבה: התלמיד מעריך את סדר הגודל של צריכת מים משפחתית (28.06) ומנתח גרף עמודות לאורך הזמן. טעויות נפוצות: סעיף א - בחירה בסמ״ק, במ״ל או בליטר. סעיף ב - תשובה 'לא' מתוך התעלמות מגודל השינוי היחסי בין התקופות. מידע נוסף: שני הסעיפים מוצגים ברצף כשאלה אחת בהתקדמות הלומד. סעיף א - תפריט נפתח יחיד. סעיף ב - ניסיון מענה אחד.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-003/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-05/methodica-ar-science-mass-liquid-02-05-003/q1",
           "questionType": "choice",
           "questionText": "أمامكم مقطع من فاتورة المياه لعائلة حداد. أ. اختاروا وحدة القياس المناسبة في المكان المحدد: وحدة قياس كمية المياه المستحقة للدفع، 28.06 ___",
           "answers": [
@@ -89,7 +89,7 @@
           ]
         },
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-003/q2",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-05/methodica-ar-science-mass-liquid-02-05-003/q2",
           "questionType": "true-false",
           "questionText": "أمامكم رسم بياني لبيانات الاستهلاك من فاتورة المياه لعائلة حداد. ب. هل يمكن الادعاء بأن استهلاك المياه لعائلة حداد مستقر نسبيًا على مدار فترات الفوترة الأربع في عام 2026؟",
           "answers": [
@@ -103,7 +103,7 @@
       ]
     },
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-05/methodica-science-mass-liquid-02-05-004/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-05/methodica-ar-science-mass-liquid-02-05-004/",
       "title": "استهلاك المياه اليومي في إسرائيل",
       "informationToBot": "מטרת הפריט: העשרה: פילוח צריכת המים היומית הממוצעת לאדם בישראל (כ-165 ליטרים) לפי שימושים. מה התלמיד אמור להבין: אילו שימושים צורכים את הכמות הגדולה ביותר. כיווני חשיבה: התלמיד לוחץ על חלקי התרשים וקורא כל קטגוריה וערך. טעויות נפוצות: אין הערכה בפריט. מידע נוסף: הנתונים: מקלחת ורחצה 54.4; הדחת אסלה 54.4; מטבח (שתייה, בישול והדחת כלים) 30; כיור האמבטיה 10; כביסה 8; גינון ושטיפת רכב 8 (ליטרים ליום). מסך 'הידעת?' מקופל לפריט. ההמשך נפתח לאחר חשיפת כל הקטגוריות.",
       "contentType": "motivational",

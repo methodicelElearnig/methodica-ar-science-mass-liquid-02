@@ -1,7 +1,7 @@
 {
-  "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-04/",
+  "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-04/",
   "title": "مهمّة صفيّة",
-  "learningUnitId": "methodica-science-mass-liquid-02",
+  "learningUnitId": "methodica-ar-science-mass-liquid-02",
   "componentPurpose": "practice",
   "isAssessment": false,
   "recommendedAfterFail": [],
@@ -22,7 +22,7 @@
   "updatedAt": "2026-11-02T00:00:00.000Z",
   "subContent": [
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-04/methodica-science-mass-liquid-02-04-001/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-04/methodica-ar-science-mass-liquid-02-04-001/",
       "title": "قياس الأحجام في بيئتي",
       "informationToBot": "מטרת הפריט: משימה מעשית מחוץ למחשב: בחירת 4 גופים הנדסיים בכיתה, חישוב נפחם (אורך × רוחב × גובה) והמרה ליחידת מידה גדולה או קטנה יותר. מה התלמיד אמור לתרגל: מדידה, חישוב נפח והמרת יחידות. כיווני חשיבה: התלמיד מודד בסרגל או בעזרת מידות מוכרות, מחשב נפח, בוחר יחידה מתאימה ומתעד בטבלה במחברת (שם הפריט, מדידת נפח, יחידת מידה מתאימה, המרה). בדוגמה: מחברת 21 × 15 × 0.5 = 157.5 סמ״ק = 0.1575 ליטר. טעויות נפוצות: שימוש ביחידות לא אחידות בעת המדידה; כפל ל-1,000 במקום חילוק בהמרה. מידע נוסף: אין שאלה מוערכת. מסך מעבר ('זמן טוב ללמוד גם בצורה אחרת') מקופל לפריט. הלומד מאשר 'חזרתי, אפשר להמשיך'.",
       "contentType": "project-or-inquiry-task",

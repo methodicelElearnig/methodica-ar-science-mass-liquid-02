@@ -1,7 +1,7 @@
 {
-  "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-06/",
+  "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-06/",
   "title": "السؤال الأكبر",
-  "learningUnitId": "methodica-science-mass-liquid-02",
+  "learningUnitId": "methodica-ar-science-mass-liquid-02",
   "componentPurpose": "practice",
   "isAssessment": true,
   "recommendedAfterFail": [],
@@ -22,14 +22,14 @@
   "updatedAt": "2026-11-02T00:00:00.000Z",
   "subContent": [
     {
-      "id": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-06/methodica-science-mass-liquid-02-06-001/",
+      "id": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-06/methodica-ar-science-mass-liquid-02-06-001/",
       "title": "عصير الليمون الصيفي – وصفة مشتركة مع صف في سان فرانسيسكو",
       "informationToBot": "מטרת הפריט: שאלת השיא של היחידה - תרחיש מציאותי: כיתה ז' בישראל מכינה לימונדה לפי מתכון בכוסות (cups) מסן פרנסיסקו (מנה אחת = 4 כוסות; 1 כוס = 240 מ״ל). תתי-סעיפים: א) הבנת הסיבה להמרה למערכת המטרית. ב) המרת כמויות המתכון מכוסות למ״ל. ג) נימוק לבחירת היחידה מ״ל ולא ליטר או מ״ק. ד) המרת המתכון לליטרים והערכת הנוחות. ה) חישוב כמה פעמים להכין את המתכון כדי להגיע ל-4 ליטר (כל הכנה = 660 מ״ל). כיווני חשיבה: המרות בכפל ב-240, ובחילוק ב-1,000 מ״ל לליטר; השוואה בין יחידות לפי סדר גודל; חלוקה 4,000 ÷ 660 ועיגול כלפי מעלה. טעויות נפוצות: סעיף א - בחירה בטענה שכוס מודדת רק נוזלים. סעיף ב - טעות בכפל במכנה ½ ו-¼. סעיף ג - נימוק לפי נוחות כללית ולא לפי סדר גודל. סעיף ד - טעות בסדר גודל (0.48 / 0.06). סעיף ה - עיגול כלפי מטה (6) במקום כלפי מעלה (7). מידע נוסף: ציון עובר בשאלת השיא: 4 סעיפים מתוך 5. מסך הפתיחה ומסך התרחיש מקופלים לפריט. במסכים א, ג, ה זמין רמז; בסעיפים א, ג זמין גם כפתור 'להיזכר במתכון'; בסעיפים ב ו-ד זמין תרשים ההמרות. שני ניסיונות בכל סעיף.",
       "contentType": "practice",
       "mediaFormat": "interactive-content",
       "questions": [
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-06/methodica-science-mass-liquid-02-06-001/q1",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-06/methodica-ar-science-mass-liquid-02-06-001/q1",
           "questionType": "choice",
           "questionText": "أ. تدّعي ليلى أنه من المفيد التحويل من cup (كوب) إلى مل لإعداد الوصفة في إسرائيل. لماذا؟",
           "answers": [
@@ -43,7 +43,7 @@
           ]
         },
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-06/methodica-science-mass-liquid-02-06-001/q2",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-06/methodica-ar-science-mass-liquid-02-06-001/q2",
           "questionType": "matching",
           "questionText": "ب. ساعدوا طلاب الصف على تحويل كميات الوصفة إلى مل. تذكّروا: 1 cup = 240 مل. كوبان (cups) من الماء البارد، ½ كوب (cup) من عصير الليمون المعصور، ¼ كوب (cup) شراب السكر.",
           "answers": {
@@ -75,7 +75,7 @@
           ]
         },
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-06/methodica-science-mass-liquid-02-06-001/q3",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-06/methodica-ar-science-mass-liquid-02-06-001/q3",
           "questionType": "choice",
           "questionText": "ج. لماذا حوّلنا الكميات في الوصفة الأمريكية إلى مل، وليس إلى لتر أو م³؟",
           "answers": [
@@ -89,7 +89,7 @@
           ]
         },
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-06/methodica-science-mass-liquid-02-06-001/q4",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-06/methodica-ar-science-mass-liquid-02-06-001/q4",
           "questionType": "matching",
           "questionText": "د. للتدريب، حوّلوا المقادير في الوصفة إلى لترات، وقرروا بأنفسكم ما إذا كان من المريح إعداد الوصفة بهذه الطريقة. 480 مل من الماء البارد، 120 مل عصير ليمون معصور، 60 مل شراب السكر.",
           "answers": {
@@ -121,7 +121,7 @@
           ]
         },
         {
-          "questionId": "https://lomdot.education.gov.il/metodica/720active/science/mass-liquid/02/methodica-science-mass-liquid-02-06/methodica-science-mass-liquid-02-06-001/q5",
+          "questionId": "https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-06/methodica-ar-science-mass-liquid-02-06-001/q5",
           "questionType": "choice",
           "questionText": "لكي يكون هناك عصير ليمون كافٍ للصف بأكمله، يجب تحضير 4 لترات من عصير الليمون في المجموع. كل إعداد للوصفة (كما حوّلتم) يُعطي 660 مل. ه. كم مرة يجب إعداد الوصفة للوصول إلى 4 لترات على الأقل؟",
           "answers": [
