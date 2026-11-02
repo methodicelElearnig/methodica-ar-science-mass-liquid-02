@@ -106,6 +106,10 @@ builders.
   is **derived from this unit's own `metadata/`** with Kata's pattern rule (the rule reproduces the
   Hebrew unit's retrieved patterns byte for byte) — replace it with a real Kata retrieve once the
   Arabic catalogue is in Kata. Hebrew Kata history (03-004 PATCH 2026-10-29) does not apply here.
+- **Arabic identity, 2026-11-02:** ids `…/720/ar/science/mass-liquid/02/methodica-ar-science-mass-liquid-02-…`
+  (`XAPI_ID_PREFIX`, every `metadata/` id), `XAPI_UNIT_ID` = `methodica-ar-science-mass-liquid-02`, part
+  folders and storage keys with `ar` (`?v=20261102b`). In Kata the seven components join the Hebrew
+  unit (parent-unit mode, `SEND-METADATA.md`). `verify-report.js` §8 guards the Arabic build.
 
 - Catalogue: pushed 2026-10-22 as authored (`METADATA-AUDIT.md`); the routing fields — P06 and P07
   both `order: 6`, P02 and P06 `recommendedAfterFail: []`, P07 `isRequired: true` — are with the

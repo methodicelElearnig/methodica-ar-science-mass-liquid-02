@@ -1,4 +1,8 @@
-# Media changes log — methodica-science-mass-liquid-02
+# Media changes log — methodica-ar-science-mass-liquid-02
+
+> Arabic twin (2026-11-02): rows 1–176 were logged in the Hebrew unit and name the Hebrew part folders
+> (`methodica-science-mass-liquid-02-0N`); here those folders are `methodica-ar-science-mass-liquid-02-0N`.
+> Sections 9–10 are this repo's own.
 
 Every change to a media file (image, video, font) made during the optimization phase, one row per
 file per operation, in commit order. Rows under "generated" headings are written by

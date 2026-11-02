@@ -1,3 +1,10 @@
+> **methodica-ar-science-mass-liquid-02 (2026-11-02):** the script is methodica-ar-science-volume-liquid-01's
+> version. By default it reads the PARENT unit `methodica-science-mass-liquid-02` (there is no Arabic unit
+> in Kata — see SEND-METADATA.md), so `metadata-from/` will also hold the seven Hebrew components; the
+> Arabic records should equal `metadata/` except `learningUnitId` (Kata sets the parent). `-IdBase`
+> fallback: `…/720/ar/science/mass-liquid/02`. The files now in `metadata-from/` are the Hebrew unit's
+> retrieve, as supplied with the fork.
+
 # Retrieving metadata from the Kata catalog
 
 `retrieve-metadata.ps1` is the opposite direction of [`send-metadata.ps1`](SEND-METADATA.md):

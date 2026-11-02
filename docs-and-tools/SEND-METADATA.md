@@ -1,3 +1,26 @@
+> **methodica-ar-science-mass-liquid-02 (2026-11-02) — the Arabic twin.** `send-metadata.ps1` and
+> `retrieve-metadata.ps1` are methodica-ar-science-volume-liquid-01's versions (its 19c6bf7 / 8f81eb3),
+> which add the **parent-unit mode** of methodica-ar-science-body-matter-01 (5cdfed4):
+> - There is no Arabic unit in Kata (Kata binds a learning objective to one unit). `-ParentUnitKey`
+>   defaults to the Hebrew unit `methodica-science-mass-liquid-02`; the unit is only read (GET), never
+>   POSTed/PATCHed, and `*_unit.json` is not sent. The seven Arabic components
+>   (`…/720/ar/science/mass-liquid/02/…`) are created under it. `-ParentUnitKey ''` restores the own-unit upsert.
+> - `-Preflight` requires the parent unit to EXIST (exit 1 if not) and reports the components only;
+>   `-Status` / `-Publish` read / publish the components.
+> - `ContentBaseUrl` = `https://lomdot.education.gov.il/metodica/720/ar/science/mass-liquid/02` (Hebrew is
+>   served from `…/720/science/mass-liquid/02/`) — **assumed from the Arabic twins, NOT yet confirmed**;
+>   confirm before the first live create (hostedContentRef is one-way).
+> - Titles are sent under the ISO key `ar`.
+> - `retrieve-metadata.ps1` reads the parent unit by default, so its snapshot also holds the seven
+>   Hebrew components (warnings for them are expected), and Kata reports `learningUnitId` as the parent.
+>
+> Order: `-DryRun`, `-Preflight`, live create, `retrieve-metadata.ps1`, `-Status`, `-Publish` — each
+> live step only on an explicit go.
+>
+> **2026-11-02:** `-DryRun` only — parent read-only, 7 components + 32 items created under it, 03 → 02
+> linked, failed=0. **Nothing has been sent to Kata.** Everything below this note is the Hebrew unit's
+> history (its runs, logs and Kata state), kept as the record of the shared tooling.
+
 # Sending metadata to the Kata catalog
 
 `send-metadata.ps1` pushes the `metadata/` folder (1 unit + 7 components + their
