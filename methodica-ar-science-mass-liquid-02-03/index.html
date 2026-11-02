@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تدريب أساسي — methodica-ar-science-mass-liquid-02-03</title>
+<link rel="stylesheet" href="css/style.css?v=20261102b">
+<link rel="stylesheet" href="css/motion.css?v=20261102b">
+<link rel="stylesheet" href="../unit-css/25-report.css?v=20261102b">
+</head>
+<body>
+<!-- ═══ Boot cover (ADDING-REPORTING-AND-RESUME.md §8.11) ═══
+     Hides screen 0 while a saved position is read and painted (Phase 4, resume), so the learner never
+     sees the first screen flash before the restored one. A SIBLING of #app (scaleApp transforms #app).
+     unit-js/50-loader.js removes it on every exit path (dropBootCover); this inline net removes it
+     after 800 ms regardless — or, while a restore is in flight (window.__resumeInFlight), waits for
+     it up to a hard 6 s. Copied from methodica-science-body-matter-01 (← mass-weight-01). -->
+<div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
+<script>
+(function () {
+  var t0 = Date.now();
+  function tick() {
+    var c = document.getElementById('boot-cover');
+    if (!c || !c.parentNode) return;
+    if (window.__resumeInFlight && Date.now() - t0 < 6000) { setTimeout(tick, 100); return; }
+    c.parentNode.removeChild(c);
+  }
+  setTimeout(tick, 800);
+})();
+</script>
+<div id="app">
+
+  <!-- Global: Report Problem (Figma 207:3590). Visual only — no behaviour
+       wired yet; the Pop-up variant is intentionally not implemented. -->
+  <button class="flag-btn" id="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+    <span class="flag-btn__icon" aria-hidden="true"></span>
+    <span class="flag-btn__label" aria-hidden="true">هل وجدتم مشكلة؟</span>
+  </button>
+
+  <!-- S1 feedback popup — the shared Figma "Popup Feedback" (size=Short), as part 02.
+       Outside every .screen (shared popup contract); no close control. -->
+  <div class="scq-popup m-popup hidden" id="s1-popup" onpointerdown="popupPointerDown(event,'s1-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S2 feedback popup — the same shared popup. -->
+  <div class="scq-popup m-popup hidden" id="s2-popup" onpointerdown="popupPointerDown(event,'s2-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S2 hint — Figma "Hint Card" (4946:39533) over the shared popup backdrop, as part 02.
+       No title (project-management decision 2026-10-05): white bulb, slide 62's hint text,
+       "חזרה לשאלה". Closes on that button, a click outside the card, or Escape. -->
+  <div class="scq-hint-overlay m-popup hidden" id="s2-hint-overlay" onclick="s2CloseHintOnBackdrop(event)">
+    <div class="hint-card" role="dialog" aria-modal="true" aria-label="تلميح" aria-describedby="s2-hint-text">
+      <div class="hint-card__text">
+        <svg class="hint-card__ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+        <!-- Break after the comma: the 462px wrap split "אולי תוכלו / לזהות" (producer rule 2026-10-06). -->
+        <p class="hint-card__body" id="s2-hint-text">انظروا إلى قنينة المياه الخاصة بكم،<br>ربما تستطيعون تحديد ما هو حجمها؟</p>
+      </div>
+      <button class="hint-card__close" type="button" onclick="s2CloseHint()"><span class="nav-label"><span>عودة إلى السؤال</span></span></button>
+    </div>
+  </div>
+
+  <!-- GLOBAL - Recall popup (720-templates _global-components "RecallPopup"), ported from part 01 S21 / part 02 S3 (client round 1, part 03, 2026-10-19):
+       the conversion diagram of S12 at its true size on a 1100px board (gaps 200px, 24px captions). ONE instance for the part; here it is
+       opened by S3's always-available Recall button (the heading may come from the trigger's data-recall-title). Outside every .screen. Closes on its X,
+       the backdrop and Escape; goTo() closes it. -->
+  <div class="recall-overlay m-popup hidden" id="recall-overlay" onclick="closeRecallPopupOnBackdrop(event)">
+    <div class="recall-popup recall-popup--conv" role="dialog" aria-modal="true" aria-labelledby="recall-title">
+      <button class="recall-popup-close" type="button" onclick="closeRecallPopup()" aria-label="إغلاق"><img src="../unit-assets/img/popup-close-x.svg" alt="" width="16" height="16"></button>
+      <div class="recall-body recall-body--conv">
+        <h2 class="recall-title" id="recall-title">استعينوا بمخطط التحويلات:</h2>
+        <div class="recall-diagram" role="group" aria-label="مخطط التحويل بين وحدات القياس">
+          <div class="s12-card s12-card--r" style="left:867px; top:0"><span>1 سم³</span><span>أو</span><span>1 مل</span></div>
+          <div class="s12-conv s12-conv--up" style="left:690.75px; top:15.5px; width:152px">
+            <p class="s12-conv__cap">1000 ÷<br>للوحدة الأكبر</p>
+            <span class="s12-conv__arrow" style="left:0px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-2.svg" alt="" width="153.5" height="22.0919"></span>
+          </div>
+          <div class="s12-conv s12-conv--down" style="left:690.75px; top:152.5px; width:152px">
+            <p class="s12-conv__cap">x 1000<br>لوحدة أصغر</p>
+            <span class="s12-conv__arrow" style="left:0px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+          </div>
+          <div class="s12-card s12-card--m" style="left:433.5px; top:0"><span>1 لتر</span></div>
+          <div class="s12-conv s12-conv--up" style="left:248.25px; top:15.5px; width:170px">
+            <p class="s12-conv__cap">1000 ÷<br>للوحدة الأكبر</p>
+            <span class="s12-conv__arrow" style="left:9px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-2.svg" alt="" width="153.5" height="22.0919"></span>
+          </div>
+          <div class="s12-conv s12-conv--down" style="left:250.25px; top:152.5px; width:166px">
+            <p class="s12-conv__cap">x 1000<br>لوحدة أصغر</p>
+            <span class="s12-conv__arrow" style="left:7px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+          </div>
+          <div class="s12-card s12-card--l" style="left:0px; top:0"><span>1 م³</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- S3 feedback popup — the same shared popup. -->
+  <div class="scq-popup m-popup hidden" id="s3-popup" onpointerdown="popupPointerDown(event,'s3-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+
+  <!-- S5 / S6 feedback popups — the same shared popup. -->
+  <div class="scq-popup m-popup hidden" id="s5-popup" onpointerdown="popupPointerDown(event,'s5-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+  <div class="scq-popup m-popup hidden" id="s6-popup" onpointerdown="popupPointerDown(event,'s6-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+
+  <!-- S6 hint — the same Hint Card; slide 66's two paragraphs. -->
+  <div class="scq-hint-overlay m-popup hidden" id="s6-hint-overlay" onclick="s6CloseHintOnBackdrop(event)">
+    <div class="hint-card" role="dialog" aria-modal="true" aria-label="تلميح" aria-describedby="s6-hint-text">
+      <div class="hint-card__text">
+        <svg class="hint-card__ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+        <p class="hint-card__body" id="s6-hint-text">هل تعتقدون أنه يمكنكم شرب 5 لترات من الدواء؟</p>
+      </div>
+      <button class="hint-card__close" type="button" onclick="s6CloseHint()"><span class="nav-label"><span>عودة إلى السؤال</span></span></button>
+    </div>
+  </div>
+
+  <!-- Shared icon: the Figma hint bulb (nav button 196:6024 "Group"; the Hint Card's
+       "iocn/idea\white\large" is the same shape at 40px). currentColor fill. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ico-bulb" viewBox="0 0 26 22.2883">
+      <path fill="currentColor" d="M17.7926 2.76346C16.3676 1.37911 14.5057 0.687763 12.5489 0.815548C9.07997 1.04163 6.27288 3.9168 6.01798 7.50135C5.85649 9.77363 6.70352 11.9443 8.34376 13.4548C9.23038 14.2723 9.74018 15.465 9.74018 16.7265H11.2284H14.7733H16.2616C16.2616 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.791 2.76018L17.7926 2.76346ZM13.0001 5.54525C11.6702 5.54525 10.5856 6.66583 10.5856 8.04525C10.5856 8.46956 10.2516 8.81524 9.84151 8.81524C9.43145 8.81524 9.09739 8.46956 9.09739 8.04525C9.09739 5.8172 10.8485 4.00527 13.0001 4.00527C13.4133 4.00527 13.7474 4.35094 13.7474 4.77526C13.7474 5.19957 13.4133 5.54525 13.0001 5.54525Z"/>
+      <path fill="currentColor" d="M9.73859 19.6245C9.73859 20.3289 9.99824 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73859V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z"/>
+      <path fill="currentColor" d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46962 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46962 25.9999 8.0453C25.9999 7.62099 25.6659 7.27531 25.2558 7.27531Z"/>
+      <path fill="currentColor" d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46962 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46962 4.13701 8.0453H4.1386Z"/>
+      <path fill="currentColor" d="M20.8702 3.11398C21.0174 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.8039 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4411 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4031 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z"/>
+      <path fill="currentColor" d="M4.70374 13.1172L2.53311 14.69C2.19588 14.9341 2.11514 15.4141 2.35104 15.763C2.49512 15.9777 2.72627 16.0923 2.96217 16.0923C3.10941 16.0923 3.25824 16.0465 3.38806 15.9531L5.55869 14.3803C5.89592 14.1362 5.97667 13.6562 5.74076 13.3073C5.50486 12.9583 5.04097 12.8731 4.70374 13.1189V13.1172Z"/>
+      <path fill="currentColor" d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8905 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z"/>
+      <path fill="currentColor" d="M5.55868 1.71322L3.38806 0.140473C3.05083 -0.10363 2.58694 -0.0184393 2.35103 0.328875C2.11513 0.677827 2.19746 1.15784 2.53311 1.40194L4.70373 2.97469C4.83356 3.06971 4.98238 3.11394 5.12962 3.11394C5.36394 3.11394 5.5951 2.99926 5.74076 2.78465C5.97666 2.4357 5.89433 1.95568 5.55868 1.71158V1.71322Z"/>
+    </symbol>
+    <!-- Dropdown Menu chevron (110:1703 "v open"), currentColor. -->
+    <symbol id="ico-chevron" viewBox="0 0 16 8">
+      <path fill="currentColor" d="M15.6677 0.329895C15.5615 0.225362 15.4351 0.142392 15.2958 0.0857716C15.1566 0.0291509 15.0072 0 14.8564 0C14.7055 0 14.5562 0.0291509 14.4169 0.0857716C14.2776 0.142392 14.1513 0.225362 14.045 0.329895L8.81134 5.43783C8.7051 5.54236 8.57872 5.62533 8.43947 5.68195C8.30021 5.73857 8.15085 5.76772 8 5.76772C7.84915 5.76772 7.69979 5.73857 7.56053 5.68195C7.42128 5.62533 7.29489 5.54236 7.18866 5.43783L1.95497 0.329895C1.84874 0.225362 1.72235 0.142392 1.5831 0.0857716C1.44385 0.0291509 1.29449 0 1.14363 0C0.99278 0 0.843419 0.0291509 0.704167 0.0857716C0.564915 0.142392 0.438528 0.225362 0.332297 0.329895C0.119462 0.538854 0 0.821521 0 1.11616C0 1.4108 0.119462 1.69346 0.332297 1.90242L5.57742 7.02151C6.2202 7.64807 7.09153 8 8 8C8.90847 8 9.7798 7.64807 10.4226 7.02151L15.6677 1.90242C15.8805 1.69346 16 1.4108 16 1.11616C16 0.821521 15.8805 0.538854 15.6677 0.329895Z"/>
+    </symbol>
+  </svg>
+
+  <!-- ============ S0 (screen 0) — TransitionScreen (layout A) — slide 60 ============
+       Source: 6-10-26_מדעים_יעד 7_להפקה_140926.pptx, slide 60 (presentation order;
+       the divider before it, slide 59, reads "ID רכיב 3: methodica-science-mass-liquid-02-03").
+       The current deck per the producer (2026-10-06); the older deck's closing line
+       opened with "וכבר בהתחלה יש רמז!", which the current deck removed.
+       Presenter note: "מסך מעבר תרגול בסיסי", "שם המסך בפיגמה: TransitionScreen",
+       "הגיף שנבחר מרימה משקולות קלות".
+       Figma "TransitionScreen - A - Example" (4492:37696) — the layout the producer
+       set for this lomda's practice intro (part 02 S0, 2026-10-05).
+       Roles: lead-in -> .s1-subtitle--lead (Body/B-2, 28 SemiBold); headline
+       "3 שאלות" -> .s1-title (Heading/H-4, 64 Bold — the slide's 54pt run snaps to
+       the role's token); closing line -> .s1-subtitle (Body/B-1, 28 Regular — the
+       node's weight, not the slide's bold run). Words stay as authored on the slide.
+       "אפשר להתחיל!" is the slide's own Continue label (a text box laid over the
+       המשך button mockup at the bar's left slot), as in part 02 S0.
+       Practice set (this screen's own copy): 3 questions, pass = 2 correct —
+       = ceil(2*3/3), the 720 default formula. The score gate belongs to the
+       practice's last question (not built yet); nothing is scored here. -->
+  <section class="screen active" data-screen="0" id="s0">
+    <div class="s1-content s1-content--a s1-content--stack">
+      <div class="s1-text" data-reveal="1">
+        <div class="s1-title-group">
+          <p class="s1-subtitle s1-subtitle--lead">التمرين هو أفضل طريقة لتعزيز التعلم</p>
+          <h1 class="s1-title">3 أسئلة</h1>
+        </div>
+        <p class="s1-subtitle">أجيبوا بشكل صحيح على سؤالين أو أكثر للمتابعة.</p>
+      </div>
+      <!-- Companion clip: the learner's own character from part 01, resolved by
+           S0_CHARACTER in js/main.js (this markup names no media file).
+           Decorative: autoplay once, muted, no loop, no controls, hidden from AT. -->
+      <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+        <div class="s1-video-clip">
+          <video class="s1-char-media" id="s0-char-video" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), ungated. nav button back
+         (196:6035): first screen of the part, so it is shown only when the session
+         route trail records a part to return to (syncS0Back). -->
+    <button class="btn-continue" id="s0-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>يمكن البدء!</span></span></button>
+    <button class="btn-back" id="s0-back" type="button" hidden onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S1 (screen 1) — DropdownQuestion, single dropdown in a sentence — slide 61 ============
+       Source: 6-10-26 deck, slide 61. Presenter note: "שם המסך בפיגמה: DropdownQuestion",
+       "בסיסי - שאלה 1 מתוך 3", "ללא כפתור רמז" — so no hint: the slide's own "אפשר רמז?"
+       mockup is residue (the note line is new in this deck, and no hint text is authored),
+       as part 02 S3 (slide 55, same note).
+       Figma "DropdownQuestion - Multiple Blanks" (414:4712 Default, 415:8332 Choose,
+       416:6162 Incorrect, 731:10387 Correct), its one-sentence "question" block (4668:23063),
+       + Dropdown Menu component set (110:1703). No image on the slide, so no image column.
+       Text: "השלימו:" (the slide's bold run) -> the block's title; the empty paragraph after
+       it is the title/sentence split the Figma block already spaces (16px). Sentence =
+       "1 מ״ל =" [dropdown] "סמ״ק." Options keep the slide's order; correct = 1 (the only
+       option with a green border on the slide). -->
+  <section class="screen" data-screen="1" id="s1">
+    <!-- Progress question — Figma "Progress question" (3 items). Q1 first in DOM = rightmost. -->
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+      <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="3"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 3</span></div>
+    </nav>
+
+    <div class="dq-question" data-reveal="1">
+      <p class="dq-title" id="s1-title">أكملوا:</p>
+      <div class="dq-sentence" role="group" aria-labelledby="s1-title">
+        <span class="dq-words" id="s1-w1">1&nbsp;مل =</span>
+        <div class="dq-dropdown-wrap" id="s1-wrap-1">
+          <button class="dq-btn" id="s1-btn-1" type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="s1-w1 s1-sel-1 s1-w2" aria-controls="s1-list-1" onclick="s1Toggle(1)" onkeydown="s1BtnKey(event,1)">
+            <span class="dq-selected" id="s1-sel-1"></span>
+            <svg class="dq-chevron" width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true"><path d="M15.6677 0.329895C15.5615 0.225362 15.4351 0.142392 15.2958 0.0857716C15.1566 0.0291509 15.0072 0 14.8564 0C14.7055 0 14.5562 0.0291509 14.4169 0.0857716C14.2776 0.142392 14.1513 0.225362 14.045 0.329895L8.81134 5.43783C8.7051 5.54236 8.57872 5.62533 8.43947 5.68195C8.30021 5.73857 8.15085 5.76772 8 5.76772C7.84915 5.76772 7.69979 5.73857 7.56053 5.68195C7.42128 5.62533 7.29489 5.54236 7.18866 5.43783L1.95497 0.329895C1.84874 0.225362 1.72235 0.142392 1.5831 0.0857716C1.44385 0.0291509 1.29449 0 1.14363 0C0.99278 0 0.843419 0.0291509 0.704167 0.0857716C0.564915 0.142392 0.438528 0.225362 0.332297 0.329895C0.119462 0.538854 0 0.821521 0 1.11616C0 1.4108 0.119462 1.69346 0.332297 1.90242L5.57742 7.02151C6.2202 7.64807 7.09153 8 8 8C8.90847 8 9.7798 7.64807 10.4226 7.02151L15.6677 1.90242C15.8805 1.69346 16 1.4108 16 1.11616C16 0.821521 15.8805 0.538854 15.6677 0.329895Z" fill="currentColor"/></svg>
+            <span class="vh" id="s1-verdict-1"></span>
+          </button>
+          <ul class="dq-list hidden" id="s1-list-1" role="listbox" aria-labelledby="s1-w1">
+            <li class="dq-option" role="option" tabindex="-1" data-value="0.1" aria-selected="false" onclick="s1Select(1,'0.1')" onkeydown="s1OptKey(event,1)">0.1</li>
+            <li class="dq-option" role="option" tabindex="-1" data-value="1" aria-selected="false" onclick="s1Select(1,'1')" onkeydown="s1OptKey(event,1)">1</li>
+            <li class="dq-option" role="option" tabindex="-1" data-value="10" aria-selected="false" onclick="s1Select(1,'10')" onkeydown="s1OptKey(event,1)">10</li>
+            <li class="dq-option" role="option" tabindex="-1" data-value="1,000" aria-selected="false" onclick="s1Select(1,'1,000')" onkeydown="s1OptKey(event,1)">1,000</li>
+          </ul>
+        </div>
+        <span class="dq-words" id="s1-w2">سم³.</span>
+      </div>
+      <p class="vh" id="s1-live" aria-live="polite"></p>
+    </div>
+
+    <!-- FixedNavigationBar: "צדקתי?" (196:6033 disabled / 196:6027) checks until resolved,
+         then progresses as "שנמשיך?" (no authored label); no hint (note); nav button back (196:6035). -->
+    <button class="btn-continue" id="s1-check" type="button" disabled onclick="s1Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S2 (screen 2) — SingleChoiceQuestionImage — slide 62 ============
+       Source: 6-10-26 deck, slide 62. Presenter note: "שם המסך בפיגמה:
+       SingleChoiceQuestionImage", "תמונה: <Adobe Stock 525469434>", "בסיסי - שאלה 2 מתוך 3".
+       Figma SingleChoiceQuestionImage State 01 (196:3320) / 03 Hint (615:10605), as part 02 S2:
+       question row at y 139 (40px sides, 16px gap); 380px image frame left; text column
+       right. The slide authors one bold paragraph — the stem (Body/B-6); no blue title and
+       no context paragraph. Options keep the slide's order (top to bottom); correct = option
+       3 "כ-0.5 ליטר", the only one filled green (#4CA22E) on the slide. Option text verbatim except the space after the hyphen, removed (QA 2026-10-12)
+       ("סמ"ק" with a plain quote in option 1, as authored); number + unit joined by a no-break
+       space. Image = the same picture the slide embeds (production file "יד ובקבוק"), in the
+       higher-quality 1541 x 1021 version the producer supplied 2026-10-06 (JPEG q90 of their
+       PNG). No zoom — decided by the image's role (producer 2026-10-06): the picture is
+       decorative/ambient, the question is answered from personal knowledge, and the image
+       carries no data to read, so there is nothing to enlarge.
+       Accepted exception (producer 2026-10-06) — do not reopen in QA: on the final-wrong
+       popup the popup's default corner covers the frame's bottom ~46px (measured 2026-10-07),
+       of it ~5px of the bottle's base; no information is hidden, so layout and popup stay.
+       Hint = the slide's hint box, visible from the start (template default; the hint
+       button is on the slide and the note does not restrict it). -->
+  <section class="screen" data-screen="2" id="s2">
+    <!-- Progress question — Figma "Progress question" (3 items). Q1 first in DOM = rightmost. -->
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+      <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="3"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 3</span></div>
+    </nav>
+
+    <div class="scq-question">
+      <div class="scq-main" data-reveal="1">
+        <div class="scq-qtext">
+          <div class="scq-qbody">
+            <p class="scq-qstem" id="s2-stem">أمامكم قنينة مياه شخصية. بناءً على معرفتكم الشخصية، ما حجمها؟</p>
+          </div>
+        </div>
+        <div class="scq-answers" role="radiogroup" aria-labelledby="s2-stem">
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s2Select('a')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">حوالي 5&nbsp;سم³</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s2Select('b')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">حوالي 0.05&nbsp;لتر</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s2Select('c')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">حوالي 0.5&nbsp;لتر</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="d" onclick="s2Select('d')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">حوالي 5,000&nbsp;مل</span>
+          </button>
+        </div>
+      </div>
+      <!-- Image column — Figma "img" (8px padding, hairline over the image). -->
+      <div class="scq-img" data-reveal="2" data-reveal-fade>
+        <div class="scq-img-inner">
+          <img src="assets/img/s2-hand-water-bottle.jpg" width="1541" height="1021" alt="يد تمسك قنينة مياه شخصية من البلاستيك.">
+        </div>
+      </div>
+    </div>
+
+    <!-- FixedNavigationBar: "צדקתי?" (196:6033 disabled / 196:6027) checks until
+         resolved, then progresses as "שנמשיך?"; hint (196:6024, bulb first in the
+         markup = rightmost); nav button back (196:6035). -->
+    <button class="btn-continue" id="s2-check" type="button" disabled onclick="s2Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="scq-hint" id="s2-hint" type="button" onclick="s2OpenHint()">
+      <svg class="scq-hint-ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+      <span class="nav-label"><span>هل يمكنني الحصول على تلميح؟</span></span>
+    </button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S3 (screen 3) — ValueInputQuestion, Variant C inline-in-prose — slide 63 ============
+       Source: 6-10-26 deck, slide 63. Presenter note: "שם המסך בפיגמה: ValueInputQuestion",
+       "בסיסי - שאלה 3 מתוך 3" — the last question of the basic practice (2-of-3 gate on its
+       advance; see js/main.js).
+       Figma "Screen Templates - ValueInputQuestion" (1045:13096) + NumberValue (1027:13669).
+       Text: the slide's bold first paragraph -> the block's title; its two sentences, each
+       with one blank -> two fill-sentence rows (the empty paragraphs between them are the
+       spacing the Figma stack already gives). Answers = the slide's green runs: 3,000 and 0.5.
+       Number + unit joined by a no-break space. Hint: the slide's hint box (the note does not
+       restrict it) — visible from the start. -->
+  <section class="screen" data-screen="3" id="s3">
+    <!-- Progress question — Figma "Progress question" (3 items). Q1 first in DOM = rightmost. -->
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+      <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="3"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 3</span></div>
+    </nav>
+
+    <div class="dq-question" data-reveal="1">
+      <p class="dq-title" id="s3-title">إذا كان 1&nbsp;لتر = 1,000&nbsp;مل، إذن:</p>
+      <div class="viq-sentences" role="group" aria-labelledby="s3-title">
+        <div class="dq-sentence">
+          <span class="dq-words" id="s3-w-a1">أ. في 3&nbsp;لترات يوجد</span>
+          <span class="viq-field" id="s3-field-a" onclick="s3FocusField('a')">
+            <input class="viq-input" id="s3-input-a" type="text" inputmode="decimal" dir="ltr" autocomplete="off" spellcheck="false" aria-labelledby="s3-w-a1 s3-w-a2 s3-verdict-a">
+            <span class="viq-input-ico" id="s3-ico-a" aria-hidden="true"></span>
+          </span>
+          <span class="dq-words" id="s3-w-a2">مل.</span>
+          <span class="vh" id="s3-verdict-a"></span>
+        </div>
+        <div class="dq-sentence">
+          <span class="dq-words" id="s3-w-b1">ب. 500&nbsp;مل هي</span>
+          <span class="viq-field" id="s3-field-b" onclick="s3FocusField('b')">
+            <input class="viq-input" id="s3-input-b" type="text" inputmode="decimal" dir="ltr" autocomplete="off" spellcheck="false" aria-labelledby="s3-w-b1 s3-w-b2 s3-verdict-b">
+            <span class="viq-input-ico" id="s3-ico-b" aria-hidden="true"></span>
+          </span>
+          <span class="dq-words" id="s3-w-b2">لتر.</span>
+          <span class="vh" id="s3-verdict-b"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FixedNavigationBar: "צדקתי?" checks until resolved, then progresses as "שנמשיך?"
+         (no authored label) — disabled when the basic practice ends below its 2-of-3
+         threshold (producer 2026-10-06); hint (196:6024); nav button back (196:6035). -->
+    <button class="btn-continue" id="s3-check" type="button" disabled onclick="s3Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="scq-hint" id="s3-hint" type="button" aria-haspopup="dialog" data-recall-title="استعينوا بمخطط التحويلات:" onclick="s3OpenHint()">
+      <svg class="scq-hint-ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+      <span class="nav-label"><span>هل يمكن الاستعانة بمخطط التحويلات؟</span></span>
+    </button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S4 (screen 4) — TransitionScreen (layout A) + speech bubble — slide 64 ============
+       Source: 6-10-26 deck, slide 64. Presenter note: "מסך מעבר סטנדרטי ב'", "שם המסך בפיגמה:
+       TransitionScreen", "הגיף שנבחר כמו בתרגול סטנדרטי א' – מרימה משקולות רגילות".
+       Reached only when the basic practice passed (2 of 3; S3's gate).
+       Layout: Figma "TransitionScreen - A - Example" (4492:37696) — the layout the producer
+       set for this lomda's practice intros (part 02 S0, this part's S0): lead-in Body/B-2
+       (28 SemiBold) "יופי של עבודה!", 24px, headline Heading/H-4 (64 Bold) — the slide's
+       44pt run snaps to the role's token, and the long line wraps balanced (.s1-title--balance,
+       part 01 S9). No closing line on the slide.
+       Bubble: the slide's callout "ברור לי שתצליחו!" -> Figma "bubble text" (over=open), placed
+       to the character's left as in node 4924:25836 and part 01 S4.
+       Continue = "המשך", the slide's own button (its mockup carries that label).
+       Companion clip = part 02 S0's regular-weights "workout" pair (the note). -->
+  <section class="screen" data-screen="4" id="s4">
+    <div class="s1-content s1-content--a s1-content--stack">
+      <div class="s1-text" data-reveal="1">
+        <div class="s1-title-group">
+          <p class="s1-subtitle s1-subtitle--lead">عمل رائع!</p>
+          <h2 class="s1-title s1-title--balance">فيما يلي تمرينان إضافيان بمستوى صعوبة أعلى</h2>
+        </div>
+      </div>
+      <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+        <div class="s1-video-clip">
+          <video class="s1-char-media" id="s4-char-video" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+        </div>
+        <div class="s1-bubble s4-bubble">
+          <svg class="s1-bubble-shape" viewBox="0 0 202 94" aria-hidden="true"><path d="M1.5 89.2002V4.7998C1.50006 4.68232 1.55352 4.4188 1.97363 4.02148C2.39718 3.62093 3.09107 3.19131 4.07227 2.79883C6.02633 2.01727 8.82844 1.5 12 1.5H174C177.172 1.5 179.974 2.01727 181.928 2.79883C182.909 3.19131 183.603 3.62093 184.026 4.02148C184.446 4.4188 184.5 4.68232 184.5 4.7998V39.5996C184.5 40.1531 184.804 40.6584 185.286 40.9189L185.385 40.9678L198.302 46.7812L185.398 52.4258C184.887 52.6498 184.544 53.1382 184.504 53.6895L184.5 53.7998V89.2002C184.5 89.3177 184.446 89.5812 184.026 89.9785C183.603 90.3791 182.909 90.8087 181.928 91.2012C179.974 91.9827 177.172 92.5 174 92.5H12C8.82844 92.5 6.02633 91.9827 4.07227 91.2012C3.09107 90.8087 2.39718 90.3791 1.97363 89.9785C1.55352 89.5812 1.50006 89.3177 1.5 89.2002Z"/></svg>
+          <p class="s1-bubble-text">أنا واثق من أنكم ستنجحون!</p>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), ungated; nav button back (196:6035). -->
+    <button class="btn-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S5 (screen 5) — DropdownQuestion, three blanks in one sentence — slide 65 ============
+       Source: 6-10-26 deck, slide 65. Presenter note: "שם המסך בפיגמה: DropdownQuestion",
+       "סטנדרטי ב' - שאלה 1 מתוך 2". Figma: as S1 (414:4712 + 110:1703).
+       Text: "השלימו את הערכים:" (bold) -> the block's title; the slide's empty paragraphs are
+       the title/sentence split the Figma block spaces (16px). The slide authors ONE equation on purpose (producer 2026-10-06: kept as a single
+       chain, not split per row): "3 ליטר = ▾ מ״ל = ▾ סמ״ק = ▾ מ״ק" — one fill-sentence row; with
+       three 180px dropdowns it runs wider than the 792px block, so it extends left (no image
+       column on this screen).
+       Options keep the slide's order (0.003 / 3 / 300 / 3,000 in every list). Correct = the
+       green option in each list: 3,000 / 3,000 / 0.003. The "רמת חשיבה / טקסט" box above the
+       slide is template residue, not learner content. Hint: the slide's hint box. -->
+  <section class="screen" data-screen="5" id="s5" data-practice="b">
+    <!-- Progress question — advanced practice (2 items; no score gate). Q1 first in DOM = rightmost. -->
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+    </nav>
+
+    <div class="dq-question" data-reveal="1">
+      <p class="dq-title" id="s5-title">أكملوا القيم:</p>
+      <div class="dq-sentence" role="group" aria-labelledby="s5-title">
+        <span class="dq-words" id="s5-w1">3&nbsp;لترات =</span>
+        <div class="dq-dropdown-wrap" id="s5-wrap-1">
+          <button class="dq-btn" id="s5-btn-1" type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="s5-w1 s5-sel-1 s5-w2" aria-controls="s5-list-1" onclick="s5Toggle(1)" onkeydown="s5BtnKey(event,1)">
+          <span class="dq-selected" id="s5-sel-1"></span>
+          <svg class="dq-chevron" width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true"><use href="#ico-chevron"/></svg>
+          <span class="vh" id="s5-verdict-1"></span>
+          </button>
+          <ul class="dq-list hidden" id="s5-list-1" role="listbox" aria-labelledby="s5-w1">
+          <li class="dq-option" role="option" tabindex="-1" data-value="0.003" aria-selected="false" onclick="s5Select(1,'0.003')" onkeydown="s5OptKey(event,1)">0.003</li>
+          <li class="dq-option" role="option" tabindex="-1" data-value="3" aria-selected="false" onclick="s5Select(1,'3')" onkeydown="s5OptKey(event,1)">3</li>
+          <li class="dq-option" role="option" tabindex="-1" data-value="300" aria-selected="false" onclick="s5Select(1,'300')" onkeydown="s5OptKey(event,1)">300</li>
+          <li class="dq-option" role="option" tabindex="-1" data-value="3,000" aria-selected="false" onclick="s5Select(1,'3,000')" onkeydown="s5OptKey(event,1)">3,000</li>
+          </ul>
+          </div>
+        <span class="dq-words" id="s5-w2">مل =</span>
+        <div class="dq-dropdown-wrap" id="s5-wrap-2">
+          <button class="dq-btn" id="s5-btn-2" type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="s5-w2 s5-sel-2 s5-w3" aria-controls="s5-list-2" onclick="s5Toggle(2)" onkeydown="s5BtnKey(event,2)">
+          <span class="dq-selected" id="s5-sel-2"></span>
+          <svg class="dq-chevron" width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true"><use href="#ico-chevron"/></svg>
+          <span class="vh" id="s5-verdict-2"></span>
+          </button>
+          <ul class="dq-list hidden" id="s5-list-2" role="listbox" aria-labelledby="s5-w2">
+          <li class="dq-option" role="option" tabindex="-1" data-value="0.003" aria-selected="false" onclick="s5Select(2,'0.003')" onkeydown="s5OptKey(event,2)">0.003</li>
+          <li class="dq-option" role="option" tabindex="-1" data-value="3" aria-selected="false" onclick="s5Select(2,'3')" onkeydown="s5OptKey(event,2)">3</li>
+          <li class="dq-option" role="option" tabindex="-1" data-value="300" aria-selected="false" onclick="s5Select(2,'300')" onkeydown="s5OptKey(event,2)">300</li>
+          <li class="dq-option" role="option" tabindex="-1" data-value="3,000" aria-selected="false" onclick="s5Select(2,'3,000')" onkeydown="s5OptKey(event,2)">3,000</li>
+          </ul>
+          </div>
+        <span class="dq-words" id="s5-w3">سم³ =</span>
+        <div class="dq-dropdown-wrap" id="s5-wrap-3">
+          <button class="dq-btn" id="s5-btn-3" type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="s5-w3 s5-sel-3 s5-w4" aria-controls="s5-list-3" onclick="s5Toggle(3)" onkeydown="s5BtnKey(event,3)">
+          <span class="dq-selected" id="s5-sel-3"></span>
+          <svg class="dq-chevron" width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true"><use href="#ico-chevron"/></svg>
+          <span class="vh" id="s5-verdict-3"></span>
+          </button>
+          <ul class="dq-list hidden" id="s5-list-3" role="listbox" aria-labelledby="s5-w3">
+          <li class="dq-option" role="option" tabindex="-1" data-value="0.003" aria-selected="false" onclick="s5Select(3,'0.003')" onkeydown="s5OptKey(event,3)">0.003</li>
+          <li class="dq-option" role="option" tabindex="-1" data-value="3" aria-selected="false" onclick="s5Select(3,'3')" onkeydown="s5OptKey(event,3)">3</li>
+          <li class="dq-option" role="option" tabindex="-1" data-value="300" aria-selected="false" onclick="s5Select(3,'300')" onkeydown="s5OptKey(event,3)">300</li>
+          <li class="dq-option" role="option" tabindex="-1" data-value="3,000" aria-selected="false" onclick="s5Select(3,'3,000')" onkeydown="s5OptKey(event,3)">3,000</li>
+          </ul>
+          </div>
+        <span class="dq-words" id="s5-w4">م³</span>
+      </div>
+      <p class="vh" id="s5-live" aria-live="polite"></p>
+    </div>
+
+    <!-- FixedNavigationBar: "צדקתי?" checks until resolved, then "שנמשיך?"; hint; back. -->
+    <button class="btn-continue" id="s5-check" type="button" disabled onclick="s5Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="scq-hint" id="s5-hint" type="button" style="visibility:hidden" aria-haspopup="dialog" data-recall-title="استخدموا مخطط التحويلات للإجابة على السؤال:" onclick="s5OpenHint()">
+      <svg class="scq-hint-ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+      <span class="nav-label"><span>هل يمكن الاستعانة بمخطط التحويلات؟</span></span>
+    </button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S6 (screen 6) — SingleChoiceQuestion (no image) — slide 66 ============
+       Source: 6-10-26 deck, slide 66. Presenter note: "שם המסך בפיגמה: SingleChoiceQuestion",
+       "סטנדרטי ב' - שאלה 2 מתוך 2" — the last question of the advanced practice: once resolved,
+       its advance is the hop to part 04 for every learner — no score gate (720: advanced
+       practice has no threshold; producer 2026-10-06).
+       Figma SingleChoiceQuestion (as S2, 196:3320, with no image column): context Body/B-4,
+       stem Body/B-6, answers column. Options verbatim in the slide's order (option 1's
+       "יחידת מידה" corrects the deck's "יחידה מידה", producer 2026-10-06; the missing final
+       periods are as authored). Correct = option 2, the only
+       option with a green frame and a filled green radio (option 3's slot is covered on the
+       slide by a stray blue frame). Hint: the slide's hint box. -->
+  <section class="screen" data-screen="6" id="s6" data-practice="b">
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+    </nav>
+
+    <div class="scq-question">
+      <div class="scq-main" data-reveal="1">
+        <div class="scq-qtext">
+          <div class="scq-qbody">
+            <p>كُتب في مقال صحفي: "تلقّى المريض جرعة مقدارها 5&nbsp;لترات من الشراب الدوائي<span class="q-close">"</span>.</p>
+            <p class="scq-qstem" id="s6-stem">ما المشكلة في هذه الجملة؟</p>
+          </div>
+        </div>
+        <div class="scq-answers" role="radiogroup" aria-labelledby="s6-stem">
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s6Select('a')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">لا مشكلة. اللتر هو وحدة قياس مناسبة لحجم الدواء.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s6Select('b')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">اللتر ليس وحدة قياس مناسبة لحجم الدواء.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s6Select('c')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">يجب تغيير القيمة من 5&nbsp;لترات إلى 5,000&nbsp;سم³.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="d" onclick="s6Select('d')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">5&nbsp;لترات ليست جرعة مقبولة للدواء، يجب أن تكون 1&nbsp;لتر.</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FixedNavigationBar: "צדקתי?" checks until resolved, then "שנמשיך?" (ungated by score —
+         advanced practice, producer 2026-10-06); hint; back. -->
+    <button class="btn-continue" id="s6-check" type="button" disabled onclick="s6Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="scq-hint" id="s6-hint" type="button" style="visibility:hidden" onclick="s6OpenHint()">
+      <svg class="scq-hint-ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+      <span class="nav-label"><span>هل يمكنني الحصول على تلميح؟</span></span>
+    </button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+
+  <!-- ═══ "מצאתם בעיה?" — issue-report dialogs (ADDING-REPORTING-AND-RESUME.md §7) ═══
+       Copied verbatim from methodica-science-body-matter-01-02 (2026-10-19 state). Last children of
+       #app, outside every .screen: .report-modal-overlay is position:absolute; inset:0 against #app,
+       so it aligns with the scaled canvas. All three carry `hidden`; behaviour in
+       ../unit-js/25-report.js (wires #flag-btn by delegation — no onclick on the flag), style in
+       ../unit-css/25-report.css. -->
+  <div id="report-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" type="button" onclick="tryCloseReportModal()" aria-label="إغلاق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">الإبلاغ عن مشكلة</h2>
+      <p class="report-modal-body">هل هناك شيء غير واضح أو لا يعمل كما يجب؟<br>أبلغونا بما حدث لنتمكن من معالجة المشكلة.</p>
+
+      <div class="report-field">
+        <label class="report-label" for="report-type"><span class="required-star">*</span> ما نوع المشكلة</label>
+        <div class="report-custom-select" id="report-type-wrapper">
+          <button class="report-select-btn is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="report-select-value">اختاروا نوع المشكلة</span>
+          </button>
+          <ul class="report-select-list" role="listbox" hidden>
+            <li class="report-select-option" data-value="technical" role="option">عطل تقني أو شيء ما لا يعمل</li>
+            <li class="report-select-option" data-value="unclear" role="option">شيء غير واضح لي</li>
+            <li class="report-select-option" data-value="other" role="option">آخر</li>
+          </ul>
+          <input type="hidden" id="report-type" value="">
+        </div>
+        <span class="report-field-error" id="report-type-error" hidden>اختاروا نوع المشكلة</span>
+      </div>
+
+      <div class="report-field">
+        <label class="report-label" for="report-text"><span class="required-star">*</span> ماذا حدث؟</label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="فصّلوا ماذا حدث لنتمكن من فهم المشكلة" onblur="reportTextBlur()"></textarea>
+        <span class="report-field-error" id="report-text-error" hidden>اكتبوا ماذا حدث</span>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="tryCloseReportModal()">إلغاء</button>
+        <button class="report-submit-btn" type="button" onclick="submitReport()" disabled>إرسال التبليغ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מצב "הדיווח נשלח". דיאלוג נפרד מדיאלוג הנטישה שמתחתיו — אין לאחד ביניהם. -->
+  <div id="report-thanks-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-thanks-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-thanks-title">تم إرسال التبليغ، شكرًا!</h2>
+      <p class="report-modal-body">تلقّينا التبليغ وسنعالجه في أقرب وقت.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" type="button" onclick="closeReportThanks()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- אישור נטישה: נפתח רק כשיש קלט שלא נשלח. -->
+  <div id="report-confirm-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-confirm-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-confirm-title">هل تريدون إغلاق النافذة فعلًا؟</h2>
+      <p class="report-modal-body">إذا ضغطتم على إغلاق فلن يتم إرسال التبليغ</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="forceCloseReportModal()">إغلاق النافذة</button>
+        <button class="report-submit-btn" type="button" onclick="backToReportForm()">أريد التبليغ</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+<!-- 720 platform layer (reporting / resume): shared files first, then the part's own scripts
+     (js/motion.js before js/main.js, as before), 90-boot last. Same ?v= in every part
+     (guide §3.4); 90-boot.js is a separate tag on purpose (§3.2). -->
+<script src="../unit-js/10-identity.js?v=20261102b"></script>
+<script src="../unit-js/20-xapi.js?v=20261102b"></script>
+<script src="../unit-js/25-report.js?v=20261102b"></script>
+<script src="../unit-js/40-resume.js?v=20261102b"></script>
+<script src="../unit-js/50-loader.js?v=20261102b"></script>
+<script src="js/motion.js?v=20261102b"></script>
+<script src="js/main.js?v=20261102b"></script>
+<script src="../unit-js/90-boot.js?v=20261102b"></script></body>
+</html>

@@ -1,0 +1,299 @@
+/* methodica-ar-science-mass-liquid-02-04
+   Component 04 — the transition into the in-class volume-measuring task
+   (script slides 67-69). Global chrome (tokens, canvas, FixedNavigationBar,
+   nav buttons, Report Problem) is ported verbatim from this lomda's part 03
+   so the parts carry identical chrome across the part boundary.
+   Built: S0 (slide 68, TransitionScreen), S1 (slide 69, task instructions). */
+
+/* ===== Font — Assistant, served locally (assets/fonts) so the text never depends on the school's internet connection
+   (producer 2026-10-06). Only the weights this part uses: 400 / 600 / 700. ===== */
+
+/* ===== Subject theme tokens (Science) — 720-design-guidelines / colors-and-gradients.md ===== */
+:root {
+  --subject-100: #D4F3FF;
+  --subject-300: #B9ECFF;
+  --subject-500: #019DE5;
+  --subject-700: #007AC6;
+  --green-80: #609E12;     /* Feedback/Correct/300 */
+  --green-5:  #EDF8ED;
+  --red-100:  #B20010;     /* Feedback/Incorrect/300 */
+  --red-5:    #FFF0F4;
+  --feedback-correct-200:   #F2FFE8;
+  --feedback-incorrect-200: #FFDBDC;
+  --natural-300: #ECECEC;
+  --gray-100: #AEAEAE;     /* Natural/600 */
+  --text:     #222222;
+  --black-100:#303030;     /* Natural/800 */
+
+  --canvas-w: 1280px;
+  --canvas-h: 710px;
+  --bar-h: 74px;
+}
+
+/* ===== Reset / base ===== */
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  direction: rtl;
+  font-family: Calibri, Arial, sans-serif;
+  background: #fff;
+  color: var(--text);
+}
+button { font-family: inherit; cursor: pointer; }
+img { -webkit-user-drag: none; user-select: none; }
+[hidden] { display: none !important; }
+
+/* ===== Canvas & scaling engine ===== */
+#app {
+  width: var(--canvas-w);
+  height: var(--canvas-h);
+  position: absolute;
+  top: 0; left: 0;
+  transform-origin: top left;
+  background: #fff;
+  overflow: hidden;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background: #fff;
+}
+.screen.active { display: block; }
+/* FixedNavigationBar — Figma 196:6351: 74px, white, 0.4px Natural/600 top line */
+.screen::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: var(--bar-h);
+  background: #fff;
+  border-top: 0.4px solid var(--gray-100);
+  z-index: 5;
+}
+
+/* ===== nav button — Figma 196:6020 =====
+   39px pill, min-width 140px, 20px horizontal padding, label Body/B-7
+   (Regular 20) -> Body/B-8 (SemiBold 20) on hover. Sits in the
+   FixedNavigationBar slot: 24px bar padding + 10px slot padding = 34px
+   from the canvas edge, vertically centred in the 74px bar. */
+.btn-continue, .btn-back, .scq-hint {
+  position: absolute;
+  bottom: calc((var(--bar-h) - 39px) / 2);
+  height: 39px; min-width: 140px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 20px;
+  border-radius: 1000px;
+  font: 400 20px Calibri, Arial, sans-serif;
+  border: none;
+  z-index: 10;
+  white-space: nowrap;
+}
+.btn-continue:not(:disabled):hover, .btn-back:hover, .scq-hint:hover { font-weight: 600; }
+/* Hint button — Figma nav button hint (196:6024 / hover 1645:18704): white, 1px
+   Subject/700, 7.5/20px padding, 6px gap, bulb 26 x 22.3 to the RIGHT of the label
+   (first in the markup, direction rtl); hover = SemiBold label only. Sits 16px left
+   of the 140px check button in the bar's left slot (34 + 140 + 16). */
+.scq-hint {
+  left: 250px; gap: 6px; padding: 7.5px 20px; direction: rtl;   /* was 190px: the longer Arabic check label ("هل إجابتي صحيحة؟", ~181px) overlapped it */
+  background: #fff; border: 1px solid var(--subject-700); color: var(--subject-700);
+}
+.scq-hint-ico { flex: 0 0 26px; width: 26px; height: 22.2883px; }
+.btn-continue {
+  left: 34px;
+  background: linear-gradient(to bottom, #005FBE 9%, #0059B2 23.361%, #003971 100%); /* Subject/Gradient/Science */
+  color: #fff;
+}
+.btn-continue:disabled {
+  background: var(--gray-100);
+  color: var(--black-100);
+  cursor: not-allowed;
+}
+.btn-back {
+  right: 34px;
+  background: #fff;
+  border: 1px solid var(--subject-700);
+  color: var(--subject-700);
+}
+.btn-back:hover { border-width: 1.5px; }
+
+/* Figma "nav label" (2567:20391): an invisible SemiBold copy of the label
+   reserves the hover width so the pill never resizes between states.
+   data-label is filled from the visible text by initNavLabels(). */
+.nav-label { display: inline-grid; }
+.nav-label::before {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  block-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.nav-label > span { grid-area: 1 / 1; }
+
+/* ===== Report Problem — Figma 207:3590 (global, outside all screens) =====
+   88x68 component: icon = exact Figma SVG export of "Report Problem icon"
+   207:3567 (default) / 207:3566 (hover); label is live text. Pinned
+   top-left 32/32 — the component's position in every current approved screen
+   template (4492:37696, 4905:25066, 414:4712, 1045:13096; producer 2026-10-06,
+   replacing the earlier 16/16). */
+.flag-btn {
+  position: absolute; top: 32px; left: 32px; z-index: 30;
+  width: 88px; height: 68px;
+  padding: 10px 4px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+}
+.flag-btn__icon {
+  flex: 0 0 38px; width: 38px; height: 38px;
+  background: url('../../unit-assets/img/report-problem-icon-default.svg') no-repeat center / contain;
+}
+.flag-btn__label {
+  display: none;
+  width: 80px;
+  font: 600 14px/18px Calibri, Arial, sans-serif; /* 18px line box: the 10px cap-height box made the two Arabic lines collide (producer 2026-10-26) */
+  color: var(--subject-500);
+  text-align: center;
+  direction: rtl;
+}
+.flag-btn:hover, .flag-btn:focus-visible { padding-bottom: 10px; height: auto; }
+.flag-btn:hover .flag-btn__icon,
+.flag-btn:focus-visible .flag-btn__icon { background-image: url('../../unit-assets/img/report-problem-icon-hover.svg'); }
+.flag-btn:hover .flag-btn__label,
+.flag-btn:focus-visible .flag-btn__label { display: block; }
+
+/* ===== TransitionScreen — 720-templates TransitionScreen.md =====
+   Same component CSS as parts 02-03 (base = ShortText node 4905:25066; this
+   lomda's transitions use the Layout A modifier below). Text roles are
+   trimmed to cap height/baseline, Natural/800. */
+.s1-content { position: absolute; inset: 0; }
+.s1-text {
+  position: absolute; top: calc(50% - 355px + 115px); left: calc(50% - 395px); width: 790px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  text-align: center; direction: rtl; color: var(--black-100);
+}
+.s1-subtitle { margin: 0; font: 400 28px Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }
+.s1-title { margin: 0; font: 700 64px Calibri, Arial, sans-serif; text-box: trim-both cap alphabetic; }
+/* 640x360 companion box (production convention for 16:9 clips; the node's
+   298x279 rectangle is an image placeholder), flush with the bar, centred.
+   .s1-video-clip owns the clipping so an overlay could extend past the
+   box. Fit shim: --char-scale / --char-shift-y, no-op by default. */
+.s1-video-wrap { position: absolute; left: calc(50% - 320px); bottom: var(--bar-h); width: 640px; height: 360px; }
+.s1-video-clip { position: absolute; inset: 0; overflow: hidden; }
+.s1-char-media {
+  display: block; width: 100%; height: 100%; object-fit: contain;
+  transform: translateY(var(--char-shift-y, 0px)) scale(var(--char-scale, 1)); transform-origin: center center;
+  pointer-events: none;
+}
+
+/* Layout A — Figma "TransitionScreen - A - Example" (4492:37696), producer
+   2026-10-05 for this lomda's practice intros. Text frame 810 wide at y 70
+   of the centred frame: a "title" group (lead-in Body/B-2 28 SemiBold,
+   24px gap, headline Heading/H-4 64 Bold), then 48px to the closing line
+   Body/B-1 28 Regular. Every line trimmed to cap height/baseline (node:
+   lead-in 21px, headline 48px, closing 21px tall; block 162px). */
+.s1-content--a { --s1-text-top: 70px; }
+.s1-content--a .s1-text { width: 810px; left: calc(50% - 405px); gap: 48px; }
+.s1-title-group { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; }
+.s1-subtitle--lead { font-weight: 600; }
+
+/* A headline wider than its block wraps into balanced lines instead of orphaning
+   its last word (part 01 S9, producer 2026-10-01). Same token. */
+.s1-title--balance { text-wrap: balance; }
+
+/* Stacked modifier — text top at the layout's y of the centred frame,
+   640x360 box flush with the bar. Where the stack does not fit (no
+   `text-box` support, so the lines keep their full line boxes), the box
+   shrinks at 16:9 instead of the text running into the character —
+   TransitionScreen.md "Vertical fit at the canvas floor", step 3.
+   Typography is never reduced. */
+.s1-content--stack {
+  top: calc(50% - 355px + var(--s1-text-top, 115px)); bottom: var(--bar-h);
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+}
+.s1-content--stack .s1-text { position: static; flex: none; }
+.s1-content--stack .s1-video-wrap {
+  position: relative; left: auto; bottom: auto;
+  height: 360px; width: auto; aspect-ratio: 16 / 9;
+  flex: 0 1 auto; min-height: 0;
+}
+
+
+/* ===== S1 — TextWithCallout local variant (slide 69) =====
+   Frame = Figma TextWithCallout (5361:36464): 1280 x 710, content 40px from each side.
+   Section Title = Heading/H-6 40 Bold #303030, right edge 1240, in the Figma 30px frame at
+   y 64 (cap-trimmed, centred in it); text block from y 118 (Figma row "1"). Body = Body/B-4 24 Regular, emphasis Body/B-6 24 Bold. Gaps are set between
+   the cap-trimmed lines (24px title -> text and between the text groups). */
+.hidden { display: none !important; }
+.s1t-frame { position: absolute; left: calc(50% - 640px); top: calc(50% - 355px); width: 1280px; height: 710px; direction: rtl; color: var(--black-100); }
+.s1t-title {
+  position: absolute; right: 40px; top: 64px; height: 30px; margin: 0;
+  display: flex; align-items: center;
+  font: 700 40px/normal Calibri, Arial, sans-serif; text-align: right; white-space: nowrap;
+}
+.s1t-title-text { display: block; margin: 0; font: inherit; text-box: trim-both cap alphabetic; }
+.s1t-text {
+  position: absolute; left: 40px; right: 40px; top: 118px;
+  display: flex; flex-direction: column; gap: 12px;
+  font: 400 24px/36px Calibri, Arial, sans-serif; text-align: right;
+}
+.s1t-text p { margin: 0; text-box: trim-both cap alphabetic; }
+.s1t-text strong, .s1t-lead { font-weight: 700; }
+.s1t-lead { margin-top: 12px !important; }
+
+/* Inline tooltip on the term it explains — 720-templates _global-components "Inline tooltip icons in
+   RTL Hebrew text": .tooltip-word wraps the whole word (prefix included), the icon is an overlay
+   anchored above its last (leftmost) letter (top -8px, centred on the term's left edge), the approved
+   15px Tooltip vector is one self-contained SVG. Term = bold + Subject/700 + underline with skip-ink
+   none (continuous stroke). Opens on hover / focus, downward: the term sits near the top of the canvas. */
+.tooltip-word { position: relative; display: inline-block; }
+.term-underline {
+  font-weight: 700; color: var(--subject-700);
+  text-decoration: underline; text-decoration-skip-ink: none; cursor: help;
+}
+.term-info {
+  position: absolute; top: -8px; left: 0; transform: translateX(-50%);
+  display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; cursor: help; z-index: 16;
+}
+.term-info:hover, .term-info:focus, .term-info:focus-within { z-index: 40; }
+.term-info:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 3px; border-radius: 50%; }
+.term-info-i { flex: 0 0 15px; width: 15px; height: 15px; display: block; }
+.term-tooltip {
+  position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); z-index: 40;
+  width: 260px; padding: 18px 15px; box-sizing: border-box;
+  background: #fff; border: 1px solid var(--gray-100); border-radius: 12px; box-shadow: 0 2px 4px rgba(0, 0, 0, .08);
+  font: 400 18px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: right; direction: rtl; white-space: normal;
+  display: none;
+}
+.tooltip-word:hover .term-tooltip,
+.term-info:hover .term-tooltip,
+.term-info:focus .term-tooltip,
+.term-info:focus-within .term-tooltip { display: block; }
+/* Escape dismisses an open bubble until the pointer / focus leaves (WCAG 1.4.13). */
+.tooltip-word.is-dismissed .term-tooltip { display: none; }
+.term-line { display: block; }
+.term-line + .term-line { margin-top: 8px; }
+
+/* Table — 4 equal columns across the 1200px content width, 1.5px Natural/800 lines as authored. */
+.s1t-table {
+  position: absolute; left: 40px; right: 40px; top: 262px; width: 1200px;
+  border-collapse: collapse; table-layout: fixed;
+  font: 400 24px/normal Calibri, Arial, sans-serif; color: var(--black-100); text-align: right;
+}
+.s1t-table th, .s1t-table td {
+  width: 25%; padding: 8px 12px; border: 1.5px solid var(--black-100); vertical-align: top; height: 44px;
+}
+.s1t-table th { font-weight: 700; }
+.s1t-table strong { font-weight: 700; }
+.s1t-line { display: block; line-height: 32px; }
+.s1t-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+
+/* Lettered items ("א." ...): hanging indent (QA comment chen, producer 2026-10-12). The label hangs outside the text,
+   so every line of the item - wrapped or after a <br> - starts at the same edge. The label box is the widest bold
+   label ("א." 0.91em) + a space (0.2em); the space sits inside it, so the text never gets a second gap. Inner elements
+   reset the indent (text-indent is inherited by inline-blocks and absolute boxes such as the term tooltip). */
+.item-hang { padding-inline-start: 1.15em; text-indent: -1.15em; }
+.item-hang * { text-indent: 0; }
+.item-hang > .item-label { display: inline-block; width: 1.15em; }

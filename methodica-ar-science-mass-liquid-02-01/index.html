@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وحدات الحجم واستخداماتها — methodica-ar-science-mass-liquid-02-01</title>
+<link rel="stylesheet" href="css/style.css?v=20261102b">
+<link rel="stylesheet" href="css/motion.css?v=20261102b">
+<link rel="stylesheet" href="../unit-css/25-report.css?v=20261102b">
+</head>
+<body>
+<!-- ═══ Boot cover (ADDING-REPORTING-AND-RESUME.md §8.11) ═══
+     Hides screen 0 while a saved position is read and painted (Phase 4, resume), so the learner never
+     sees the first screen flash before the restored one. A SIBLING of #app (scaleApp transforms #app).
+     unit-js/50-loader.js removes it on every exit path (dropBootCover); this inline net removes it
+     after 800 ms regardless — or, while a restore is in flight (window.__resumeInFlight), waits for
+     it up to a hard 6 s. Copied from methodica-science-body-matter-01 (← mass-weight-01). -->
+<div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
+<script>
+(function () {
+  var t0 = Date.now();
+  function tick() {
+    var c = document.getElementById('boot-cover');
+    if (!c || !c.parentNode) return;
+    if (window.__resumeInFlight && Date.now() - t0 < 6000) { setTimeout(tick, 100); return; }
+    c.parentNode.removeChild(c);
+  }
+  setTimeout(tick, 800);
+})();
+</script>
+<div id="app">
+
+  <!-- Global: Report Problem (Figma 207:3590). Visual only — no behaviour
+       wired yet; the Pop-up variant is intentionally not implemented. -->
+  <button class="flag-btn" id="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+    <span class="flag-btn__icon" aria-hidden="true"></span>
+    <span class="flag-btn__label" aria-hidden="true">هل وجدتم مشكلة؟</span>
+  </button>
+
+  <!-- Shared icon: the Figma hint bulb (nav button 196:6024 "Group"; the Hint Card's
+       "iocn/idea\white\large" is the same shape at 40px). currentColor fill. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ico-bulb" viewBox="0 0 26 22.2883">
+      <path fill="currentColor" d="M17.7926 2.76346C16.3676 1.37911 14.5057 0.687763 12.5489 0.815548C9.07997 1.04163 6.27288 3.9168 6.01798 7.50135C5.85649 9.77363 6.70352 11.9443 8.34376 13.4548C9.23038 14.2723 9.74018 15.465 9.74018 16.7265H11.2284H14.7733H16.2616C16.2616 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.791 2.76018L17.7926 2.76346ZM13.0001 5.54525C11.6702 5.54525 10.5856 6.66583 10.5856 8.04525C10.5856 8.46956 10.2516 8.81524 9.84151 8.81524C9.43145 8.81524 9.09739 8.46956 9.09739 8.04525C9.09739 5.8172 10.8485 4.00527 13.0001 4.00527C13.4133 4.00527 13.7474 4.35094 13.7474 4.77526C13.7474 5.19957 13.4133 5.54525 13.0001 5.54525Z"/>
+      <path fill="currentColor" d="M9.73859 19.6245C9.73859 20.3289 9.99824 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73859V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z"/>
+      <path fill="currentColor" d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46962 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46962 25.9999 8.0453C25.9999 7.62099 25.6659 7.27531 25.2558 7.27531Z"/>
+      <path fill="currentColor" d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46962 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46962 4.13701 8.0453H4.1386Z"/>
+      <path fill="currentColor" d="M20.8702 3.11398C21.0174 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.8039 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4411 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4031 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z"/>
+      <path fill="currentColor" d="M4.70374 13.1172L2.53311 14.69C2.19588 14.9341 2.11514 15.4141 2.35104 15.763C2.49512 15.9777 2.72627 16.0923 2.96217 16.0923C3.10941 16.0923 3.25824 16.0465 3.38806 15.9531L5.55869 14.3803C5.89592 14.1362 5.97667 13.6562 5.74076 13.3073C5.50486 12.9583 5.04097 12.8731 4.70374 13.1189V13.1172Z"/>
+      <path fill="currentColor" d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8905 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z"/>
+      <path fill="currentColor" d="M5.55868 1.71322L3.38806 0.140473C3.05083 -0.10363 2.58694 -0.0184393 2.35103 0.328875C2.11513 0.677827 2.19746 1.15784 2.53311 1.40194L4.70373 2.97469C4.83356 3.06971 4.98238 3.11394 5.12962 3.11394C5.36394 3.11394 5.5951 2.99926 5.74076 2.78465C5.97666 2.4357 5.89433 1.95568 5.55868 1.71158V1.71322Z"/>
+    </symbol>
+  </svg>
+
+  <!-- GLOBAL - Recall popup (720-templates _global-components "RecallPopup"): ONE instance for the part, opened by the
+       "אפשר להיזכר בתרשים ההמרות?" button of S21 (client round 1, 2026-10-19). Content = S12's conversion diagram, rebuilt
+       with S12's own classes (.s12-card / .s12-conv, 24px captions) on a 1100px board: the two gaps are 200px instead of
+       S12's 234px so the three 233px cards fit the 1161px panel (as .s16-pop) at the diagram's true size, not scaled down.
+       Outside every .screen. Closes on its X, the backdrop and Escape; goTo() closes it. -->
+  <div class="recall-overlay m-popup hidden" id="recall-overlay" onclick="closeRecallPopupOnBackdrop(event)">
+    <div class="recall-popup recall-popup--conv" role="dialog" aria-modal="true" aria-labelledby="recall-title">
+      <button class="recall-popup-close" type="button" onclick="closeRecallPopup()" aria-label="إغلاق"><img src="../unit-assets/img/popup-close-x.svg" alt="" width="16" height="16"></button>
+      <div class="recall-body recall-body--conv">
+        <h2 class="recall-title" id="recall-title">تذكّروا مخطط التحويلات:</h2>
+        <div class="recall-diagram" role="group" aria-label="مخطط التحويل بين وحدات القياس">
+          <div class="s12-card s12-card--r" style="left:867px; top:0"><span>1 سم³</span><span>أو</span><span>1 مل</span></div>
+          <div class="s12-conv s12-conv--up" style="left:690.75px; top:15.5px; width:152px">
+            <p class="s12-conv__cap">1000 ÷<br>للوحدة الأكبر</p>
+            <span class="s12-conv__arrow" style="left:0px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-2.svg" alt="" width="153.5" height="22.0919"></span>
+          </div>
+          <div class="s12-conv s12-conv--down" style="left:690.75px; top:152.5px; width:152px">
+            <p class="s12-conv__cap">x 1000<br>لوحدة أصغر</p>
+            <span class="s12-conv__arrow" style="left:0px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+          </div>
+          <div class="s12-card s12-card--m" style="left:433.5px; top:0"><span>1 لتر</span></div>
+          <div class="s12-conv s12-conv--up" style="left:248.25px; top:15.5px; width:170px">
+            <p class="s12-conv__cap">1000 ÷<br>للوحدة الأكبر</p>
+            <span class="s12-conv__arrow" style="left:9px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-2.svg" alt="" width="153.5" height="22.0919"></span>
+          </div>
+          <div class="s12-conv s12-conv--down" style="left:250.25px; top:152.5px; width:166px">
+            <p class="s12-conv__cap">x 1000<br>لوحدة أصغر</p>
+            <span class="s12-conv__arrow" style="left:7px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+          </div>
+          <div class="s12-card s12-card--l" style="left:0px; top:0"><span>1 م³</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 feedback popup — Figma "Popup Feedback" size=Short, type=Correct /
+       Incorrect (217:4133 / 217:4134). Outside every .screen (shared popup
+       contract); no close control (No manual close). -->
+  <div class="scq-popup m-popup hidden" id="s2-popup" onpointerdown="popupPointerDown(event,'s2-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S7 feedback popup — the shared .scq-popup (Figma "Popup Feedback" size=Short,
+       Correct / Incorrect, MyAnswerBtn / CorrectAnswerBtn). Outside every .screen;
+       no close control (No manual close). -->
+  <div class="scq-popup m-popup hidden" id="s7-popup" onpointerdown="popupPointerDown(event,'s7-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S17 feedback popup — the shared .scq-popup (Figma "Popup Feedback" size=Short, Correct / Incorrect).
+       Outside every .screen; no close control (No manual close). -->
+  <div class="scq-popup m-popup hidden" id="s17-popup" onpointerdown="popupPointerDown(event,'s17-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S18 feedback popup — the shared .scq-popup (Figma "Popup Feedback" size=Short; the final-wrong view carries the
+       View My Answer Toggle button). Outside every .screen; no close control (No manual close). -->
+  <div class="scq-popup m-popup hidden" id="s18-popup" onpointerdown="popupPointerDown(event,'s18-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S20 feedback popup — the shared .scq-popup (Figma "Popup Feedback"; correct / incorrect). Outside every .screen; no close
+       control (No manual close), no View My Answer Toggle (MultipleChoiceQuestion shows the whole correct set at once). -->
+  <div class="scq-popup m-popup hidden" id="s20-popup" onpointerdown="popupPointerDown(event,'s20-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S21 feedback popup — the shared .scq-popup (Figma "Popup Feedback"; correct / incorrect; the final-wrong view carries the
+       View My Answer Toggle). Outside every .screen; no close control (No manual close). -->
+  <div class="scq-popup m-popup hidden" id="s21-popup" onpointerdown="popupPointerDown(event,'s21-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- Global: Image Zoom (720-templates _global-components "Image zoom"), as part 02.
+       Backdrop = shared popup backdrop; panel = Figma "Image Zoom Surface"
+       (4399:22435); close = Figma "Close" Color=Blue (1589:17080 / 1589:17079). -->
+  <div id="img-zoom-modal" class="img-zoom-modal hidden" aria-hidden="true">
+    <div class="img-zoom-modal__backdrop" data-zoom-close="true"></div>
+    <div class="img-zoom-modal__panel" role="dialog" aria-modal="true" aria-label="عرض الصورة مكبّرة">
+      <button class="img-zoom-modal__close" type="button" aria-label="إغلاق الصورة" data-zoom-close="true">
+        <svg class="img-zoom-modal__close-icon" aria-hidden="true" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.651 0.348955C14.4275 0.125519 14.1244 0 13.8084 0C13.4924 0 13.1893 0.125519 12.9658 0.348955L7.5 5.81474L2.03422 0.348955C1.81071 0.125519 1.50762 0 1.19159 0C0.875553 0 0.572458 0.125519 0.348955 0.348955C0.125519 0.572458 0 0.875553 0 1.19159C0 1.50762 0.125519 1.81071 0.348955 2.03422L5.81474 7.5L0.348955 12.9658C0.125519 13.1893 0 13.4924 0 13.8084C0 14.1244 0.125519 14.4275 0.348955 14.651C0.572458 14.8745 0.875553 15 1.19159 15C1.50762 15 1.81071 14.8745 2.03422 14.651L7.5 9.18526L12.9658 14.651C13.1893 14.8745 13.4924 15 13.8084 15C14.1244 15 14.4275 14.8745 14.651 14.651C14.8745 14.4275 15 14.1244 15 13.8084C15 13.4924 14.8745 13.1893 14.651 12.9658L9.18526 7.5L14.651 2.03422C14.8745 1.81071 15 1.50762 15 1.19159C15 0.875553 14.8745 0.572458 14.651 0.348955Z" fill="currentColor"/></svg>
+      </button>
+      <div class="img-zoom-modal__stage" id="img-zoom-modal-stage"></div>
+    </div>
+  </div>
+
+  <!-- ============ S0 (screen 0) — TwoOptionSelection: character pick — slide 3 ============ -->
+  <section class="screen active" data-screen="0" id="s0">
+    <div class="select-content">
+      <div class="select-head">
+        <h1 class="select-title">اختاروا من سيرافقكم</h1>
+        <p class="select-subtitle">اختاروا شخصية</p>
+      </div>
+      <!-- direction:ltr row: first DOM child = left. Left = character-2 (green),
+           right = character-1 (gray), per the script's own "בצד ימין"/"בצד שמאל".
+           Media: the final companion selection clips (1280x720, 6.0s), shown as a
+           square centre crop in the ImageContainer window. Decorative only: the
+           card owns selection/keyboard; the video autoplays once, muted, no loop,
+           no controls, and holds its last frame (720-templates companion video). -->
+      <div class="option-cards" role="radiogroup" aria-label="اختاروا شخصية">
+        <div class="option-card" role="radio" aria-checked="false" tabindex="0" data-value="character-2"
+             aria-label="شخصية خضراء اللون ترتدي نظارات وتحمل إبريق ماء" onclick="selectOption(this)">
+          <div class="option-card-img option-card-img--character">
+            <video class="option-card-video" src="assets/video/character-2-selection.mp4" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+          </div>
+        </div>
+        <div class="option-card" role="radio" aria-checked="false" tabindex="0" data-value="character-1"
+             aria-label="شخصية رمادية، تحمل مخبارًا مدرَّجًا وماصّة" onclick="selectOption(this)">
+          <div class="option-card-img option-card-img--character">
+            <video class="option-card-video" src="assets/video/character-1-selection.mp4" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-continue" id="s0-continue" type="button" disabled onclick="advanceFromS0()"><span class="nav-label"><span>اخترت</span></span></button>
+  </section>
+
+  <!-- ============ S2 (screen 1) — SingleChoiceQuestion media=image — slide 4 "מדידה בעבר" ============
+       Figma: Screen Templates/SingleChoiceQuestion (962:23391), media=image.
+       LOCAL VARIANT "tall media" (producer-approved 2026-09-27): the portrait
+       3-panel comic cannot be read in the canonical 380x380 image frame, so
+       only the image frame grows — from just below Report Problem to 16px
+       above the bar — and hugs the comic's aspect ratio. Text column, option
+       column and every component keep the Figma geometry. Candidate for
+       promotion if another portrait-media question needs it.
+       Notes (slide 4): no hint; the 3 comic panels reveal one after another.
+       Motion (animation-system): group 1 = question text + answers (right side
+       first, RTL rule); groups 2-4 = comic panels 1-3 in reading order, fade
+       only. Zoom: one standard zoom button for the whole comic, every bubble
+       and caption included (QA comment chen, producer 2026-10-11; it had been
+       removed 2026-09-28). The button reveals with panel 1.
+       Comic: clean producer panels + live text (2026-09-27). -->
+  <section class="screen" data-screen="1" id="s2">
+    <div class="scq-question scq-question--tall-media">
+      <div class="scq-main" data-reveal="1">
+        <div class="scq-qtext">
+          <h2 class="scq-qtitle">القياس في الماضي</h2>
+          <div class="scq-qbody">
+            <p>كان الناس في الماضي يستخدمون الذراع لقياس الأشياء المختلفة.</p>
+            <p class="scq-qstem">اقرأوا القصة المصورة. ما المشكلة التي تنشأ عن استخدام وحدة قياس الذراع؟</p>
+          </div>
+        </div>
+        <div class="scq-answers" role="radiogroup" aria-label="ما هي المشكلة الناجمة عن استخدام وحدة قياس الذراع؟">
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s2Select('a')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">لا تظهر أي مشكلة في القصة. كانت الذراع (Amma) وحدة قياس شائعة في الماضي.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s2Select('b')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">لكل شخص ذراعٌ بطول مختلف، لذلك لا توجد طريقة موحّدة لقياس طول القماش.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s2Select('c')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">الذراع هو وحدة قياس غير موثوقة ويمكن أن يؤدي إلى أخطاء في القياس.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="d" onclick="s2Select('d')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">استخدام وحدة قياس الذراع أجبر البائع على قياس طول القماش مرة بعد مرة.</span><!-- script typo "אילצה" corrected per producer, 2026-09-27 -->
+          </button>
+        </div>
+      </div>
+      <!-- Comic (no outer frame — producer 2026-09-27). Three clean panels
+           supplied by the producer (s2-comic-panel-1/2/3.png, no text in the
+           artwork); every text is a live overlay anchored to its own panel.
+           Placement follows the old composite (קומיקס הוק 11/111) as a
+           composition reference only; typography comes first (Figma), so
+           overlays may overhang panel edges (producer-approved).
+           No 1/2/3 badges: producer ruled them PPT staging markers. -->
+      <div class="s2-comic" data-zoom-wrapper data-zoom-composite>
+        <!-- Panel 1 — group 2: image + bubble + footnote reveal as one unit. -->
+        <div class="s2-panel s2-panel--1" data-reveal="2" data-reveal-fade>
+          <button class="img-zoom-btn" type="button" aria-label="تكبير القصة المصورة"
+                  data-zoom-src="comic"
+                  data-zoom-alt="قصة مصورة في ثلاث لقطات: مشترٍ يطلب من البائع ذراعًا واحدة من القماش؛ ثلاثة أذرع بأطوال مختلفة — ذراع الملك، وذراع أبي، وذراعي — والبائع يسأل: ذراع مَن؟؛ المشتري والبائع يحكّان رأسيهما: كيف يمكن معرفة ذلك؟">
+            <svg class="img-zoom-btn__icon" aria-hidden="true" width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C11.8661 1 15 4.13371 15 7.99902C15 11.8643 11.8661 14.998 8 14.998C4.1339 14.998 1.00002 11.8643 1 7.99902C1 4.13371 4.13389 1 8 1Z" stroke="currentColor" stroke-width="2"/><path d="M12.6221 14.188L14.2657 12.6141L19.928 18.5274C20.3626 18.9813 20.347 19.7016 19.8931 20.1362C19.4392 20.5708 18.7189 20.5552 18.2843 20.1013L12.6221 14.188Z" fill="currentColor"/></svg>
+          </button>
+          <div class="s2-panel__media"><img class="s2-panel__img" src="assets/img/s2-comic-panel-1.png" width="1774" height="887" alt="صورة 1: في السوق، يقف مشترٍ أمام بائع أقمشة يتكئ على منضدة تعرض بَكَرات قماش ملونة."></div>
+          <p class="comic-bubble comic-bubble--beak-left s2-bubble-1">أعطني ذراعًا*<br>واحدةً من القماش<svg class="comic-beak comic-beak--sm" viewBox="0 -3 18 13" aria-hidden="true"><path class="comic-beak__fill" d="M1.5 -3 V0 L9 8.6 L16.5 0 V-3 Z"/><path class="comic-beak__line" d="M0 0 L9 10 L18 0"/></svg></p>
+          <p class="comic-caption s2-footnote">*الذراع: الجزء الممتد بين المرفق وراحة اليد في جسم الإنسان</p>
+        </div>
+        <!-- Panel 2 — group 3. -->
+        <div class="s2-panel s2-panel--2" data-reveal="3" data-reveal-fade>
+          <img class="s2-panel__img" src="assets/img/s2-comic-panel-2.png" width="1721" height="914" alt="الصورة 2: ثلاثة أذرع ممدودة بأطوال مختلفة، وفي مقابلها البائع يرفع يديه في حيرة واستغراب.">
+          <p class="comic-caption s2-label s2-label--1">ذراع<br>الملك</p>
+          <p class="comic-caption s2-label s2-label--2">ذراع<br>أبي</p>
+          <p class="comic-caption s2-label s2-label--3">ذراعي<br>أنا</p>
+          <p class="comic-bubble comic-bubble--beak-left s2-bubble-2">ذراع من؟<br>ذراع الملك؟<br>ذراع أبي؟<br>ذراعي أنا؟<svg class="comic-beak" viewBox="0 -3 33 18" aria-hidden="true"><path class="comic-beak__fill" d="M1.5 -3 V0 L16.5 13.6 L31.5 0 V-3 Z"/><path class="comic-beak__line" d="M0 0 L16.5 15 L33 0"/></svg></p>
+        </div>
+        <!-- Panel 3 — group 4. The thought cloud is a live element drawn in the
+             Speech Bubble graphic language (white fill, 3px Subject/500
+             outline) — no thought-bubble component exists in Figma. -->
+        <div class="s2-panel s2-panel--3" data-reveal="4" data-reveal-fade>
+          <div class="s2-panel__media"><img class="s2-panel__img" src="assets/img/s1-comic-panel-3.jpg" width="1092" height="728" alt="الصورة 3: المشتري والبائع يحكّان رأسيهما في حيرة."></div>
+          <p class="comic-thought s2-thought"><svg class="comic-thought__shape" viewBox="0 0 70 62" aria-hidden="true">
+            <g class="comic-thought__line"><circle cx="22" cy="26" r="14"/><circle cx="37" cy="18" r="15"/><circle cx="51" cy="26" r="13"/><circle cx="44" cy="37" r="12"/><circle cx="28" cy="37" r="12"/><circle cx="12" cy="50" r="4.5"/><circle cx="5" cy="58" r="2.8"/></g>
+            <g class="comic-thought__fill"><circle cx="22" cy="26" r="14"/><circle cx="37" cy="18" r="15"/><circle cx="51" cy="26" r="13"/><circle cx="44" cy="37" r="12"/><circle cx="28" cy="37" r="12"/><circle cx="12" cy="50" r="4.5"/><circle cx="5" cy="58" r="2.8"/></g>
+          </svg><span class="comic-thought__text">؟</span></p>
+          <p class="comic-caption s2-caption">كيف يمكن معرفة ذلك؟</p>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar slots: nav button Next (196:6027 / 196:6033 disabled)
+         carries "צדקתי?" until the question resolves, then the progression
+         CTA "שנמשיך?" (no authored label on slide 4). nav button back (196:6035). -->
+    <button class="btn-continue" id="s2-check" type="button" disabled onclick="s2Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" id="s2-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S3 (screen 2) — FullImageWithTextOverlay, comic local variant — slide 5 ============
+       Template named by slide 5's presenter note. Local variant (720-templates
+       "prefer a local variant"): the full-bleed band is replaced by the slide's
+       own three-panel comic row, and each authored caption is its own
+       Explanation Text card (Figma 1038:19390) inside its panel. Panels are the
+       producer's clean artwork (s3-comic-panel-1/2/3.png); all text is live.
+       RTL reading order right → left: panel 1 (old units) · panel 2 (France
+       1795) · panel 3 (world map). The three panels reveal one after another
+       with no click (presenter note). No 1/2/3 badges (S2 producer ruling).
+       Zoom: one standard zoom button per panel (QA comment chen, producer
+       2026-10-11), each opening its panel with its cards and labels. -->
+  <section class="screen" data-screen="2" id="s3">
+    <div class="fito-comic" id="s3-comic">
+      <!-- S3 reveal: 7 steps per Roni 2026-10-14 — image first, then its text,
+           per panel in RTL reading order. data-reveal on individual elements
+           (not panels) so image and bubble reveal independently.
+           Group 7's later start is a rule in style.css. -->
+      <div class="fito-comic__panel s3-panel--1" data-zoom-wrapper data-zoom-composite>
+        <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة 1" data-zoom-src="panel-1"
+                data-zoom-alt="صورة 1: رجل مرتبك يحك رأسه بجانب طاولة عليها أدوات قياس قديمة. في الماضي، كانت أماكن مختلفة في العالم تستخدم وحدات قياس مختلفة. لذلك كان من الصعب التجارة، ومقارنة النتائج، وتبادل المعرفة."
+                data-reveal="1" data-reveal-fade>
+          <svg class="img-zoom-btn__icon" aria-hidden="true" width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C11.8661 1 15 4.13371 15 7.99902C15 11.8643 11.8661 14.998 8 14.998C4.1339 14.998 1.00002 11.8643 1 7.99902C1 4.13371 4.13389 1 8 1Z" stroke="currentColor" stroke-width="2"/><path d="M12.6221 14.188L14.2657 12.6141L19.928 18.5274C20.3626 18.9813 20.347 19.7016 19.8931 20.1362C19.4392 20.5708 18.7189 20.5552 18.2843 20.1013L12.6221 14.188Z" fill="currentColor"/></svg>
+        </button>
+        <img class="fito-comic__img" id="s3-img-1" alt="" width="992" height="1586" data-reveal="1" data-reveal-fade>
+        <div class="fito-text fito-text--bottom" data-reveal="2" data-reveal-fade>
+          <p>في الماضي، كانت أماكن مختلفة في العالم تستخدم <strong>وحدات قياس مختلفة.</strong></p>
+          <p>ونتيجة لذلك، صار من الصعب التجارة، ومقارنة النتائج، وتبادل المعرفة.</p>
+        </div>
+      </div>
+      <div class="fito-comic__panel s3-panel--2" data-zoom-wrapper data-zoom-composite>
+        <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة 2" data-zoom-src="panel-2"
+                data-zoom-alt="صورة 2: حشد مبتهج في أحد شوارع فرنسا، وفي وسطه رجل يرفع علم فرنسا. في عام 1795، قرر الفرنسيون: &quot; لنتفق على نظام قياس موحد يخدمنا جميعًا!&quot; وهكذا وُلد النظام المتري: نظام قياس يستخدم وحدات القياس المعروفة اليوم (مثل المتر، واللتر، والغرام)."
+                data-reveal="3" data-reveal-fade>
+          <svg class="img-zoom-btn__icon" aria-hidden="true" width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C11.8661 1 15 4.13371 15 7.99902C15 11.8643 11.8661 14.998 8 14.998C4.1339 14.998 1.00002 11.8643 1 7.99902C1 4.13371 4.13389 1 8 1Z" stroke="currentColor" stroke-width="2"/><path d="M12.6221 14.188L14.2657 12.6141L19.928 18.5274C20.3626 18.9813 20.347 19.7016 19.8931 20.1362C19.4392 20.5708 18.7189 20.5552 18.2843 20.1013L12.6221 14.188Z" fill="currentColor"/></svg>
+        </button>
+        <img class="fito-comic__img" id="s3-img-2" alt="" width="962" height="1635" data-reveal="3" data-reveal-fade>
+        <div class="fito-text fito-text--top" data-reveal="4" data-reveal-fade>
+          <p><span class="nobr">في عام 1795</span>، قررت فرنسا:</p>
+          <p>"دعونا نتفق على نظام قياس موحّد يخدمنا جميعًا!"</p>
+        </div>
+        <div class="fito-text fito-text--bottom" data-reveal="5" data-reveal-fade>
+          <p>هكذا وُلد <strong>النظام المتري:</strong></p>
+          <p>نظام قياس يستخدم وحدات قياس معروفة حتى اليوم (مثلًا: المتر، واللتر، والغرام).</p>
+        </div>
+      </div>
+      <div class="fito-comic__panel s3-panel--3" data-zoom-wrapper data-zoom-composite>
+        <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة 3" data-zoom-src="panel-3"
+                data-zoom-alt="صورة 3: خريطة العالم، مع تحديد مواقع الولايات المتحدة الأمريكية وليبيريا وميانمار. في الوقت الحالي، تستخدم تقريبًا جميع دول العالم النظام المتري، باستثناء 3 دول."
+                data-reveal="6" data-reveal-fade>
+          <svg class="img-zoom-btn__icon" aria-hidden="true" width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C11.8661 1 15 4.13371 15 7.99902C15 11.8643 11.8661 14.998 8 14.998C4.1339 14.998 1.00002 11.8643 1 7.99902C1 4.13371 4.13389 1 8 1Z" stroke="currentColor" stroke-width="2"/><path d="M12.6221 14.188L14.2657 12.6141L19.928 18.5274C20.3626 18.9813 20.347 19.7016 19.8931 20.1362C19.4392 20.5708 18.7189 20.5552 18.2843 20.1013L12.6221 14.188Z" fill="currentColor"/></svg>
+        </button>
+        <img class="fito-comic__img" id="s3-img-3" alt="" width="962" height="1635" data-reveal="6" data-reveal-fade>
+        <div class="fito-text fito-text--top" data-reveal="7" data-reveal-fade>
+          <p>اليوم، تستخدم جميع دول العالم تقريبًا النظام المتري، باستثناء 3 دول:</p>
+        </div>
+        <!-- Country names: baked into the old composite under each pin; the
+             clean panel carries none, so they are live labels (SmallSpeechText).
+             Reveal with the bubble (step 7) per Roni's sequence. -->
+        <p class="comic-caption comic-caption--label s3-pin s3-pin--usa" data-reveal="7" data-reveal-fade>الولايات المتحدة الأمريكية</p>
+        <p class="comic-caption comic-caption--label s3-pin s3-pin--liberia" data-reveal="7" data-reveal-fade>ليبيريا</p>
+        <p class="comic-caption comic-caption--label s3-pin s3-pin--myanmar" data-reveal="7" data-reveal-fade>ميانمار</p>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), label "המשך" from
+         slide 5's own button; nav button back (196:6035). Ungated. -->
+    <button class="btn-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S4 (screen 3) — TransitionScreen, ShortText — slide 6 ============
+       Template named by slide 6's presenter note. Figma: Templates page,
+       "TransitionScreen - B - SectionIntroScreen-ShortText" (4905:25066):
+       SelectionScreenTitle Type=Supporting Title (lead-in Body/B-1 + headline
+       Heading/H-4), character flush with the bar. Role mapping (producer
+       2026-09-30): the slide's two equal lines = lead-in + headline; the
+       slide's callout = speech bubble (Figma "bubble text" over=open, placed
+       to the character's left as in node 4924:25836); "בואו נגלה" = the
+       Continue label (slide 6's own button text). Companion clip = the
+       selected character's arms-out "explainer" clip (presenter note). -->
+  <section class="screen" data-screen="3" id="s4">
+    <div class="s1-content">
+      <div class="s1-text" data-reveal="1">
+        <p class="s1-subtitle s1-subtitle--regular">هناك أشياء كثيرة تُقاس بالنظام المتري.</p>
+        <h2 class="s1-title">في هذه الوحدة سنركز على الحجم.</h2>
+      </div>
+      <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+        <div class="s1-video-clip">
+          <video class="s1-char-media" id="s4-char-video" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+        </div>
+        <div class="s1-bubble s4-bubble">
+          <!-- Figma bubble text (over=open) resized to the two-line text: the right-hand corners and the tail keep the component geometry, the body is 61px narrower (202 -> 141). -->
+          <svg class="s1-bubble-shape" viewBox="0 0 171 94" aria-hidden="true"><path d="M1.5 89.2002V4.7998C1.5001 4.6823 1.5535 4.4188 1.9736 4.0215C2.3972 3.6209 3.0911 3.1913 4.0723 2.7988C6.0263 2.0173 8.8284 1.5 12 1.5H143C146.172 1.5 148.974 2.0173 150.928 2.7988C151.909 3.1913 152.603 3.6209 153.026 4.0215C153.446 4.4188 153.5 4.6823 153.5 4.7998V39.5996C153.5 40.1531 153.804 40.6584 154.286 40.9189L154.385 40.9678L167.302 46.7812L154.398 52.4258C153.887 52.6498 153.544 53.1382 153.504 53.6895L153.5 53.7998V89.2002C153.5 89.3177 153.446 89.5812 153.026 89.9785C152.603 90.3791 151.909 90.8087 150.928 91.2012C148.974 91.9827 146.172 92.5 143 92.5H12C8.8284 92.5 6.0263 91.9827 4.0723 91.2012C3.0911 90.8087 2.3972 90.3791 1.9736 89.9785C1.5535 89.5812 1.5001 89.3177 1.5 89.2002Z"/></svg>
+          <p class="s1-bubble-text">لكن ما هو<br>الحجم أصلًا؟</p>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), ungated; nav button back (196:6035). -->
+    <button class="btn-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>هيا نكتشف</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S4 (screen 4) — InfoCardsImage — slide 7 ============
+       Presenter note (current PPT): "שם המסך בפיגמה: InfoCardsImage"; the three
+       parts (מוצק / נוזל / גז) are running GIFs of examples from the same state.
+       Figma: Templates "InfoCardsImage - State 01" (2730:43245): Text Content Layout
+       (2730:43249: headline "2" = Headings/H-6, text slot = 28 Bold) over the Flip
+       Card Row Layout (2730:43355: 283px columns, gap 22, centred, wrapping), each
+       column = media "Component 9" (Flip Card States img/Static, 405:7639: 283x283,
+       3px Natural/Alpha/200 @40% stroke, radius 16, cover) + title Headings/H-8.
+       LOCAL VARIANT (no 720-templates reference for InfoCardsImage): 3 cards
+       instead of the template's 4 (the row is centred, so it re-centres natively);
+       no eyebrow line "1" and no card body line - the slide has neither.
+       Media = illustrative clips (role B): muted, no native controls. Producer
+       2026-10-01: each clip plays ONCE and holds its final frame; a "play again"
+       button in the clip's top-right corner replays it from the start (local
+       control styled after the producer's reference - no Figma component exists
+       for it). First visit (producer 2026-10-01): the clips play one at a time,
+       right to left (מוצק -> נוזל -> גז); Continue unlocks as soon as the first clip
+       starts playing (producer 2026-10-11; no narrated content to wait for). A clip's replay button activates once that clip has played; replays
+       never re-lock Continue or restart the sequence. -->
+  <section class="screen" data-screen="4" id="s5">
+    <div class="icx-content">
+      <div class="icx-head" data-reveal="1">
+        <h2 class="icx-title">ما هو الحجم؟</h2>
+        <p class="icx-text">الحجم هو الحيّز الذي يشغله جسم <strong>صلب،</strong> أو <strong>سائل</strong> أو <strong>غاز</strong>.</p>
+      </div>
+      <!-- DOM order = RTL reading order (right to left): מוצק, נוזל, גז - as on the slide. -->
+      <ul class="icx-row" data-reveal="2" data-reveal-fade>
+        <li class="icx-card">
+          <div class="icx-media">
+            <div class="icx-clip" role="img" tabindex="-1" aria-label="شوكولاتة، حجر وكرة بلاستيكية">
+              <video class="icx-video" src="assets/video/chocolate_rock_ball.mp4" muted playsinline preload="none" disablepictureinpicture aria-hidden="true"></video>
+            </div>
+            <button class="icx-replay" type="button" hidden aria-label="إعادة التشغيل: صلب"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 12.4A7.5 7.5 0 1 0 6.9 6.5"/><path d="M6.6 2.9V6.8H10.5"/></svg></button>
+          </div>
+          <p class="icx-card__title">صلب</p>
+        </li>
+        <li class="icx-card">
+          <div class="icx-media">
+            <div class="icx-clip" role="img" tabindex="-1" aria-label="عصير يُسكب من كوب، وقود يتدفق من خزان عبر أنبوب، حليب يُصب من كرتونة">
+              <video class="icx-video" src="assets/video/orange-juice-fuel-milk.mp4" muted playsinline preload="none" disablepictureinpicture aria-hidden="true"></video>
+            </div>
+            <button class="icx-replay" type="button" hidden aria-label="إعادة التشغيل: سائل"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 12.4A7.5 7.5 0 1 0 6.9 6.5"/><path d="M6.6 2.9V6.8H10.5"/></svg></button>
+          </div>
+          <p class="icx-card__title">سائل</p>
+        </li>
+        <li class="icx-card">
+          <div class="icx-media">
+            <div class="icx-clip" role="img" tabindex="-1" aria-label="طفل ينفخ بالونًا، دخان يخرج من مدخنة، بخار يتصاعد من قدر">
+              <video class="icx-video" src="assets/video/balloon_smoke_steam.mp4" muted playsinline preload="none" disablepictureinpicture aria-hidden="true"></video>
+            </div>
+            <button class="icx-replay" type="button" hidden aria-label="إعادة التشغيل: غاز"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 12.4A7.5 7.5 0 1 0 6.9 6.5"/><path d="M6.6 2.9V6.8H10.5"/></svg></button>
+          </div>
+          <p class="icx-card__title">غاز</p>
+        </li>
+      </ul>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027 / 196:6033 disabled) "המשך", gated on the three first plays; nav button back (196:6035). -->
+    <button class="btn-continue" id="s5-continue" type="button" disabled onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S6w (screen 5) — FullImageWithTextOverlay, signboard variant — slide 8 ============
+       Template named by slide 8's presenter note. Figma: Screen Templates/
+       FullImageWithTextOverlay (1268:20704) + Explanation Text card (1038:19390).
+       Photo = the clean image embedded in current slide 8 (producer 2026-09-30;
+       the note's Adobe Stock link is stale and the old project file was the
+       watermarked preview). As on the slide, the card sits on the photo's blank
+       signboard (producer): it is anchored in the photo's own coordinates, so it
+       stays on the board at every canvas shape. Heading = Headings/H-8 (32 Bold),
+       body = Body/B-4 (24) with the slide's bold run and paragraph break, centred
+       like the slide (producer). -->
+  <section class="screen" data-screen="5" id="s6w">
+    <div class="fito-img fito-img--staged" data-reveal="1" data-reveal-fade>
+      <div class="fito-stage">
+        <img class="fito-stage__img" id="s6w-img" alt="" width="1672" height="941">
+        <div class="fito-board s6w-board">
+          <div class="fito-text fito-text--board" data-reveal="2">
+            <p class="fito-text__title">أهلًا وسهلًا بكم في سوبرماركت الأحجام!</p>
+            <p>هنا سنتعرف على<br><strong>وحدات قياس الحجم</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), label "המשך" = slide 8's own button; ungated. nav button back (196:6035). -->
+    <button class="btn-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S6 (screen 6) — info/discovery hotspots — slides 9 + 10 (one screen) ============
+       Slide 9 = closed state (six dots on the shelf photo), slide 10 = the popup
+       each dot opens. Presenter note: "FullImageWithTextOverlay + AreaSelectionHotspot";
+       every dot opens a popup; Continue disabled until every popup was opened.
+       LOCAL VARIANT: ImageHotspotQuestion.md covers correctness questions only, so
+       this informational/find-all screen is built on Figma Templates "InfoLayerHotspot"
+       (1731:44472 / 1731:44588): dot = Hotspot-Pulse (126:3144: default / Hover /
+       selected), popup = Speech Bubbles (457:6419) language, close = Figma Close.
+       Producer decisions 2026-10-01: base photo = the clean image embedded in the
+       slides (the old project file had garbled AI text + a watermark); anchored
+       card next to its dot, one at a time (Escape / click outside / another dot; no X);
+       visited dots stay visible; measurement labels as live text on the products;
+       syringe image as supplied; slide-9 dot positions, with small de-obstruction moves
+       (producer 2026-10-01): cabinet lowered on the door (y 55.06 -> 72%), vanilla
+       up and onto the rightmost bottle (x 25.6%, y 34%), box onto the red-lid stack
+       (x 10.6%) so the two popups use distinct zones; water up (y 28.62 -> 20.5%) and
+       syringe down (y 74.37 -> 78.5%) so the water popup clears the syringe dot; cabinet popup text only. -->
+  <section class="screen" data-screen="6" id="s6">
+    <p class="hs-instruction" data-reveal="1">انقروا على كل النقاط لاكتشاف حجم المنتجات، وبأي وحدة قياس تُقاس، ومتى نستخدم هذه الوحدة.</p>
+    <div class="hs-band" data-reveal="2" data-reveal-fade>
+      <div class="hs-stage" id="s6-stage">
+        <img class="hs-stage__img" id="s6-img" alt="" width="1672" height="941">
+        <!-- DOM order = RTL reading order: top shelf right to left, then bottom. -->
+        <button class="hs-dot" type="button" data-id="bucket" style="--x:66.43%; --y:10.69%" aria-label="دلاء" aria-expanded="false" aria-controls="s6-pop"><span class="hs-dot__ring" aria-hidden="true"></span><span class="hs-dot__core" aria-hidden="true"></span></button>
+        <button class="hs-dot" type="button" data-id="water" style="--x:38.19%; --y:20.50%" aria-label="قناني مياه" aria-expanded="false" aria-controls="s6-pop"><span class="hs-dot__ring" aria-hidden="true"></span><span class="hs-dot__core" aria-hidden="true"></span></button>
+        <button class="hs-dot" type="button" data-id="vanilla" style="--x:25.60%; --y:34.00%" aria-label="مستخلصات الفانيليا" aria-expanded="false" aria-controls="s6-pop"><span class="hs-dot__ring" aria-hidden="true"></span><span class="hs-dot__core" aria-hidden="true"></span></button>
+        <button class="hs-dot" type="button" data-id="cabinet" style="--x:75.05%; --y:72.00%" aria-label="خزانة تخزين" aria-expanded="false" aria-controls="s6-pop"><span class="hs-dot__ring" aria-hidden="true"></span><span class="hs-dot__core" aria-hidden="true"></span></button>
+        <button class="hs-dot" type="button" data-id="syringe" style="--x:41.07%; --y:78.50%" aria-label="محاقن" aria-expanded="false" aria-controls="s6-pop"><span class="hs-dot__ring" aria-hidden="true"></span><span class="hs-dot__core" aria-hidden="true"></span></button>
+        <button class="hs-dot" type="button" data-id="box" style="--x:10.60%; --y:86.78%" aria-label="صناديق تخزين" aria-expanded="false" aria-controls="s6-pop"><span class="hs-dot__ring" aria-hidden="true"></span><span class="hs-dot__core" aria-hidden="true"></span></button>
+        <div class="hs-pop" id="s6-pop" aria-live="polite" hidden>
+          <div class="hs-pop__fig"><img class="hs-pop__img" alt=""><p class="hs-pop__label" aria-hidden="true"></p></div>
+          <p class="hs-pop__text" id="s6-pop-text"></p>
+          <svg class="comic-beak" viewBox="0 -3 33 18" aria-hidden="true"><path class="comic-beak__fill" d="M1.5 -3 V0 L16.5 13.6 L31.5 0 V-3 Z"/><path class="comic-beak__line" d="M0 0 L16.5 15 L33 0"/></svg>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027 / 196:6033 disabled), label "המשך" = slides 9-10's own button; nav button back (196:6035). -->
+    <button class="btn-continue" id="s6-continue" type="button" disabled onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S7 (screen 7) — DragAndDropQuestion, Image Top layout — slide 11 ============
+       Presenter note: "OrderedDragAndDropQuestion"; producer-selected Figma template
+       "ImageTopDragAndDropQuestion" (5340:25539, states 01-05 + answer view) = the
+       720-templates DragAndDropQuestion "Image Top" layout (reference S16,
+       methodica-science-mass-measure-01-01). Producer decisions 2026-10-01: the four
+       product images are the fixed targets (RTL, as the slide's rows: perfume, dice,
+       bucket, truck) and the unit chips are dragged under them; instruction reworded
+       to match that direction; the slide's size captions are omitted (no Figma slot);
+       chips carry the slide's full unit names in two lines - unit, then the parenthesised name
+       (QA comment chen, producer 2026-10-11; one line does not fit the 216px chip).
+       Scoring: 1 ml = 1 cm3, so both small units are correct for both small items.
+       Two attempts (template default; no deviation authored); no hint (none
+       authored); no question progress bar (not a practice-set question). -->
+  <section class="screen" data-screen="7" id="s7">
+    <div class="itd-content">
+      <div class="itd-head" data-reveal="1">
+        <p class="itd-title">اسحبوا إلى كل عنصر وحدة الحجم الأنسب له</p>
+      </div>
+      <div class="itd-targets" data-reveal="2" data-reveal-fade>
+        <div class="itd-col">
+          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-perfume.png" alt="قنينة عطر" width="199" height="199"></div>
+          <div class="itd-zone" id="s7-t-perfume" role="button" tabindex="0" aria-label="عطر: فارغ"></div>
+        </div>
+        <div class="itd-col">
+          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-dice.png" alt="مكعب لعب" width="199" height="199"></div>
+          <div class="itd-zone" id="s7-t-dice" role="button" tabindex="0" aria-label="مكعب اللعب: فارغ"></div>
+        </div>
+        <div class="itd-col">
+          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-bucket.png" alt="دلو" width="199" height="199"></div>
+          <div class="itd-zone" id="s7-t-bucket" role="button" tabindex="0" aria-label="دلو: فارغ"></div>
+        </div>
+        <div class="itd-col">
+          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-truck.png" alt="شاحنة" width="199" height="199"></div>
+          <div class="itd-zone" id="s7-t-truck" role="button" tabindex="0" aria-label="شاحنة: فارغة"></div>
+        </div>
+      </div>
+      <!-- Chip order (right to left) is fixed and never lines a chip up with an image it fits. -->
+      <div class="itd-bank" data-reveal="3" data-reveal-fade>
+        <div class="itd-slot"><button class="itd-chip" id="s7-d-l" type="button" aria-pressed="false"><span class="itd-label">لتر</span></button></div>
+        <div class="itd-slot"><button class="itd-chip" id="s7-d-m3" type="button" aria-pressed="false"><span class="itd-label">م³<br>(متر مكعب)</span></button></div>
+        <div class="itd-slot"><button class="itd-chip" id="s7-d-cc" type="button" aria-pressed="false"><span class="itd-label">سم³<br>(سنتيمتر مكعب)</span></button></div>
+        <div class="itd-slot"><button class="itd-chip" id="s7-d-ml" type="button" aria-pressed="false"><span class="itd-label">مل<br>(مليلتر)</span></button></div>
+      </div>
+      <p class="vh" id="s7-live" aria-live="polite"></p>
+    </div>
+    <!-- FixedNavigationBar: one bar slot - "צדקתי?" (196:6033 disabled / 196:6027) checks
+         until resolved, then progresses as "שנמשיך?"; nav button back (196:6035). -->
+    <button class="btn-continue" id="s7-check" type="button" disabled onclick="s7Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S8 (screen 8) — FlipCardsReveal — slides 12 + 13 (ONE screen) ============
+       Slide 12 = side A (images), slide 13 = side B (explanations); presenter note
+       "שם המסך בפגימה: FlipCardsReveal", images right to left: 1 קופסה עם מידות,
+       2 כוס מיץ; Continue disabled until both cards were flipped. Figma Templates
+       "FlipCard-Image-State 01" (4943:37313, side A) + "FlipCard-State 03-Revealed"
+       (4943:37294, side B): 283px square cards (Flip Card States), row gap 22 / 40px
+       padding, Text Content Layout above (title H-6 40 Bold + text 28 Bold).
+       Behaviour = 720-templates FlipCardsReveal two-way variant, as the approved
+       methodica-math-ratio-03-01 screen 08: cards flip back and forth freely;
+       "seen" (drives the gate) is separate from the current face.
+       Producer decisions 2026-10-01: back faces keep the slide's images (production
+       folder files) with the slide's labels as live text; a caption under each card
+       styled as the InfoCardsImage card title (2730:43245); header text 28 Bold;
+       front images contained on white. -->
+  <section class="screen" data-screen="8" id="s8">
+    <div class="frc-content">
+      <div class="frc-head" data-reveal="1">
+        <h2 class="frc-title">كيف نقيس الحجم؟</h2>
+        <div class="frc-text">
+          <p>توجد عدة طرق لقياس الحجم.<br>يعتمد الاختيار بينها على حالة المادة وشكل الجسم.</p>
+          <p class="frc-text__instr">انقروا على البطاقات للتعرف على طريقتَي قياس:</p>
+        </div>
+      </div>
+      <!-- DOM order = RTL reading order: card 1 (rightmost) = geometric body, card 2 = liquid. -->
+      <div class="frc-row" data-reveal="2" data-reveal-fade>
+        <div class="frc-card-wrap">
+          <button class="frc-card" data-index="0" type="button" aria-expanded="false" onclick="frc8Flip(this)">
+            <span class="vh">قياس حجم جسم هندسي. </span>
+            <span class="frc-card-inner">
+              <span class="frc-card-front"><img src="assets/img/s8-box-dimensions.png" alt="علبة كرتون بأبعاد 10 سم ارتفاعًا، 20 سم عرضًا، 30 سم عمقًا" width="1672" height="941"></span>
+              <span class="frc-card-back" aria-hidden="true">
+                <span class="frc-card-back-content">
+                  <span class="frc-p">نضرب الطول والارتفاع والعرض للجسم. والنتيجة هي الحجم.</span>
+                  <span class="frc-p">على سبيل المثال: </span>
+                  <span class="frc-p frc-formula">6000 سم³ = 10 سم × 30 سم × 20 سم</span><!-- × (U+00D7) with spaces, not the slide's Latin "x30": QA comment chen, producer 2026-10-11 -->
+                  <!-- Live dimension labels (producer 2026-10-01: the slide's labels, as live text). Drawn in the
+                       image's own pixel space (1672 x 941), so they stay on the box edges at any size:
+                       width 30 = the far (back) top edge (500,45)-(1608,130), height 10 = the side face's right edge
+                       (1608,130)-(1613,720), depth 20 = the side face's bottom edge (1212,920)-(1613,720);
+                       each a double-headed arrow ~6px outside its edge, as slide 13's three connectors. -->
+                  <span class="frc-fig frc-fig--box">
+                    <img src="assets/img/s8-box-dimensions-410.png" alt="" width="410" height="231">
+                    <svg class="frc-dim-svg" viewBox="0 0 1672 941" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="s8-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="62" markerHeight="62" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z"/></marker></defs><line x1="504.4" y1="-11.8" x2="1612.4" y2="73.2" marker-start="url(#s8-ah)" marker-end="url(#s8-ah)"/><line x1="1668" y1="130" x2="1673" y2="720" marker-start="url(#s8-ah)" marker-end="url(#s8-ah)"/><line x1="1237.4" y1="971" x2="1638.4" y2="771" marker-start="url(#s8-ah)" marker-end="url(#s8-ah)"/></svg>
+                    <span class="frc-dim" style="left:63.30%; top:3.26%" data-pos="top">30 سم</span>
+                    <span class="frc-dim" style="left:99.91%; top:45.16%" data-pos="right">10 سم</span>
+                    <span class="frc-dim" style="left:97.99%; top:92.56%" data-pos="right">20 سم</span>
+                  </span>
+                </span>
+              </span>
+            </span>
+            <span class="vh frc-hint-text"> انقروا لقلب البطاقة.</span>
+            <!-- Tap gesture hint on the rightmost card (first in RTL reading order): the
+                 validated flip-card hint (ratio-03-01 screen 08 / mass-measure-01-01 S6):
+                 Figma "Cursor Click" (3287:22205) + Ripple Ring 1/2 (2904:29927), fixed
+                 anchor 13px in from the card's right edge, 16px down; only opacity/scale
+                 animate; sibling of .frc-card-inner so it never rides the flip. -->
+            <span class="frc-gh frc-gh-stopped" id="s8-gh" aria-hidden="true">
+              <span class="frc-gh-ring frc-gh-ring1"></span>
+              <span class="frc-gh-ring frc-gh-ring2"></span>
+              <img class="frc-gh-hand" src="../unit-assets/img/gesture-hand.svg" alt="" width="28" height="33">
+            </span>
+          </button>
+          <p class="frc-card-caption">قياس حجم جسم هندسي</p>
+        </div>
+        <div class="frc-card-wrap">
+          <button class="frc-card" data-index="1" type="button" aria-expanded="false" onclick="frc8Flip(this)">
+            <span class="vh">قياس حجم سائل. </span>
+            <span class="frc-card-inner">
+              <span class="frc-card-front"><img src="assets/img/s8-juice-glass.png" alt="كوب عصير" width="1145" height="1374"></span>
+              <span class="frc-card-back" aria-hidden="true">
+                <span class="frc-card-back-content">
+                  <span class="frc-p">سننقل السائل إلى أداة قياس مدرَّجة ونقرأ قيمة الحجم.</span>
+                  <span class="frc-fig frc-fig--cyl"><img src="assets/img/s8-measuring-cup-392.png" alt="مخبار مدرَّج حتى 250 مل" width="213" height="392"></span>
+                </span>
+              </span>
+            </span>
+            <span class="vh frc-hint-text"> انقروا لقلب البطاقة.</span>
+          </button>
+          <p class="frc-card-caption">قياس حجم سائل</p>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6033 disabled / 196:6027) "המשך", gated on both cards seen; nav button back (196:6035). -->
+    <button class="btn-continue" id="s8-continue" type="button" disabled onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S9 (screen 9) — TransitionScreen (ShortText) — slide 14 ============
+       Presenter note: "שם המסך בפיגמה: TransitionScreen", "הדמות בגיף בתנוחת חשיבה".
+       Figma "TransitionScreen - B - SectionIntroScreen-ShortText" (4905:25066):
+       790px text block at y 115, headline Heading/H-4 (64 Bold), character flush
+       with the bar. Slide 14 authors the headline only (no lead-in, no closing line,
+       no bubble); "בואו נגלה" = the Continue label (the slide's own button text).
+       The headline (912px at 64px) wraps in the 790px block; producer 2026-10-01:
+       ShortText, two balanced lines ("יחידת מידה" kept together with a no-break space). Companion clip = the selected character's
+       "thinking" clip (decorative, plays once, holds its last frame). -->
+  <section class="screen" data-screen="9" id="s9">
+    <div class="s1-content">
+      <div class="s1-text" data-reveal="1">
+        <h2 class="s1-title s1-title--balance">كيف نحوّل من وحدة&nbsp;قياس إلى أخرى؟</h2>
+      </div>
+      <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+        <div class="s1-video-clip">
+          <video class="s1-char-media" id="s9-char-video" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), label "בואו נגלה" = slide 14's own button; ungated. nav button back (196:6035). -->
+    <button class="btn-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>هيا نكتشف</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S10 (screen 10) — cube→liter-box interactive — slides 15-26 ============
+       Producer 2026-10-01 (step 1 of the rebuild — FINAL state only): the liter box image
+       is replaced by the full cube volume, 10 layers x 10x10 = 1,000 cubes (script: each
+       click adds a layer of 100; 1 ליטר = 1000 סמ״ק, 10 x 10 x 10). Built by JS
+       (buildCubeStack) as 10 separate .cube-layer groups (data-layer 1-10, bottom to top),
+       each 100 <img> copies of one asset, so the earlier states can show/hide/animate
+       layers later. Cube asset = production "קוביית משחק ללא רקע.png" (producer choice),
+       also used for the single clickable cube. Rest of the draft screen unchanged. -->
+  <section class="screen" data-screen="10" id="s10">
+    <!-- Final-state composition (producer 2026-10-01): slide 15's text box as four
+         right-aligned lines (line 3 bold), and the sequence right to left: 1 סמ״ק cube ->
+         arrow -> 1 ליטר cube tower -> arrow -> 1 מ"ק truck (slide 15 images: truck
+         image37 mirrored as on the slide, arrow image36). Positions are optical: equal
+         ink-to-ink gaps (48px), the ink run centred on the frame, one centre line.
+         Step 3 (producer 2026-10-01): truck 460px wide, cubes 22px, and the 1 ליטר box is a
+         live transparent parallelepiped (buildCubeBox: SVG faces along the lattice's
+         three axes, 5px clearance) - not an image.
+         Shared left-side layout with S11 (producer 2026-10-04): truck + its label -24px, left arrow +16px,
+         identical in S11, so the two screens don't jump (S11 needs room for its truck marks + counter).
+         Step 4 (producer 2026-10-04, slides 16-25): progressive fill. The box starts empty;
+         each click on the 1 סמ״ק cube reveals the next existing .cube-layer group (1 -> 10,
+         bottom to top) and adds that layer's running total (100 ... 1000, 1000 bold) to the
+         totals column left of the box (slide: 18pt #3CB0F1, one number per layer, the column
+         growing upward). The column is part of the 1 ליטר object, so the equal 48px gaps are
+         kept and the run is re-centred (every item moved 28px outward). Continue: disabled
+         until the 10th click (slides 16-24 grey, slide 25 active). -->
+    <div class="s10-frame">
+      <div class="s10-text">
+        <p>في مصنع لتصنيع الألعاب، يتم تعبئة شحنة من مكعبات اللعب.</p>
+        <p>مكعبات بحجم 1 سم³ لكل منها &gt; تُعبَّأ في صناديق بحجم 1 لتر &gt; وتُحمَّل على شاحنة بحجم 1 م³.</p>
+        <p class="s10-text__q">كم مكعب لعب بحجم 1 سم³ نحتاج لملء صندوق سعته 1 لتر؟</p>
+        <p>اضغطوا على المكعب حتى يمتلئ الصندوق (في كل ضغطة ستُضاف إلى الصندوق طبقة من 100 مكعب).</p>
+      </div>
+      <!-- DOM order = RTL reading order: cube, arrow, tower, arrow, truck. -->
+      <button class="fill-clickable pulse s10-cube" id="s10-cube-btn" type="button" onclick="fill11Click()" aria-label="أضيفوا إلى الصندوق طبقة من 100 مكعب (الطبقة 1 من 10)" style="left:1080.4px; top:331.8px">
+        <img src="assets/img/s10-cube.png" alt="" width="90" height="83">
+        <!-- Tap gesture hint (producer 2026-10-04): S8's validated click/tap hint reused as is
+             (.frc-gh: Figma "Cursor Click" 3287:22205 + Ripple Ring 1/2 2904:29927, same
+             keyframes, timing, reduced-motion and pointer-events rules). Only the anchor is
+             S10's: the centre of the dice's own ink (46.5, 43.2) inside this button.
+             Sibling of the img, so the cube's pulse never moves it. -->
+        <span class="frc-gh frc-gh-stopped s10-gh" id="s10-gh" aria-hidden="true">
+          <span class="frc-gh-ring frc-gh-ring1"></span>
+          <span class="frc-gh-ring frc-gh-ring2"></span>
+          <img class="frc-gh-hand" src="../unit-assets/img/gesture-hand.svg" alt="" width="28" height="33">
+        </span>
+      </button>
+      <img class="s10-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:935.5px; top:335.0px">
+      <div class="fill-target s10-tower" style="left:700.3px; top:274.6px">
+        <div class="cube-stack" id="s10-stack" role="img" aria-label="صندوق سعة 1 لتر فارغ"></div>
+        <!-- running totals, one per revealed layer (filled by JS; placed by s10BuildScale) -->
+        <ol class="s10-scale" id="s10-scale" aria-live="polite"></ol>
+      </div>
+      <img class="s10-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:503.5px; top:335.0px">
+      <img class="s10-truck" src="assets/img/s10-truck.png" alt="شاحنة بصندوق شفاف على شكل مكعب" width="460" height="307" style="left:35.8px; top:220.6px">
+      <p class="s10-label" style="left:1126.9px; top:543.3px">1 سم³</p>
+      <p class="s10-label" style="left:792.5px; top:543.3px">1 لتر</p>
+      <p class="s10-label" style="left:253.7px; top:543.3px">1 م³</p>
+      <!-- Slide 26 completion (producer 2026-10-04): the slide's conclusion copy verbatim (4
+           paragraphs, paragraph 2 bold; the slide's empty 5th paragraph dropped) as live text, in
+           the approved Figma "Speech Bubbles" component (457:6419), variant BeakAngle=Bottom /
+           Wide (1731:44994) = the module's .comic-bubble (white, 3px Subject/500, radius 11,
+           Body/B-7 Assistant Regular 20 #000, right-aligned). Body + beak are ONE SVG path (s10BuildBubbleShape, from the component's vector: centre-line radius 9.5, beak base 31.47 / height 14.36, stroke 3, miter), built from the element's own size at render; the element keeps its 3px border for geometry but draws it transparent. Copy per the current script (2026-10-04): no asterisks.
+           Bottom-anchored right of the box; the beak points down at the box's top-right edge.
+           Shown only when the box is full. The instruction block above stays (producer). -->
+      <div class="comic-bubble s10-conclusion" id="s10-conclusion" role="note" hidden data-tip-x="29.5" style="left:850.5px; bottom:420.0px">الاستنتاج:<br><strong>1 لتر = 1000 سم³</strong><br>أو 1000 مل<br><span dir="ltr">(10 × 10 × 10 = 1000)</span></div>
+    </div>
+    <button class="btn-continue" id="s10-continue" type="button" disabled onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S11 (data-screen 11) — 1 ליטר box -> 1 מ"ק truck interactive — slides 27-37 ============
+       Rebuilt from scratch (producer 2026-10-04); the bulk draft is gone. Layout = S10's exactly
+       (producer): the text block right-aligned at S10's top/width, the row at S10's positions
+       (truck, arrows, box, cube, labels row). The sequence right to left: 1 סמ״ק cube
+       (decorative) -> arrow -> 1 ליטר box (the ONLY control: the approved S10 object, live, cube
+       22px as in S10) -> arrow -> 1 מ"ק truck. Each activation of the box reveals the next of 10 layers of
+       100 one-liter boxes inside the truck's cargo (slides 28-37: one row per click, totals 100-1000;
+       the totals column and slide 38's completion bubble/dimensions are NOT built in this step, per
+       the producer). Load = s11-box.png (a glass 1 ליטר unit drawn in the cargo's own measured
+       perspective) stacked by buildCubeStack along the cargo's edge vectors, 94% of the cargo, sitting
+       on its floor; the cargo's near post is re-drawn in front of the load with a clipped copy of the
+       truck image. Positions are S10's own, except the left arrow: it sits 20.0px right of S10's so the
+       totals column (slides 28-37: 100 ... 1000 beside the truck, one per layer, S10's totals style)
+       fits between the truck and the arrow. Shared left-side layout with S10 (producer 2026-10-04): truck group
+       -24px (truck, load, marks, bubble, label, counter), left arrow +16px - the same positions as S10. Right of the
+       load: vertical mark 12px out, its "10" beside it on white, counter 457.1 (14px on), arrow 503.5.
+       Completion (slide 38): on the 10th click the conclusion bubble and the 10 x 10 x 10 marks appear
+       together, then Continue lights (note: "מופיעים סימונים על הצלעות של המשאית 10*10*10 ועולה בועית
+       מסקנת ביניים. ואז כפתור המשך נדלק"). The slide's "(= 1000 ליטר)" under the truck label is not built (producer). Continue: disabled until the 10th layer (slides 27-37 grey). -->
+  <section class="screen" data-screen="11" id="s11">
+    <div class="s11-frame">
+      <div class="s11-text">
+        <p class="s11-text__q">الآن، سنكتشف كم عدد علب الـ 1 لتر التي تسعها شاحنة حجمها 1 م³؟</p>
+        <p>انقروا على الصندوق حتى تمتلئ الشاحنة (في كل نقرة تُضاف إلى الشاحنة طبقة من 100 صندوق)</p>
+      </div>
+      <!-- DOM order = RTL reading order: cube, arrow, box, arrow, truck. The cube is decorative (no control). -->
+      <img class="s11-cube" src="assets/img/s10-cube.png" alt="مكعب حجمه 1 سم³" width="90" height="83" style="left:1080.4px; top:331.8px">
+      <img class="s11-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:935.5px; top:335.0px">
+      <button class="s11-box pulse" id="s11-box-btn" type="button" onclick="s11Click()" aria-label="أضيفوا إلى الشاحنة طبقة من 100 صندوق (الطبقة 1 من 10)" style="left:700.3px; top:274.6px">
+        <div class="fill-target s11-box__obj"><div class="cube-stack" id="s11-stack" aria-hidden="true"></div></div>
+        <!-- Tap gesture hint: S8/S10's hint, x1.5 and anchored at the box's bottom-right corner (172, 186) - QA 2026-10-11. -->
+        <span class="frc-gh frc-gh-stopped s11-gh" id="s11-gh" aria-hidden="true">
+          <span class="frc-gh-ring frc-gh-ring1"></span>
+          <span class="frc-gh-ring frc-gh-ring2"></span>
+          <img class="frc-gh-hand" src="../unit-assets/img/gesture-hand.svg" alt="" width="28" height="33">
+        </span>
+      </button>
+      <img class="s11-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:503.5px; top:335.0px">
+      <!-- running totals beside the truck (slides 28-37): one per revealed layer, filled by JS -->
+      <ol class="s11-scale" id="s11-scale" aria-live="polite" style="left:457.1px"></ol>
+      <img class="s11-truck" src="assets/img/s10-truck.png" alt="شاحنة بصندوق شفاف على شكل مكعب" width="460" height="307" style="left:35.8px; top:220.6px">
+      <div class="fill-target s11-cargo" id="s11-cargo" role="img" aria-label="شاحنة فارغة سعتها 1 م³" style="left:182.43px; top:230.72px"><div class="cube-stack" id="s11-load"></div></div>
+      <img class="s11-truck s11-truck--front" src="assets/img/s10-truck.png" alt="" aria-hidden="true" width="460" height="307" style="left:35.8px; top:220.6px; clip-path: polygon(194.3px 96.4px, 201.9px 96.4px, 201.9px 228.7px, 194.3px 228.7px)">
+      <p class="s11-label" style="left:1126.9px; top:543.3px">1 سم³</p>
+      <p class="s11-label" style="left:792.5px; top:543.3px">1 لتر<span class="s11-label__sub">(1000 سم³)</span></p>
+      <p class="s11-label" style="left:253.7px; top:543.3px">1 م³</p>
+      <!-- Slide 38 completion (producer 2026-10-04): the slide's conclusion verbatim (3 paragraphs, all bold as
+           authored) in the S10 conclusion bubble (Figma Speech Bubbles 457:6419 Bottom/Wide via .comic-bubble +
+           s10BuildBubbleShape: one path, seamless beak). Above the truck, beak down to the load's roof; shown only
+           when the truck is full. The 10 x 10 x 10 marks are built by s11BuildDims. -->
+      <div class="comic-bubble s10-conclusion s11-conclusion" id="s11-conclusion" role="note" hidden data-tip-x="70" style="left:226px; bottom:513.02px"><strong>الاستنتاج:</strong><br><strong>1 م³ = 1000 لتر</strong><br><strong><span dir="ltr">(10 × 10 × 10 = 1000)</span></strong></div>
+    </div>
+    <button class="btn-continue" id="s11-continue" type="button" disabled onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S12 (data-screen 12) — conversion summary — slide 39 ============
+       Rebuilt from scratch (producer 2026-10-04) on the APPROVED Figma frame "CycleDiagram - approved"
+       (Templates 5451:35594); every visual comes from it, content from slide 39 (unit mapping by the producer),
+       the sequence from the notes (described semantically, not by colour).
+       Title = SelectionScreenTitle (540 wide at 700,70; H-6 40 Bold Natural/800, right-aligned): the title is 592px
+       at 40px, so it wraps inside the 540 box (balanced to two lines). Cards 233 x 233, radius 24, 40 / 56.5 inset,
+       24px line gap, white Assistant SemiBold 32, centred: right #019DE5 (Blue/500), middle #544ADE, left #0048A7.
+       Two 170px conversion columns in the 32px-gapped row: upper "1000 ÷ / ליחידה גדולה יותר" (Body/B-9 Bold 20,
+       Blue/700 #007AC6) over Figma "Arrow 2" rotated 180 (points left, to the larger unit); lower Figma "Arrow 3"
+       rotated 180 (points right, to the smaller unit) over "x 1000 / ליחידה קטנה יותר" (Bold 20, Blue/900 #002060);
+       arrows = the exported Figma vectors (Natural/500 #D4D4D4). The 1px #D4D4D4 border Figma shows on ONE of the
+       four groups (right gap, upper) is treated as a design artefact and not built.
+       Sequence (s12Enter): 1 right card > 2 upper ÷ (right gap) > 3 middle card > 4 upper ÷ (left gap) > 5 left card
+       > 6 lower × (left gap) > 7 re-emphasise middle > 8 lower × (right gap) > 9 re-emphasise right. -->
+  <section class="screen" data-screen="12" id="s12">
+    <div class="s12-frame">
+      <h2 class="s12-title" data-reveal="1">هكذا نُجري التحويل بين وحدات القياس المختلفة:</h2>
+      <!-- DOM order = RTL reading order: right card, right gap (upper, lower), middle card, left gap, left card. -->
+      <div class="s12-card s12-card--r s12-step" data-step="1" id="s12-card-r" style="left:998px"><span>1 سم³</span><span>أو</span><span>1 مل</span></div>
+      <div class="s12-conv s12-conv--up s12-step" data-step="2" style="left:805px; top:227.5px; width:152px">
+        <p class="s12-conv__cap">1000 ÷<br>للوحدة الأكبر</p>
+        <span class="s12-conv__arrow" style="left:0px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-2.svg" alt="" width="153.5" height="22.0919"></span>
+      </div>
+      <div class="s12-conv s12-conv--down s12-step" data-step="8" style="left:805px; top:364.5px; width:152px">
+        <p class="s12-conv__cap">x 1000<br>لوحدة أصغر</p>
+        <span class="s12-conv__arrow" style="left:0px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+      </div>
+      <div class="s12-card s12-card--m s12-step" data-step="3" id="s12-card-m" style="left:531px"><span>1 لتر</span></div>
+      <div class="s12-conv s12-conv--up s12-step" data-step="4" style="left:329px; top:227.5px; width:170px">
+        <p class="s12-conv__cap">1000 ÷<br>للوحدة الأكبر</p>
+        <span class="s12-conv__arrow" style="left:9px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-2.svg" alt="" width="153.5" height="22.0919"></span>
+      </div>
+      <div class="s12-conv s12-conv--down s12-step" data-step="6" style="left:331px; top:364.5px; width:166px">
+        <p class="s12-conv__cap">x 1000<br>لوحدة أصغر</p>
+        <span class="s12-conv__arrow" style="left:7px" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+      </div>
+      <div class="s12-card s12-card--l s12-step" data-step="5" id="s12-card-l" style="left:64px"><span>1 م³</span></div>
+    </div>
+    <button class="btn-continue" id="s12-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S13 (data-screen 13) — 10-litre bucket conversion practice — slide 40 ============
+       Rebuilt from scratch (producer 2026-10-05); the bulk draft is gone. Exploratory practice, no correctness
+       feedback. Content = slide 40 (text, unit labels, the two results 10,000 / 0.01); behaviour = slide 40 notes
+       (drag the blue bucket onto either white bucket; the white bucket turns blue and shows the result; unlimited
+       repeats; Continue disabled until both buckets were tried) + producer spec (results hidden until dropped, the
+       source always returns to the centre, keyboard/tap path, hint stops for good after the first placement).
+       Visual language = the approved S12 (Figma 5451:35594): the three items sit on S12's three card columns
+       (centres 1114.5 / 647.5 / 180.5, row centre 328.5) and the four S12 conversion groups are reused verbatim
+       (same classes, positions, Blue/700 + Blue/900 captions, Figma arrow vectors), always visible.
+       Buckets: blue = bucket.png, white = s13-bucket-outline.png (the notes' two images), 250px slots; the outline image is
+       scaled x1.0514 and offset so its rim, height and baseline match the blue bucket's. Bucket text: Assistant
+       Bold 26, Black/100 (#303030 on the bucket blue #029CFC = 4.5:1; the slide's white is 2.9:1), below the
+       handle on a blue bucket, centred on the body of an empty white one.
+       Drag = the shared createPointerDnd (S7 / DragAndDropQuestion pointer helper), keyboard/tap = S7's approved
+       pick-then-place contract; drag hint = the canonical 720 drag gesture (mass-measure-01-04 S1). -->
+  <section class="screen" data-screen="13" id="s13">
+    <div class="s13-frame">
+      <div class="s13-text">
+        <p>هيا نجرب: إذا حوّلنا 10 لترات من الماء إلى مل، أو سم³، أو م³، ماذا سنحصل عليه؟</p>
+        <p class="s13-text__do">اسحبوا الدلو الأزرق نحو كل واحد من الدلاء البيضاء واكتشفوا.</p>
+      </div>
+      <!-- DOM order = RTL reading order: right target, right gap, source, left gap, left target. -->
+      <button type="button" class="s13-slot s13-target" id="s13-t-ml" style="left:989.5px">
+        <img class="s13-bucket s13-bucket--outline" src="assets/img/s13-bucket-outline.png" alt="" width="266" height="260" draggable="false">
+        <img class="s13-bucket s13-bucket--full" src="assets/img/bucket.png" alt="" width="250" height="250" draggable="false">
+        <span class="s13-label s13-label--unit"><span>مل / سم³</span></span>
+        <span class="s13-label s13-label--full"><span class="s13-val"></span><span>مل / سم³</span></span>
+      </button>
+      <div class="s12-conv s12-conv--up" style="left:805px; top:227.5px; width:152px" aria-hidden="true">
+        <p class="s12-conv__cap">1000 ÷<br>للوحدة الأكبر</p>
+        <span class="s12-conv__arrow" style="left:0px"><img src="../unit-assets/img/s12-arrow-2.svg" alt="" width="153.5" height="22.0919"></span>
+      </div>
+      <div class="s12-conv s12-conv--down" style="left:805px; top:364.5px; width:152px" aria-hidden="true">
+        <p class="s12-conv__cap">x 1000<br>لوحدة أصغر</p>
+        <span class="s12-conv__arrow" style="left:0px"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+      </div>
+      <button type="button" class="s13-slot s13-src" id="s13-src" style="left:522.5px" aria-pressed="false" aria-label="دلو أزرق: 10 لترات من الماء. اسحبوه إلى الدلو الأبيض، أو انقروا عليه ثم انقروا على الدلو الأبيض.">
+        <img class="s13-bucket s13-bucket--full" src="assets/img/bucket.png" alt="" width="250" height="250" draggable="false">
+        <span class="s13-label s13-label--full"><span>10</span><span>لتر ماء</span></span>
+      </button>
+      <div class="s12-conv s12-conv--up" style="left:329px; top:227.5px; width:170px" aria-hidden="true">
+        <p class="s12-conv__cap">1000 ÷<br>للوحدة الأكبر</p>
+        <span class="s12-conv__arrow" style="left:9px"><img src="../unit-assets/img/s12-arrow-2.svg" alt="" width="153.5" height="22.0919"></span>
+      </div>
+      <div class="s12-conv s12-conv--down" style="left:331px; top:364.5px; width:166px" aria-hidden="true">
+        <p class="s12-conv__cap">x 1000<br>لوحدة أصغر</p>
+        <span class="s12-conv__arrow" style="left:7px"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+      </div>
+      <button type="button" class="s13-slot s13-target" id="s13-t-m3" style="left:55.5px">
+        <img class="s13-bucket s13-bucket--outline" src="assets/img/s13-bucket-outline.png" alt="" width="266" height="260" draggable="false">
+        <img class="s13-bucket s13-bucket--full" src="assets/img/bucket.png" alt="" width="250" height="250" draggable="false">
+        <span class="s13-label s13-label--unit"><span>م³</span></span>
+        <span class="s13-label s13-label--full"><span class="s13-val"></span><span>م³</span></span>
+      </button>
+      <!-- Drag hint: the canonical 720 drag gesture (mass-measure-01-04 S1: ripple on the source, slide to the
+           target, fade in place, invisible reset), same hand asset; source centre -> right target centre. -->
+      <div class="s13-gh" id="s13-gh" aria-hidden="true">
+        <div class="s13-gh-ring s13-gh-ring1"></div>
+        <div class="s13-gh-ring s13-gh-ring2"></div>
+        <img class="s13-gh-hand" src="../unit-assets/img/gesture-hand.svg" alt="" width="28" height="33">
+      </div>
+      <p class="vh" id="s13-live" aria-live="polite"></p>
+    </div>
+    <button class="btn-continue" id="s13-continue" type="button" disabled onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S14 (data-screen 14) — TransitionScreen: scientific evidence lead-in — slide 41 ============
+       Rebuilt from scratch (producer 2026-10-05); the draft (invented headline split, placeholder box) is gone.
+       Note: "שם המסך בפיגמה: TransitionScreen", "הגיף הנבחר מחזיק בקבוק ביד אחת ומאזני כפות ביד השניה".
+       TransitionScreen ShortText (4905:25066) on the module's approved .s1-* component. Text roles (producer
+       choice): the slide has no title, so the text is Body/B-1 (28 Regular, trimmed), three lines (break after
+       "…דעות אישיות.", producer 2026-10-05) at one equal 24px gap; "טיעון מדעי" bold as authored; no headline -
+       a logged exception to the template's one-headline rule (a 64px headline would run 117px into the video).
+       Placement (producer 2026-10-05): right-aligned, starting where the module's question / instruction text
+       starts (S10 / S11 / S13: right edge x 1240, first glyph y 37) - .s1-content--text-start.
+       Companion = the selected character's "presenting two objects" clip (bottle + balance scale), role C.
+       Continue "המשך" (the slide's button image), ungated. -->
+  <section class="screen" data-screen="14" id="s14">
+    <div class="s1-content s1-content--text-start">
+      <div class="s1-text" data-reveal="1">
+        <p class="s1-subtitle s1-subtitle--regular">القياسات الدقيقة للحجم توفر بيانات كمية. هذه البيانات هي أدلة علمية.</p>
+        <p class="s1-subtitle">في العلوم، لحسم الخلاف، لا يُعتمد على الآراء الشخصية.</p>
+        <p class="s1-subtitle">يُستخدم الدليل (البيانات) لتبرير الادعاء وبناء <strong>حجة علمية</strong> موثوقة.</p>
+      </div>
+      <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+        <div class="s1-video-clip">
+          <video class="s1-char-media" id="s14-char-video" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next, label "המשך" (slide 41's button); ungated. nav button back. -->
+    <button class="btn-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S15 (data-screen 15) — AccordionText: what is a scientific argument — slide 42 ============
+       Rebuilt from scratch (producer 2026-10-05); the bulk draft (side-by-side blue buttons, one-way opening) is gone.
+       Design = Figma "720 - UI Templates" Component 13 (5487:26441: AccordionText State01 Default / State02 Hover /
+       State03 Selected1), chosen by the producer for slide 42 (the note's "TransitionScreen (לבדיקת המפיק)" is
+       superseded; the script was aligned to the frame). Behaviour = 720-templates AccordionText: one item open at a
+       time (any order); items in one horizontal row of equal widths (producer 2026-10-05, see CSS), Continue once every item has been opened; progress persists, the open item resets on entry.
+       Header block (Figma "text", 792 wide, right edge x 1238, top y 42): title Body/B-6 Bold 24 Subject/500 >
+       intro Body/B-4 Regular 24 #303030 > "bold question" Body/B-6 Bold 24 Black/100 #303030 (standard text
+       colour, producer 2026-10-05); 24px between all lines (producer 2026-10-05). 56px to the list. Content = slide 42; the claim body is the producer's
+       corrected wording ("משפט שאפשר להתווכח על אמיתותו." - the slide reads "שאפשר להתווכח על אמיתותם."). -->
+  <section class="screen" data-screen="15" id="s15">
+    <div class="s15-frame">
+      <div class="s15-block">
+        <div class="s15-text" data-reveal="1">
+          <h2 class="s15-text__title">ما هي الحجة العلمية؟</h2>
+          <p class="s15-text__body">عندما تريد العالِمات والعلماء (وأنتم أيضًا!) إقناع الآخرين بأن ادعاءً علميًا صحيح، لا يكفي أن يقولوا "هكذا&nbsp;هو الأمر". <br>يجب تقديم <strong>حجة علمية</strong>، تستند إلى 3 أجزاء.</p>
+          <p class="s15-text__do">انقروا على كل جزء لقراءة ما يتضمنه.</p>
+        </div>
+        <!-- Horizontal row (producer 2026-10-05), RTL reading order: טענה (right) > ראיות > נימוק (left), with the
+             S12 / S13 conversion arrow (s12-arrow-3.svg, points left = the reading direction) between the items. -->
+        <div class="acc-list acc-list--row" data-reveal="2">
+        <div class="acc-item" data-index="0">
+          <button class="acc-head" type="button" id="s15-acc-head-0" aria-expanded="false" aria-controls="s15-acc-body-0" onclick="s15Toggle(0)">
+            <span class="acc-title">ادّعاء</span>
+            <span class="acc-chev" aria-hidden="true"><img src="assets/img/acc-chevron.svg" alt="" width="16" height="8"></span>
+          </button>
+          <div class="acc-body" id="s15-acc-body-0" hidden>
+            <p>جملة يمكن الجدال<br>حول صحتها.</p>
+          </div>
+        </div>
+        <span class="acc-arrow" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+        <div class="acc-item" data-index="1">
+          <button class="acc-head" type="button" id="s15-acc-head-1" aria-expanded="false" aria-controls="s15-acc-body-1" onclick="s15Toggle(1)">
+            <span class="acc-title">أدلة</span>
+            <span class="acc-chev" aria-hidden="true"><img src="assets/img/acc-chevron.svg" alt="" width="16" height="8"></span>
+          </button>
+          <div class="acc-body" id="s15-acc-body-1" hidden>
+            <p>بيانات أو نتائج من تجربة أو ملاحظة،<br>تدعم الادعاء أو تدحضه.</p>
+          </div>
+        </div>
+        <span class="acc-arrow" aria-hidden="true"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
+        <div class="acc-item" data-index="2">
+          <button class="acc-head" type="button" id="s15-acc-head-2" aria-expanded="false" aria-controls="s15-acc-body-2" onclick="s15Toggle(2)">
+            <span class="acc-title">التبرير</span>
+            <span class="acc-chev" aria-hidden="true"><img src="assets/img/acc-chevron.svg" alt="" width="16" height="8"></span>
+          </button>
+          <div class="acc-body" id="s15-acc-body-2" hidden>
+            <p>الشرح الذي يوضح سبب دعم الأدلة<br>للادعاء أو دحضه.</p>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next "המשך" (gated: all items opened), nav button back. -->
+    <button class="btn-continue" id="s15-continue" type="button" disabled onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S16 (data-screen 16) — selection screen with a popup per example — slides 43-45 ============
+       Rebuilt from scratch (producer 2026-10-05); the draft is gone. The producer's first reading (route A / B
+       branching) was corrected: it is ONE selection screen where each picture opens its own popup (slides 44 / 45 =
+       the two popup pages), and Continue unlocks once BOTH examples were opened (any order, any number of times).
+       Behaviour reference (producer): InfoLayerHotspot S7 in methodica-math-percent-01-01 (visited set -> gate,
+       popup with close X, backdrop click and Escape close, visited mark on the opener). Look = S0 (TwoOptionSelection):
+       same head, same 296px card wrapper, same 238px framed image window (photo instead of video), name 32 Bold
+       below, Continue "המשך" (the slide's label). Popup = Figma RecallPopup 4259:22713 (ContentPopup 1121 wide, white,
+       radius 48, 1px Natural/800 outline, General Popup Close Btn 249:5259 at 24 / 24 top-left) over the shared 80%
+       white backdrop; content per ContentPopup: character image + H-6 40 Bold Subject/600 title, then label (26 Bold
+       Subject/600) over text (26 Regular Natural/800) per section. Colours: Figma / system tokens (the slide's gold
+       title and pastel section boxes are PPT colours). Cards, DOM and tab order = reading order (moon = 1, rightmost). -->
+  <section class="screen" data-screen="16" id="s16">
+    <div class="select-content">
+      <div class="select-head" data-reveal="1">
+        <h1 class="select-title">أمثلة على الحجة العلمية</h1>
+        <p class="select-subtitle">اختاروا مثالًا واكتشفوا كيف تُبنى الحجة العلمية من ادعاء وأدلة وتبرير.</p>
+      </div>
+      <div class="option-cards option-cards--rtl" role="group" aria-label="اختاروا مثالًا" data-reveal="2">
+        <button class="option-card option-card--btn" type="button" id="s16-card-moon" aria-haspopup="dialog" aria-controls="s16-pop-moon" onclick="s16Open_('moon')">
+          <span class="option-card-check" aria-hidden="true"><img src="assets/img/feedback-icon-correct.svg" alt="" width="32" height="32"></span>
+          <span class="option-card-img option-card-img--character option-card-img--photo"><img src="assets/img/s16-moon.jpg" alt="القمر المكتمل (البدر)"></span>
+          <span class="option-card-labels"><span class="option-card-name">الكتلة والوزن على القمر</span></span>
+        </button>
+        <button class="option-card option-card--btn" type="button" id="s16-card-algae" aria-haspopup="dialog" aria-controls="s16-pop-algae" onclick="s16Open_('algae')">
+          <span class="option-card-check" aria-hidden="true"><img src="assets/img/feedback-icon-correct.svg" alt="" width="32" height="32"></span>
+          <span class="option-card-img option-card-img--character option-card-img--photo"><img src="assets/img/s16-algae.jpg" alt="مياه مغطاة بطحالب خضراء مزرقة"></span>
+          <span class="option-card-labels"><span class="option-card-name">ازدهار الطحالب</span></span>
+        </button>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next "המשך" (gated: both examples opened), nav button back. -->
+    <button class="btn-continue" id="s16-continue" type="button" disabled onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" id="s16-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+    <div class="s16-pop-overlay m-popup hidden" id="s16-pop-moon" onclick="s16Backdrop(event,'moon')">
+      <div class="s16-pop" role="dialog" aria-modal="true" aria-labelledby="s16-pop-h-moon">
+        <button class="s16-pop-close" type="button" aria-label="إغلاق" onclick="s16Close_('moon')"><img src="../unit-assets/img/popup-close-x.svg" alt="" width="16" height="16"></button>
+        <div class="s16-pop-body">
+          <div class="s16-pop-head">
+            <span class="s16-pop-img"><img src="assets/img/s16-moon.jpg" alt="القمر المكتمل (البدر)"></span>
+            <h2 class="s16-pop-title" id="s16-pop-h-moon">الكتلة والوزن على القمر</h2>
+          </div>
+          <div class="s16-pop-sec"><p class="s16-pop-label">ادّعاء</p><p class="s16-pop-text">ميزان الكفتين الذي يحمل كيلوغرامًا من الأرز وكيلوغرامًا من الأثقال، وكان متوازنًا على الأرض، سيبقى متوازنًا على القمر أيضًا.</p></div>
+          <div class="s16-pop-sec"><p class="s16-pop-label">أدلة</p><p class="s16-pop-text">قوة الجاذبية على القمر أضعف، ولذلك يكون وزن الجانبين أقل، ولكن بنفس المقدار تمامًا، لأنهما في المكان ذاته.</p></div>
+          <div class="s16-pop-sec"><p class="s16-pop-label">التبرير</p><p class="s16-pop-text">ميزان الكفتين يقارن بين الجانبين وفقًا للكتلة، لا للوزن.<br>الجاذبية الأضعف تؤثر بالقدر نفسه على كلا الجانبين، ولذلك لا تتغير النسبة بينهما.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="s16-pop-overlay m-popup hidden" id="s16-pop-algae" onclick="s16Backdrop(event,'algae')">
+      <div class="s16-pop" role="dialog" aria-modal="true" aria-labelledby="s16-pop-h-algae">
+        <button class="s16-pop-close" type="button" aria-label="إغلاق" onclick="s16Close_('algae')"><img src="../unit-assets/img/popup-close-x.svg" alt="" width="16" height="16"></button>
+        <div class="s16-pop-body">
+          <div class="s16-pop-head">
+            <span class="s16-pop-img"><img src="assets/img/s16-algae.jpg" alt="مياه مغطاة بطحالب خضراء مزرقة"></span>
+            <h2 class="s16-pop-title" id="s16-pop-h-algae">ازدهار الطحالب</h2>
+          </div>
+          <div class="s16-pop-sec"><p class="s16-pop-label">ادّعاء</p><p class="s16-pop-text">أدى ارتفاع درجة حرارة المياه في البحيرة إلى نفوق الأسماك.</p></div>
+          <div class="s16-pop-sec"><p class="s16-pop-label">أدلة</p><p class="s16-pop-text">عندما ارتفعت درجة حرارة الماء، تكاثرت الطحالب الخضراء المزرقة بسرعة وغطّت سطح الماء؛<br>انخفض تركيز الأكسجين الذائب بشكل حاد، وتم تسجيل عدد كبير من الأسماك النافقة.</p></div>
+          <div class="s16-pop-sec"><p class="s16-pop-label">التبرير</p><p class="s16-pop-text">الطحالب الخضراء المزرقة تتكاثر بسرعة أكبر في المياه الدافئة. عندما تغطي سطح الماء، تحجب الضوء وتضر بعملية التمثيل الضوئي للنباتات الأخرى، وبذلك تقل كمية الأكسجين في الماء، ولا تجد الأسماك ما يكفيها من الأكسجين للتنفس.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S17 (data-screen 17) — SingleChoiceQuestion, text only — slide 46 ============
+       Rebuilt from scratch (producer 2026-10-05); the multiple-choice draft is gone. The script (saved 16:18) now
+       names it "SingleChoiceQuestion" (the earlier note said MultipleChoiceQuestion) and the route tag is gone.
+       Template = 720-templates SingleChoiceQuestion on the module's approved S2 build (same .scq-* classes, same
+       attempt / feedback / retry-gate / popup behaviour), text-only variant: no content image, so the Figma
+       "question" component's text column (792, right edge x 1240) carries the question and the answers sit under it.
+       Question block (Body/B-4 24, 24px apart): the lead-in, the three sentences with their bold letters, then the bold
+       stem (Body/B-6). The slide's peach box behind the sentences is built as the Figma TextBox (5555:26581: radius 8, padding
+       24 x 12) in the Science colour = Subject/200 (the frame draws it in Purple/200 #CEC7FF, the Math value of the same token). Options: "משפט א / ב / ג"; correct = ב (the filled radio on the slide).
+       NO HINT (producer 2026-10-05): the slide draws an "אפשר רמז?" button but no hint text exists anywhere in the script,
+       and the template allows a hint only with approved content - the button is not built until the text arrives.
+       Check button "צדקתי?" -> "שנמשיך?" once resolved (no authored label). -->
+  <section class="screen" data-screen="17" id="s17">
+    <div class="scq-question scq-question--text">
+      <div class="scq-main" data-reveal="1">
+        <div class="scq-qtext">
+          <div class="scq-qbody">
+            <p>اقرأوا الجمل الثلاث التالية التي تتناول تأثير ارتفاع درجة حرارة الماء في البحيرة، وأجيبوا على السؤال.</p>
+            <div class="scq-passage">
+              <p><strong>أ.</strong> تتكاثر الطحالب الخضراء المزرقة بشكل أسرع في المياه الدافئة. وعندما تغطي سطح الماء، تحجب الضوء وتضر بعملية التمثيل الضوئي للنباتات الأخرى، مما يؤدي إلى انخفاض كمية الأكسجين في الماء.</p>
+              <p><strong>ب.</strong> أدى ارتفاع درجة حرارة المياه في البحيرة إلى موت الأسماك.</p>
+              <p><strong>ج.</strong> عندما ارتفعت درجة حرارة المياه، تكاثرت الطحالب الخضراء المزرقة بسرعة وغطّت سطح الماء، وانخفض تركيز الأكسجين المذاب بشكل حاد، ووُجدت أعداد كبيرة من الأسماك النافقة.</p>
+            </div>
+            <p class="scq-qstem" id="s17-stem">أي من الجمل التالية يعرض "الادعاء" في الحجة؟</p>
+          </div>
+        </div>
+        <div class="scq-answers" role="radiogroup" aria-labelledby="s17-stem">
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s17Select('a')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">الجملة أ</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s17Select('b')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">الجملة ب</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s17Select('c')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">جملة ج</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <button class="btn-continue" id="s17-check" type="button" disabled onclick="s17Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" id="s17-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S18 (data-screen 18) — OrderedDragAndDropQuestion — slide 47 ============
+       Rebuilt from scratch (producer 2026-10-05); the classic-DnD draft is gone. The producer's link was the ImageOnly
+       frame (391:4247); slide 47 is text sentences into three NAMED slots, and its note says OrderedDragAndDropQuestion,
+       so - producer's answer - the Figma "OrderedDragAndDropQuestion" family (States 01-08, 1717:39511 ...) is the design.
+       Behaviour = the approved S7 (DragAndDropQuestion): pointer drag (mouse / touch / pen) + the pick-then-place keyboard /
+       tap path, each slot holds one sentence, a dropped-on slot evicts its sentence, a drop elsewhere returns it, placed
+       sentences stay draggable until checked, "צדקתי?" enables when all three slots are full, two attempts (retry ->
+       Retry gate on the identical arrangement; final wrong -> the solution at once + the View My Answer Toggle).
+       Figma geometry: the question text 792 wide at the right edge (x 1240), top 139.5; slots 521 x min 52 (dashed,
+       radius 12, Natural/200) with 20px between rows; sentence cards 521 wide (white, 1px Natural/Alpha/300 @50%, radius 12,
+       padding 20 x 12, Q-1 22px #222); 24px between the card column and the slot column. The Figma numbers (1-8) sit
+       right of each slot; here the slots are NAMED (טענה / ראיות / נימוק, as slide 47 names them), so each number is
+       replaced by its name (24px, a 70px label column) and the list is 21px further left than Figma's to make room.
+       The 1 / 2 / 3 badges on the slide's sentences are PPT staging markers (as on S2) and are not built. The sentences
+       are shown in a mixed order (the slide says they were mixed; its own order is the solution). NO hint button (none
+       on the slide, none in the notes). -->
+  <section class="screen" data-screen="18" id="s18">
+    <div class="ord-main">
+      <p class="ord-text" data-reveal="1">أمامكم حجة علمية تقارن بين كتلة كرتين، غير أن الجمل الثلاث التي تتكون منها قد اختلطت.<br><strong class="ord-text__do">اسحبوا كل جملة إلى المكوّن المناسب: طرح (ادعاء)، أو دليل، أو تبرير.</strong></p>
+      <div class="ord-board" data-reveal="2">
+        <!-- DOM order = tab order (sentences, then slots); the visual order is set by .ord-rows / .ord-bank order -->
+        <div class="ord-bank">
+          <button class="ord-card" id="s18-d-reasoning" type="button" aria-pressed="false">في ميزان الكفتين، الكفة التي توضع عليها الكتلة الأكبر تنزل إلى الأسفل.</button>
+          <button class="ord-card" id="s18-d-claim" type="button" aria-pressed="false">لكرة المعدن كتلة أكبر من كتلة كرة البلاستيك.</button>
+          <button class="ord-card" id="s18-d-evidence" type="button" aria-pressed="false">عندما يُوضع الكرتان على ميزان الكفتين، تنخفض الكفة التي توضع عليها الكرة المعدنية أكثر.</button>
+        </div>
+        <div class="ord-rows">
+          <div class="ord-row"><span class="ord-label" id="s18-l-claim">ادّعاء</span><div class="ord-zone" id="s18-t-claim" role="button" tabindex="0" aria-label="ادّعاء: فارغ"></div></div>
+          <div class="ord-row"><span class="ord-label" id="s18-l-evidence">أدلة</span><div class="ord-zone" id="s18-t-evidence" role="button" tabindex="0" aria-label="الأدلة: فارغ"></div></div>
+          <div class="ord-row"><span class="ord-label" id="s18-l-reasoning">التبرير</span><div class="ord-zone" id="s18-t-reasoning" role="button" tabindex="0" aria-label="التبرير: فارغ"></div></div>
+        </div>
+      </div>
+      <p class="vh" id="s18-live" aria-live="polite"></p>
+    </div>
+    <!-- FixedNavigationBar: one bar slot - "צדקתי?" checks until resolved, then progresses as "שנמשיך?" (no authored label);
+         nav button back. No hint button. -->
+    <button class="btn-continue" id="s18-check" type="button" disabled onclick="s18Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" id="s18-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S19 (data-screen 19) — TransitionScreen ShortText — slide 48 ============
+       Rebuilt (producer 2026-10-06). Note: "שם המסך בפיגמה: TransitionScreen", "הגיף שנבחר באנימציה של מתיחות".
+       Roles: headline (H-4) "מה נשאר לנו בראש?", closing line (B-1) "שתי שאלות קלילות לחימום לפני שנתקדם", no lead-in,
+       no bubble. The slide's cyan "שאלות חימום בין הקניה לתרגול" box (11pt, top corner) is a PPT stage marker (like
+       "תרגול סטנדרטי" on slide 52) and is not built; it had been glued onto the subtitle in the old draft. -->
+  <section class="screen" data-screen="19" id="s19">
+    <div class="s1-content">
+      <div class="s1-text" data-reveal="1">
+        <h2 class="s1-title">ماذا بقيَ عالقًا في عقولنا؟</h2>
+        <p class="s1-subtitle">سؤالان بسيطان للإحماء قبل أن نتقدم</p>
+      </div>
+      <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+        <div class="s1-video-clip">
+          <video class="s1-char-media" id="s19-char-video" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next, label "קחו אותי לשאלות" = slide 48's own button; ungated. nav button back. -->
+    <button class="btn-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>خذوني إلى الأسئلة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S20 (data-screen 20) — MultipleChoiceQuestion, warm-up question 1 of 2 — slide 49 ============
+       Rebuilt from scratch (producer 2026-10-06). Figma "MultipleChoiceQuestion" 5590:25473 (State 01 default, 02 selected,
+       03 correct, 04 incorrect - retry / final), text-only answers: capsule + 20px checkbox. The slide's note: "שאלת חימום 1 מ2,
+       סרגל שאלות מלווה" = the Figma "Progress question" nav (2 questions: this one and slide 50) and "ללא כפתור רמז" = no hint.
+       Options in the slide's top-to-bottom order; correct = ליטר, מיליליטר, סנטימטר מעוקב, מטר מעוקב (the four filled on the slide).
+       "סנטימיטר מעוקב" on the slide is a typo and is spelled "סנטימטר מעוקב" here (logged). Abbreviation quotes are the Hebrew
+       gershayim (״) throughout; the slide mixes " and ״. -->
+  <section class="screen" data-screen="20" id="s20">
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+    </nav>
+    <div class="scq-question scq-question--progress">
+      <div class="scq-main" data-reveal="1">
+        <div class="scq-qtext">
+          <div class="scq-qbody">
+            <p class="scq-qstem" id="s20-stem">أشيروا إلى جميع وحدات القياس التي تقيس الحجم من القائمة التالية:</p>
+          </div>
+        </div>
+        <div class="scq-answers" role="group" aria-labelledby="s20-stem">
+          <button class="scq-opt scq-opt--multi" type="button" role="checkbox" aria-checked="false" data-id="l" onclick="s20Toggle('l')">
+            <span class="scq-check" aria-hidden="true"></span><span class="scq-opt-text">لتر</span>
+          </button>
+          <button class="scq-opt scq-opt--multi" type="button" role="checkbox" aria-checked="false" data-id="ml" onclick="s20Toggle('ml')">
+            <span class="scq-check" aria-hidden="true"></span><span class="scq-opt-text">مليلتر (مل)</span>
+          </button>
+          <button class="scq-opt scq-opt--multi" type="button" role="checkbox" aria-checked="false" data-id="kg" onclick="s20Toggle('kg')">
+            <span class="scq-check" aria-hidden="true"></span><span class="scq-opt-text">كيلوغرام (كغ)</span>
+          </button>
+          <button class="scq-opt scq-opt--multi" type="button" role="checkbox" aria-checked="false" data-id="cc" onclick="s20Toggle('cc')">
+            <span class="scq-check" aria-hidden="true"></span><span class="scq-opt-text">سنتيمتر مكعب (سم³)</span>
+          </button>
+          <button class="scq-opt scq-opt--multi" type="button" role="checkbox" aria-checked="false" data-id="cm" onclick="s20Toggle('cm')">
+            <span class="scq-check" aria-hidden="true"></span><span class="scq-opt-text">سنتيمتر (سم)</span>
+          </button>
+          <button class="scq-opt scq-opt--multi" type="button" role="checkbox" aria-checked="false" data-id="m3" onclick="s20Toggle('m3')">
+            <span class="scq-check" aria-hidden="true"></span><span class="scq-opt-text">متر مكعب (م³)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: one bar slot - "צדקתי?" checks until resolved, then progresses as "שנמשיך?" (no authored label); nav button back. No hint button. -->
+    <button class="btn-continue" id="s20-check" type="button" disabled onclick="s20Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" id="s20-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S21 (data-screen 21) — DropdownQuestion, warm-up question 2 of 2 — slide 50 ============
+       Rebuilt from scratch (producer 2026-10-06). Figma "DropdownQuestion" 5596:25961 (Single Paragraph: 01 closed, 02 open, 03
+       selected, 04 correct); the slide has TWO sentences, each with one blank, so the "fill sentence" row is repeated (24px apart)
+       and the template's multi-blank variant applies (per-slot correctness, View My Answer Toggle on the final wrong attempt).
+       Notes: "שאלת חימום 2 מ2, סרגל שאלות מלווה" = the Progress question nav (shared, derived state) and "ללא כפתור רמז" = no hint.
+       Quotes in the abbreviations are the Hebrew gershayim (״), as on S20. -->
+  <section class="screen" data-screen="21" id="s21">
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+    </nav>
+    <div class="scq-question scq-question--progress">
+      <div class="scq-main" data-reveal="1">
+        <div class="scq-qtext">
+          <div class="scq-qbody">
+            <p class="scq-qstem" id="s21-stem">أكملوا:</p>
+          </div>
+        </div>
+        <div class="dq-sentences">
+          <div class="dq-row">
+            <span class="dq-words">1 لتر يساوي -</span>
+            <div class="dq-dropdown-wrap" id="s21-wrap-1">
+              <button class="dq-btn" id="s21-btn-1" type="button" data-slot="1" data-empty="true" aria-haspopup="listbox" aria-expanded="false" aria-controls="s21-list-1" aria-label="جملة 1: اختاروا إجابة" onclick="s21Toggle(1)">
+                <img class="dq-chevron" src="assets/img/acc-chevron.svg" width="16" height="8" alt="" aria-hidden="true">
+                <span class="dq-selected" id="s21-selected-1"></span>
+              </button>
+              <ul class="dq-list hidden" id="s21-list-1" role="listbox" aria-label="الجملة 1: الخيارات">
+              <li class="dq-option" role="option" tabindex="-1" aria-selected="false" data-value="10">10</li>
+              <li class="dq-divider" role="presentation"></li>
+              <li class="dq-option" role="option" tabindex="-1" aria-selected="false" data-value="1,000">1,000</li>
+              <li class="dq-divider" role="presentation"></li>
+              <li class="dq-option" role="option" tabindex="-1" aria-selected="false" data-value="100">100</li>
+              <li class="dq-divider" role="presentation"></li>
+              <li class="dq-option" role="option" tabindex="-1" aria-selected="false" data-value="10,000">10,000</li>
+              </ul>
+            </div>
+            <span class="dq-words">مل أو سم³.</span>
+          </div>
+          <div class="dq-row">
+            <span class="dq-words">1 م³ يساوي -</span>
+            <div class="dq-dropdown-wrap" id="s21-wrap-2">
+              <button class="dq-btn" id="s21-btn-2" type="button" data-slot="2" data-empty="true" aria-haspopup="listbox" aria-expanded="false" aria-controls="s21-list-2" aria-label="الجملة 2: اختاروا إجابة" onclick="s21Toggle(2)">
+                <img class="dq-chevron" src="assets/img/acc-chevron.svg" width="16" height="8" alt="" aria-hidden="true">
+                <span class="dq-selected" id="s21-selected-2"></span>
+              </button>
+              <ul class="dq-list hidden" id="s21-list-2" role="listbox" aria-label="الجملة 2: الخيارات">
+              <li class="dq-option" role="option" tabindex="-1" aria-selected="false" data-value="10">10</li>
+              <li class="dq-divider" role="presentation"></li>
+              <li class="dq-option" role="option" tabindex="-1" aria-selected="false" data-value="1,000">1,000</li>
+              <li class="dq-divider" role="presentation"></li>
+              <li class="dq-option" role="option" tabindex="-1" aria-selected="false" data-value="100">100</li>
+              <li class="dq-divider" role="presentation"></li>
+              <li class="dq-option" role="option" tabindex="-1" aria-selected="false" data-value="10,000">10,000</li>
+              </ul>
+            </div>
+            <span class="dq-words">لتر.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: one bar slot - "צדקתי?" checks until resolved, then "שנמשיך?" (no authored label); nav button back. The Recall button (client round 1) moved to the bar's hint slot in the closing round (2026-10-20): "אפשר להיזכר בתרשים ההמרות?", always available, opens the Recall popup. -->
+    <button class="btn-continue" id="s21-check" type="button" disabled onclick="s21Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="scq-hint" id="s21-hint" type="button" aria-haspopup="dialog" onclick="s21OpenHint()">
+      <svg class="scq-hint-ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+      <span class="nav-label"><span>هل يمكنني الرجوع إلى مخطط التحويلات؟</span></span>
+    </button>
+    <button class="btn-back" id="s21-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+
+
+  <!-- ═══ "מצאתם בעיה?" — issue-report dialogs (ADDING-REPORTING-AND-RESUME.md §7) ═══
+       Copied verbatim from methodica-science-body-matter-01-02 (2026-10-19 state). Last children of
+       #app, outside every .screen: .report-modal-overlay is position:absolute; inset:0 against #app,
+       so it aligns with the scaled canvas. All three carry `hidden`; behaviour in
+       ../unit-js/25-report.js (wires #flag-btn by delegation — no onclick on the flag), style in
+       ../unit-css/25-report.css. -->
+  <div id="report-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" type="button" onclick="tryCloseReportModal()" aria-label="إغلاق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">الإبلاغ عن مشكلة</h2>
+      <p class="report-modal-body">هل هناك شيء غير واضح أو لا يعمل كما يجب؟<br>أبلغونا بما حدث لنتمكن من معالجة المشكلة.</p>
+
+      <div class="report-field">
+        <label class="report-label" for="report-type"><span class="required-star">*</span> ما نوع المشكلة</label>
+        <div class="report-custom-select" id="report-type-wrapper">
+          <button class="report-select-btn is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="report-select-value">اختاروا نوع المشكلة</span>
+          </button>
+          <ul class="report-select-list" role="listbox" hidden>
+            <li class="report-select-option" data-value="technical" role="option">عطل تقني أو شيء ما لا يعمل</li>
+            <li class="report-select-option" data-value="unclear" role="option">شيء غير واضح لي</li>
+            <li class="report-select-option" data-value="other" role="option">آخر</li>
+          </ul>
+          <input type="hidden" id="report-type" value="">
+        </div>
+        <span class="report-field-error" id="report-type-error" hidden>اختاروا نوع المشكلة</span>
+      </div>
+
+      <div class="report-field">
+        <label class="report-label" for="report-text"><span class="required-star">*</span> ماذا حدث؟</label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="فصّلوا ماذا حدث لنتمكن من فهم المشكلة" onblur="reportTextBlur()"></textarea>
+        <span class="report-field-error" id="report-text-error" hidden>اكتبوا ماذا حدث</span>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="tryCloseReportModal()">إلغاء</button>
+        <button class="report-submit-btn" type="button" onclick="submitReport()" disabled>إرسال التبليغ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מצב "הדיווח נשלח". דיאלוג נפרד מדיאלוג הנטישה שמתחתיו — אין לאחד ביניהם. -->
+  <div id="report-thanks-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-thanks-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-thanks-title">تم إرسال التبليغ، شكرًا!</h2>
+      <p class="report-modal-body">تلقّينا التبليغ وسنعالجه في أقرب وقت.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" type="button" onclick="closeReportThanks()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- אישור נטישה: נפתח רק כשיש קלט שלא נשלח. -->
+  <div id="report-confirm-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-confirm-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-confirm-title">هل تريدون إغلاق النافذة فعلًا؟</h2>
+      <p class="report-modal-body">إذا ضغطتم على إغلاق فلن يتم إرسال التبليغ</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="forceCloseReportModal()">إغلاق النافذة</button>
+        <button class="report-submit-btn" type="button" onclick="backToReportForm()">أريد التبليغ</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+<!-- 720 platform layer (reporting / resume): shared files first, then the part's own scripts
+     (js/motion.js before js/main.js, as before), 90-boot last. Same ?v= in every part
+     (guide §3.4); 90-boot.js is a separate tag on purpose (§3.2). -->
+<script src="../unit-js/10-identity.js?v=20261102b"></script>
+<script src="../unit-js/20-xapi.js?v=20261102b"></script>
+<script src="../unit-js/25-report.js?v=20261102b"></script>
+<script src="../unit-js/40-resume.js?v=20261102b"></script>
+<script src="../unit-js/50-loader.js?v=20261102b"></script>
+<script src="js/motion.js?v=20261102b"></script>
+<script src="js/main.js?v=20261102b"></script>
+<script src="../unit-js/90-boot.js?v=20261102b"></script></body>
+</html>

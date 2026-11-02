@@ -34,7 +34,7 @@
    האחרות. bootXAPI() עוטף כבר את עצמו פנימה.
 
    אין צורך ב-DOMContentLoaded: התג הזה יושב מיד לפני </body>, ולכן ה-DOM שלם. */
-/* methodica-science-mass-liquid-02: the first screen of parts 02-07 has #s0-back ("חזרה" to the
+/* methodica-ar-science-mass-liquid-02: the first screen of parts 02-07 has #s0-back ("חזרה" to the
    previous part, shown by syncS0Back() only when the session nav stack has an entry). Its handler
    is the generic goBack(), so it is found by id. Part 01 has no such button. */
 function hideCrossPartBack() {

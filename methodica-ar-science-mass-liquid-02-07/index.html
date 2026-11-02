@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سؤال الذروة — methodica-ar-science-mass-liquid-02-07</title>
+<link rel="stylesheet" href="css/style.css?v=20261102b">
+<link rel="stylesheet" href="css/motion.css?v=20261102b">
+<link rel="stylesheet" href="../unit-css/25-report.css?v=20261102b">
+</head>
+<body>
+<!-- ═══ Boot cover (ADDING-REPORTING-AND-RESUME.md §8.11) ═══
+     Hides screen 0 while a saved position is read and painted (Phase 4, resume), so the learner never
+     sees the first screen flash before the restored one. A SIBLING of #app (scaleApp transforms #app).
+     unit-js/50-loader.js removes it on every exit path (dropBootCover); this inline net removes it
+     after 800 ms regardless — or, while a restore is in flight (window.__resumeInFlight), waits for
+     it up to a hard 6 s. Copied from methodica-science-body-matter-01 (← mass-weight-01). -->
+<div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
+<script>
+(function () {
+  var t0 = Date.now();
+  function tick() {
+    var c = document.getElementById('boot-cover');
+    if (!c || !c.parentNode) return;
+    if (window.__resumeInFlight && Date.now() - t0 < 6000) { setTimeout(tick, 100); return; }
+    c.parentNode.removeChild(c);
+  }
+  setTimeout(tick, 800);
+})();
+</script>
+<div id="app">
+
+  <!-- Global: Report Problem (Figma 207:3590). Visual only — no behaviour wired yet;
+       the Pop-up variant is intentionally not implemented. -->
+  <button class="flag-btn" id="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+    <span class="flag-btn__icon" aria-hidden="true"></span>
+    <span class="flag-btn__label" aria-hidden="true">هل وجدتم مشكلة؟</span>
+  </button>
+
+  <!-- S2 feedback popup — Figma "Popup Feedback" size=Short (217:4133 Correct; 2464:28288 Incorrect), as part 06.
+       Outside every .screen (shared popup contract); no close control. Position: bottom-RIGHT, under the question text
+       (.scq-popup--right) — a documented deviation from the standard bottom-left: on this screen the bill fills the
+       left column and the standard spot hides the marked dots the popup is talking about. -->
+  <div class="scq-popup scq-popup--right m-popup hidden" id="s2-popup" onpointerdown="popupPointerDown(event,'s2-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- Shared icon: the Figma hint bulb (nav button 196:6024 "Group"; the Hint Card's "iocn/idea\white\large" is the
+       same shape at 40px). currentColor fill. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ico-bulb" viewBox="0 0 26 22.2883">
+      <path fill="currentColor" d="M17.7926 2.76346C16.3676 1.37911 14.5057 0.687763 12.5489 0.815548C9.07997 1.04163 6.27288 3.9168 6.01798 7.50135C5.85649 9.77363 6.70352 11.9443 8.34376 13.4548C9.23038 14.2723 9.74018 15.465 9.74018 16.7265H11.2284H14.7733H16.2616C16.2616 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.791 2.76018L17.7926 2.76346ZM13.0001 5.54525C11.6702 5.54525 10.5856 6.66583 10.5856 8.04525C10.5856 8.46956 10.2516 8.81524 9.84151 8.81524C9.43145 8.81524 9.09739 8.46956 9.09739 8.04525C9.09739 5.8172 10.8485 4.00527 13.0001 4.00527C13.4133 4.00527 13.7474 4.35094 13.7474 4.77526C13.7474 5.19957 13.4133 5.54525 13.0001 5.54525Z"/>
+      <path fill="currentColor" d="M9.73859 19.6245C9.73859 20.3289 9.99824 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73859V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z"/>
+      <path fill="currentColor" d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46962 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46962 25.9999 8.0453C25.9999 7.62099 25.6659 7.27531 25.2558 7.27531Z"/>
+      <path fill="currentColor" d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46962 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46962 4.13701 8.0453H4.1386Z"/>
+      <path fill="currentColor" d="M20.8702 3.11398C21.0174 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.8039 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4411 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4031 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z"/>
+      <path fill="currentColor" d="M4.70374 13.1172L2.53311 14.69C2.19588 14.9341 2.11514 15.4141 2.35104 15.763C2.49512 15.9777 2.72627 16.0923 2.96217 16.0923C3.10941 16.0923 3.25824 16.0465 3.38806 15.9531L5.55869 14.3803C5.89592 14.1362 5.97667 13.6562 5.74076 13.3073C5.50486 12.9583 5.04097 12.8731 4.70374 13.1189V13.1172Z"/>
+      <path fill="currentColor" d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8905 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z"/>
+      <path fill="currentColor" d="M5.55868 1.71322L3.38806 0.140473C3.05083 -0.10363 2.58694 -0.0184393 2.35103 0.328875C2.11513 0.677827 2.19746 1.15784 2.53311 1.40194L4.70373 2.97469C4.83356 3.06971 4.98238 3.11394 5.12962 3.11394C5.36394 3.11394 5.5951 2.99926 5.74076 2.78465C5.97666 2.4357 5.89433 1.95568 5.55868 1.71158V1.71322Z"/>
+    </symbol>
+  </svg>
+
+  <!-- S3 feedback popup — the shared Figma "Popup Feedback" (size=Short, with the answer toggle), as part 03 S3.
+       Bottom-right like S2 (the bill fills the left column). -->
+  <div class="scq-popup scq-popup--right scq-popup--wide m-popup hidden" id="s3-popup" onpointerdown="popupPointerDown(event,'s3-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S3 hint — Figma "Hint Card" (4946:39533) over the shared popup backdrop. No title (new lomdot, 2026-10-05):
+       white bulb, slide 90's hint box, "חזרה לשאלה". Closes on that button, a click outside the card, or Escape. -->
+  <div class="scq-hint-overlay m-popup hidden" id="s3-hint-overlay" onclick="s3CloseHintOnBackdrop(event)">
+    <div class="hint-card" role="dialog" aria-modal="true" aria-label="تلميح" aria-describedby="s3-hint-text">
+      <div class="hint-card__text">
+        <svg class="hint-card__ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+        <p class="hint-card__body" id="s3-hint-text">ابحثوا عن الشهر الذي يحتوي على أعلى استهلاك بالمتر المكعب، واستعينوا بالعلاقة التي تعلمتموها بين وحدة القياس المتر المكعب ووحدة القياس اللتر (1&nbsp;م³ = 1,000&nbsp;لتر).</p>
+      </div>
+      <button class="hint-card__close" type="button" onclick="s3CloseHint()"><span class="nav-label"><span>عودة إلى السؤال</span></span></button>
+    </div>
+  </div>
+
+  <!-- S4 feedback popup — the shared Figma "Popup Feedback" (size=Short), as part 06 S2. Standard bottom-left position:
+       no picture on this screen. -->
+  <div class="scq-popup m-popup hidden" id="s4-popup" onpointerdown="popupPointerDown(event,'s4-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S4 hint — Figma "Hint Card" (4946:39533): slide 91's hint box, two authored paragraphs kept as two lines. -->
+  <div class="scq-hint-overlay m-popup hidden" id="s4-hint-overlay" onclick="s4CloseHintOnBackdrop(event)">
+    <div class="hint-card" role="dialog" aria-modal="true" aria-label="تلميح" aria-describedby="s4-hint-text">
+      <div class="hint-card__text">
+        <svg class="hint-card__ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+        <p class="hint-card__body" id="s4-hint-text">فكّروا: ما الفرق بين بيانات تم قياسها ويمكن التحقق منها مرة أخرى، وبين إحساس شخصي لفرد واحد؟<br>أيهما أكثر ثباتًا؟</p>
+      </div>
+      <button class="hint-card__close" type="button" onclick="s4CloseHint()"><span class="nav-label"><span>عودة إلى السؤال</span></span></button>
+    </div>
+  </div>
+
+  <!-- S5 feedback popup — the shared Figma "Popup Feedback" (size=Short, with the answer toggle), as part 01 S18.
+       Standard bottom-left position; the board starts high enough that no popup view covers a slot or a card. -->
+  <div class="scq-popup m-popup hidden" id="s5-popup" onpointerdown="popupPointerDown(event,'s5-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- ============ S0 (screen 0) — TransitionScreen (layout A) — slide 87 ============
+       Source: 6-10-26_מדעים_יעד 7_להפקה_140926.pptx, slide 87 (presentation order; the
+       divider before it, slide 86, reads "ID רכיב 7: methodica-science-mass-liquid-02-07").
+       Text = the producer’s correction (2026-10-06, her own message), three paragraphs: "כל הכבוד!" /
+       "עכשיו מגיעה שאלת השיא" / "יש בה 4 סעיפים. עליכם להצליח ב-3 לפחות." (the advice paragraph of the
+       6-10-26 deck is dropped; "ב-3" is written without spaces). Presenter note: "מסך הזנקה שאלת שיא",
+       "שם המסך בפיגמה: TransitionScreen"; the media line reads "הגיף הנבחר עם מדליה" (6-10-26) / "הגיף הנבחר מרפת עם ג׳טפק" (14:02 deck) —
+       the delivered clips are the jetpack pair (S0_CHARACTER in js/main.js); the slide's
+       still (the turquoise companion) is a placeholder, not learner media.
+       Figma "TransitionScreen - A - Example" (4492:37696) — the layout this lomda uses for
+       its transition screens (parts 02-06, producer 2026-10-05): text frame 810 wide at y 70,
+       a "title" group (lead-in Body/B-2 28 SemiBold, 24px gap, headline Heading/H-4 64 Bold),
+       48px to the closing line Body/B-1 28 Regular, character box flush with the bar.
+       Roles: "כל הכבוד!" -> lead-in (28 SemiBold, as part 06); "עכשיו מגיעה שאלת
+       השיא" -> headline (the slide's 40pt run snaps to H-4); "יש בה 4 סעיפים. ..." -> closing
+       line (28 Regular — the node's weight, not the slide's bold run).
+       Continue = "המשך", the label of the slide's own button mockup.
+       Peak assessment: 4 lettered sub-parts (slides 89-92), pass = 3 = ceil(2*4/3) — see
+       peakProgress in js/main.js. Nothing is scored on this screen; no peak content is here. -->
+  <section class="screen active" data-screen="0" id="s0">
+    <div class="s1-content s1-content--a s1-content--stack">
+      <div class="s1-text" data-reveal="1">
+        <div class="s1-title-group">
+          <p class="s1-subtitle s1-subtitle--lead">كلّ الاحترام!</p>
+          <h1 class="s1-title">الآن يأتي السؤال الأهم</h1>
+        </div>
+        <p class="s1-subtitle">تحتوي على 4 بنود. عليكم النجاح في 3 على الأقل.</p>
+      </div>
+      <!-- Companion clip: the learner's own character from part 01, resolved by
+           S0_CHARACTER in js/main.js (this markup names no media file).
+           Decorative: autoplay once, muted, no loop, no controls, hidden from AT. -->
+      <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+        <div class="s1-video-clip">
+          <video class="s1-char-media" id="s0-char-video" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), ungated; nav button back (196:6035):
+         first screen of the part, so it is shown only when the session route trail records
+         a part to return to (syncS0Back). -->
+    <button class="btn-continue" id="s0-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" id="s0-back" type="button" hidden onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S1 (screen 1) — TransitionScreen (layout A) — slide 88 ============
+       Source: 6-10-26_מדעים_יעד 7_להפקה_140926.pptx, slide 88 (identical in the 14:02 deck, so the
+       deck question does not affect this screen). Presenter note: "שם המסך בפיגמה: TransitionScreen",
+       "תמונה בתיקיה: <משפחת לוי> - לג׳נרט אם אפשר את התמונה לסרטון, שתהיה קצת תנועה.",
+       "אלמנטים עולים בהדרגה".
+       Figma "TransitionScreen - A - Example" (4492:37696), as S0: text frame 810 wide at y 70, title group
+       (lead-in 28 SemiBold, 24px gap, headline H-4 64 Bold), 48px to the closing line (28 Regular),
+       640x360 media box flush with the bar.
+       Roles: "הכירו את" -> lead-in; "משפחת לוי" (the slide’s 40pt bold run) -> headline; "לטענתם: ..." (20pt
+       bold on the slide) -> closing line, 28 Regular as every closing line of this lomda. The slide’s one
+       underlined word, "פחות", is the authored emphasis - set Bold instead of underlined (QA comment chen, producer 2026-10-12). Two lines on the slide, so the block
+       wraps balanced.
+       Media: the slide’s picture "משפחת לוי" is a CONTENT still, not the companion character, so this screen
+       never reads the character selection. The note asks to generate it as a short clip "אם אפשר" — no clip
+       was delivered and none is needed: producer 2026-10-07 ("אי אפשר. זה מיותר") - the still is FINAL, no clip will be made. The producer re-exported it on 2026-10-07 (1678 x 937); its background still measures 253-254, not pure #fff.
+       "אלמנטים עולים בהדרגה": reveal groups 1 text block (incl. the question line), 2 picture, in RTL reading
+       order; Continue is not gated (TransitionScreen: always enabled).
+       "האם משפחת לוי צודקת?" — the slide’s 18pt bold text box; the producer (2026-10-06) placed it as a line
+       directly below "לטענתם: ...". Rhythm (producer 2026-10-06, "the spacing looked odd"): the claim joins the
+       title group (lead-in / headline / claim, 24px apart — the family intro reads as one unit) and the question
+       is the Layout A closing line, 48px below it, Body/B-3 (28 Bold).
+       Continue = "בואו נבדוק", the label the slide lays over the button mockup. -->
+  <section class="screen" data-screen="1" id="s1">
+    <div class="s1-content s1-content--a s1-content--stack s1-content--tight">
+      <div class="s1-text" data-reveal="1">
+        <div class="s1-title-group">
+          <p class="s1-subtitle s1-subtitle--lead">تعرّفوا على</p>
+          <h1 class="s1-title">عائلة منصور</h1>
+          <p class="s1-subtitle s1-subtitle--balance">بحسب ادعائهم، استهلكت العائلة بين يناير ومارس كمية مياه <strong>أقل</strong> من متوسط استهلاك العائلة في إسرائيل.</p>
+        </div>
+        <p class="s1-subtitle s1-question">هل عائلة منصور على حق؟</p>
+      </div>
+      <div class="s1-video-wrap" data-reveal="2" data-reveal-fade>
+        <div class="s1-video-clip">
+          <img class="s1-still" src="assets/img/s1-levi-family.png" width="1678" height="937" alt="عائلة منصور: أم، وأب، وبنت، وولد. كل واحد منهم يحمل شيئًا له علاقة بالماء: حوض غسيل، وخرطوم ري، وكوب ماء، ورأس دش.">
+        </div>
+      </div>
+    </div>
+    <button class="btn-continue" id="s1-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>لنتحقق من ذلك</span></span></button>
+    <button class="btn-back" id="s1-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S2 (screen 2) — ImageHotspotQuestion, point variant, MULTI-SELECT — slide 89, peak sub-part א ============
+       Source: 6-10-26_מדעים_יעד 7_להפקה_140926.pptx, slide 89 (identical in the 14:02 deck). Presenter note:
+       "שם המסך בפיגמה: AreaSelectionHotspot", "ניתן ללחוץ על כל הנקודות. רק המקומות הירוקים הם נכונים.",
+       "שאלת שיא - סעיף 1 מתוך 4", "לחיצה על חשבון המים מגדילה אותו", "תמונה: בתיקיה (חשבון משפ לוי)".
+       Template: 720-templates ImageHotspotQuestion (Figma "Hotspot Questions" section 1731:44471 — the slide names the
+       AreaSelection frame, but its markers are eight small DOTS over table cells 22px apart, so the geometry is the
+       POINT variant, reference S16 of methodica-science-mass-liquid-01-02) as a LOCAL VARIANT with MultipleChoiceQuestion
+       selection semantics: "לחצו על כל הנקודות" = a Set of picks, set-equality check, per-pick marks on the retry,
+       full reveal on the final attempt, no View My Answer toggle (MultipleChoiceQuestion.md). Two attempts (default).
+       Candidate for promotion to the template library once a second instance appears.
+       Hotspots: the slide's eight ellipses (positions in js/main.js-free markup below as fractions of the bill);
+       correct = the five cells the slide outlines in GREEN (9 / 7 / 8 / 24 מ"ק and the national-average line),
+       distractors = the three outlined in cyan (billing period, household size, month names) — the outlines are the
+       producer's answer key ("רק המקומות הירוקים"), not learner-facing. Dots 16px (the slide's 17 x 19) with a 28 x 18
+       hit area: the four value rows sit 20px apart on this canvas, so the template's 30/36px dot would overlap them.
+       aria-labels name the data each dot marks (this build's wording; the slide has none).
+       Picture: the slide's OWN embedded bill ("מי העיר", משפחת לוי, 1055 x 1491) with the producer's two PowerPoint
+       patches baked in (assets/img/s2-water-bill-levi.png — four masks over the stray "מ"ק" in the הערות column, four
+       "מ"ק" labels beside the values). The folder file the note names (חשבון מים משפ לוי.png) is a DIFFERENT, generic
+       bill without this question's data — reported. QA 2026-10-12 (Nimrod): the picture is CROPPED below the national-average
+       note (1055 x 1156; "לתשומת לבך", the service box, barcode and footer carry no data for א/ב), so it shows ~18% larger
+       (492 x 540, at x 104 between the flag and the text; dot tops rescaled by 1491/1156). Before that: the bill on the left at full zone height
+       (x 146, y 16 → the bar), the text on the right (x 636-1240); the Figma frame's question-above-image stack would
+       need the scroll band for a portrait bill. Zoom (note "לחיצה על חשבון המים מגדילה אותו"; producer 2026-10-07): SUPERSEDED by the client (round 1, 2026-10-19, S2; the
+       closing round 2026-10-20, S3): no Image Zoom popup on either screen. The bill is shown permanently ENLARGED in place - the
+       same bill element (on S2 with the same live dots), scaled and cropped to the data region (period bar, consumption table,
+       national-average line; js/main.js hsLayout) - with the question beside it (landscape) or above it (portrait).
+       Text: the slide's bold runs are kept ("א." and the instruction sentence), the family's claim in parentheses
+       regular with "פחות" underlined, words as authored. Feedback = the slide's three boxes verbatim: retry
+       "התשובה אינה נכונה במלואה. / שננסה שוב?" (the partly-right title — when nothing picked is right, the regular
+       title, _question-template-defaults); correct "נכון מאוד!" + the four explanation paragraphs; final wrong
+       "התשובה אינה נכונה." + the canonical second line "התשובה הנכונה מוצגת." + the same explanation.
+       No hint (none authored), no progress bar (peak), no character. Peak item א = this screen (peakProgress). -->
+  <section class="screen hs-enlarged" data-screen="2" id="s2">
+    <div class="hs-stage">
+      <!-- Bill column — Figma "img" frame (8px padding, hairline), sized to the picture at the zone's height. -->
+      <div class="scq-img hs-img" data-reveal="2" data-reveal-fade>
+        <div class="scq-img-inner hs-bill-wrap">
+          <img class="hs-bill" src="assets/img/s2-water-bill-levi.png" width="1055" height="1156" alt="فاتورة المياه الدورية لعائلة منصور من شركة مياه المدينة، للفترة من يناير إلى مارس 2026. 4 أفراد. تفاصيل الاستهلاك: يناير 9 م³، فبراير 7 م³، مارس 8 م³، المجموع 24 م³. ملاحظة: متوسط استهلاك الأسرة في إسرائيل هو 9 م³ شهريًا.">
+        </div>
+        <!-- Hotspot layer over the bill's box. role=checkbox: more than one can be checked (MultipleChoiceQuestion.md). -->
+        <!-- Dot positions set by the producer 2026-10-08 (her marked boxes): each dot sits in the middle of the row it refers to,
+             BESIDE its word, never on top of it; the four consumption dots on one x at the row centres, equal pitch. -->
+        <div class="hs-dots" role="group" aria-label="نقاط حول فاتورة المياه">
+          <button class="hs-dot" type="button" role="checkbox" aria-checked="false" data-id="period" aria-label="فترة الفاتورة: يناير حتى مارس 2026" style="left:73.75%; top:41.02%;" onclick="s2Toggle('period')"><span class="hs-dot__mark" aria-hidden="true"></span></button>
+          <button class="hs-dot" type="button" role="checkbox" aria-checked="false" data-id="persons" aria-label="عدد الأفراد المعتمد: 4" style="left:83.6%; top:59.59%;" onclick="s2Toggle('persons')"><span class="hs-dot__mark" aria-hidden="true"></span></button>
+          <button class="hs-dot" type="button" role="checkbox" aria-checked="false" data-id="months" aria-label="أسماء الأشهر في جدول الاستهلاك" style="left:85.6%; top:73.52%;" onclick="s2Toggle('months')"><span class="hs-dot__mark" aria-hidden="true"></span></button>
+          <button class="hs-dot" type="button" role="checkbox" aria-checked="false" data-id="jan" aria-label="الاستهلاك في يناير: 9 م³" style="left:59.4%; top:76.94%;" onclick="s2Toggle('jan')"><span class="hs-dot__mark" aria-hidden="true"></span></button>
+          <button class="hs-dot" type="button" role="checkbox" aria-checked="false" data-id="feb" aria-label="الاستهلاك في فبراير: 7 م³" style="left:59.4%; top:80.93%;" onclick="s2Toggle('feb')"><span class="hs-dot__mark" aria-hidden="true"></span></button>
+          <button class="hs-dot" type="button" role="checkbox" aria-checked="false" data-id="mar" aria-label="الاستهلاك في مارس: 8 م³" style="left:59.4%; top:84.93%;" onclick="s2Toggle('mar')"><span class="hs-dot__mark" aria-hidden="true"></span></button>
+          <button class="hs-dot" type="button" role="checkbox" aria-checked="false" data-id="total" aria-label="المجموع لثلاثة أشهر: 24 م³" style="left:59.4%; top:88.93%;" onclick="s2Toggle('total')"><span class="hs-dot__mark" aria-hidden="true"></span></button>
+          <button class="hs-dot" type="button" role="checkbox" aria-checked="false" data-id="avg" aria-label="متوسط استهلاك الأسرة في إسرائيل: 9 م³ شهريًا" style="left:85.8%; top:95.44%;" onclick="s2Toggle('avg')"><span class="hs-dot__mark" aria-hidden="true"></span></button>
+        </div>
+      </div>
+      <div class="hs-zoom-frame" aria-hidden="true"></div>   <!-- the frame of the cropped bill (decorative); its rect is written by hsLayout() -->
+      <!-- Text column — the question "text" slot (Body/B-4 24px), right of the bill as on the slide. -->
+      <div class="hs-text scq-qbody" data-reveal="1">
+        <p id="s2-stem"><strong>أ.</strong> إليكم فاتورة المياه الدورية لعائلة منصور.</p>
+        <p><strong>انقروا على جميع النقاط في الوثيقة،<br> التي تعرض بيانات تُمثّل أدلةً يمكنها دعم ادعاء العائلة</strong> <span class="hs-claim">(ادعاء العائلة: "في الأشهر من يناير حتى مارس، استهلكت العائلة مياهًا <strong>أقل</strong> من عائلة متوسطة في إسرائيل<span class="q-close">"</span>).</span></p>
+      </div>
+      <p class="vh" id="s2-live" aria-live="polite"></p>
+    </div>
+    <!-- FixedNavigationBar: "צדקתי?" checks until resolved, then progresses as "שנמשיך?" (no authored progression label);
+         nav button back. -->
+    <button class="btn-continue" id="s2-check" type="button" disabled onclick="s2Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S3 (screen 3) — ValueInputQuestion, Variant C inline-in-prose — slide 90, peak sub-part ב ============
+       Source: 6-10-26_מדעים_יעד 7_להפקה_140926.pptx, slide 90 (identical in the 14:02 deck). Presenter note:
+       "שם המסך בפיגמה: ValueInputQuestion", "9000 יכול להיות רשום עם פסיק או בלי.", "כפתור רמז מופיע אחרי ניסיון
+       מענה ראשון שגוי.", "שאלת שיא - סעיף 2 מתוך 4", "לחיצה על החשבון מגדילה את התמונה".
+       Template: 720-templates ValueInputQuestion, Variant C (three fields, one scored unit, marked per field), the
+       part 03 S3 build: Figma "Screen Templates - ValueInputQuestion" (1045:13096) block + NumberValue (1027:13669)
+       fields, 120 x 42. Layout follows the slide (as S2): the bill on the left at the zone's height, the question
+       block on the right (x 636-1240), stem Body/B-6 Subject/500, then the two fill sentences 20px apart.
+       Fields (the slide's green runs): month "ינואר" (a WORD — the template is numeric; this field takes Hebrew
+       letters and accepts "ינואר", trimmed — reported), 9 and 9,000 (comma optional, per the note; compared as
+       numbers). Hint = the slide's hint box, hidden until the first wrong attempt (the note), reusable until resolved.
+       Two attempts (default; the slide authors the retry box). Non-final wrong: right fields ✓ and lock, wrong ones ✕
+       until edited (part 03's partial-correction flow); final wrong: the correct values fill the fields (green) and
+       the View My Answer Toggle swaps in the learner's own strings, marked per field.
+       Feedback = slide 90's boxes: retry "התשובה אינה נכונה במלואה. / שננסה שוב?" (partly-right title; the regular
+       one when nothing is right); correct "נכון מאוד!" + "השלמתם את המשפט ..."; final wrong "התשובה אינה נכונה
+       במלואה." + the slide's OWN second line "התשובות הנכונות מופיעות כעת." (kept in place of the canonical
+       "התשובה הנכונה מוצגת." — reported) and, by the shared-explanation default, the same explanation (the slide's
+       wrong box has no body of its own — reported). Picture: the same corrected bill as S2 (the slide repeats the
+       raw embedded image); layout: the same enlarged, cropped bill as S2 (no zoom, Nimrod 2026-10-20), the question in the 400px column with each sentence over two rows. No progress bar (peak). Peak item ב = this screen. -->
+  <section class="screen hs-enlarged" data-screen="3" id="s3">
+    <div class="hs-stage">
+      <div class="scq-img hs-img" data-reveal="2" data-reveal-fade>
+        <div class="scq-img-inner hs-bill-wrap">
+          <img class="hs-bill" src="assets/img/s2-water-bill-levi.png" width="1055" height="1156" alt="فاتورة المياه الدورية لعائلة منصور من شركة مياه المدينة، للفترة من يناير إلى مارس 2026. 4 أفراد. تفاصيل الاستهلاك: يناير 9 م³، فبراير 7 م³، مارس 8 م³، المجموع 24 م³. ملاحظة: متوسط استهلاك الأسرة في إسرائيل هو 9 م³ شهريًا.">
+        </div>
+      </div>
+      <div class="hs-zoom-frame" aria-hidden="true"></div>   <!-- the frame of the cropped bill (decorative); its rect is written by hsLayout() -->
+      <div class="dq-question hs-question" data-reveal="1">
+        <p class="item-hang dq-title" id="s3-title"><span class="item-label">ب. </span>حددوا الشهر الذي استهلكت فيه عائلة منصور<br>أكبر كمية من المياه،<br>وأكملوا الجملة:</p>
+        <div class="viq-sentences" role="group" aria-labelledby="s3-title">
+          <!-- Each sentence breaks over two .dq-line rows so the question fits the 400px column beside the enlarged bill
+               (Nimrod 2026-10-20: S3's bill matches S2's); breaks after the comma / between phrases, no orphan word.
+               In portrait the column is full width and the rows flow into one line again (display: contents). -->
+          <div class="dq-sentence">
+            <div class="dq-line">
+              <span class="dq-words" id="s3-w-m1">في شهر</span>
+              <span class="viq-field viq-field--word" id="s3-field-m" onclick="s3FocusField('m')">
+                <input class="viq-input" id="s3-input-m" type="text" inputmode="text" dir="rtl" autocomplete="off" spellcheck="false" aria-labelledby="s3-w-m1 s3-w-m2 s3-w-m3 s3-verdict-m">
+                <span class="viq-input-ico" id="s3-ico-m" aria-hidden="true"></span>
+              </span>
+              <span class="dq-words" id="s3-w-m2">استهلكت العائلة</span>
+            </div>
+            <div class="dq-line">
+              <span class="dq-words" id="s3-w-m3">أكبر كمية من المياه.</span>
+            </div>
+            <span class="vh" id="s3-verdict-m"></span>
+          </div>
+          <div class="dq-sentence">
+            <div class="dq-line">
+              <span class="dq-words" id="s3-w-q1">استخدموا</span>
+              <span class="viq-field" id="s3-field-q" onclick="s3FocusField('q')">
+                <input class="viq-input" id="s3-input-q" type="text" inputmode="decimal" dir="ltr" autocomplete="off" spellcheck="false" aria-labelledby="s3-w-q1 s3-w-q2 s3-verdict-q">
+                <span class="viq-input-ico" id="s3-ico-q" aria-hidden="true"></span>
+              </span>
+              <span class="dq-words" id="s3-w-q2">م³،</span>
+            </div>
+            <div class="dq-line">
+              <span class="dq-words" id="s3-w-q3">وهي تساوي:</span>
+              <span class="viq-field" id="s3-field-l" onclick="s3FocusField('l')">
+                <input class="viq-input" id="s3-input-l" type="text" inputmode="decimal" dir="ltr" autocomplete="off" spellcheck="false" aria-labelledby="s3-w-q3 s3-w-l2 s3-verdict-l">
+                <span class="viq-input-ico" id="s3-ico-l" aria-hidden="true"></span>
+              </span>
+              <span class="dq-words" id="s3-w-l2">لترات.</span>
+            </div>
+            <span class="vh" id="s3-verdict-q"></span>
+            <span class="vh" id="s3-verdict-l"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: "צדקתי?" checks until resolved, then progresses as "שנמשיך?" (no authored label); hint
+         (196:6024, hidden until the first wrong attempt — "hidden, not disabled"); nav button back. -->
+    <button class="btn-continue" id="s3-check" type="button" disabled onclick="s3Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="scq-hint" id="s3-hint" type="button" style="visibility:hidden" onclick="s3OpenHint()">
+      <svg class="scq-hint-ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+      <span class="nav-label"><span>هل يمكنني الحصول على تلميح؟</span></span>
+    </button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S4 (screen 4) — SingleChoiceQuestion (no image) — slide 91, peak sub-part ג ============
+       Source: 6-10-26_מדעים_יעד 7_להפקה_140926.pptx, slide 91 (identical in the 14:02 deck). Presenter note:
+       "שם המסך בפיגמה: SingleChoiceQuestionImage", "שאלת שיא - סעיף 3 מתוך 4.".
+       The note names the Image variant, but the slide carries NO picture and no image note, so this is the
+       SingleChoiceQuestion text layout (Figma 196:3320 without its image column), exactly as part 06 S2 — the mechanic,
+       not the name (720-templates "verify the mechanic before trusting the name").
+       Text: the slide's regular first paragraph + the bold "מדוע?" -> context line + bold stem. Four options as authored,
+       in the slide's order; correct = option 3 (the only one filled green on the slide); option 2's trailing empty
+       paragraph is authoring residue. Two attempts (default). Hint = the slide's hint box ("אפשר רמז?" is in the slide's
+       bar), hidden until the first wrong attempt (producer 2026-10-07: outside the basic practice every hint appears after a
+       first wrong attempt), reusable until resolved.
+       Feedback = the slide's two boxes verbatim: correct "התשובה נכונה." / final wrong "התשובה אינה נכונה." + the canonical
+       second line "התשובה הנכונה מוצגת.", both with the same explanation; the retry box is not authored, so the module's
+       standard "התשובה אינה נכונה. / שננסה שוב?". Popup at the standard bottom-left (nothing to cover here).
+       No progress bar (peak). Peak item ג = this screen. -->
+  <section class="screen" data-screen="4" id="s4">
+    <div class="scq-question">
+      <div class="scq-main" data-reveal="1">
+        <div class="scq-qtext">
+          <div class="scq-qbody">
+            <p class="item-hang"><span class="item-label">ج. </span>البيانات الواردة في فاتورة المياه تم قياسها بجهاز قياس.<br>في العلوم، من المعتاد أن تُبنى الحجة على بيانات تم قياسها في تجربة أو ملاحظة،<br>وليس على رأي أو خبرة شخصية.</p>
+            <p class="scq-qstem" id="s4-stem">لماذا؟</p>
+          </div>
+        </div>
+        <div class="scq-answers" role="radiogroup" aria-labelledby="s4-stem">
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s4Select('a')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">الخبرة الشخصية أو رأي الشخص يؤديان دائمًا إلى أخطاء.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s4Select('b')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">البيانات من التجربة دائمًا تُثبت أن ادعاءنا الأصلي صحيح.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s4Select('c')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">بيانات الملاحظة تعرض حقائق، دون تحيّزات، ويمكن تكرارها.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="d" onclick="s4Select('d')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">البيانات الناتجة عن التجارب والملاحظات صحيحة دائمًا.</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: "צדקתי?" checks until resolved, then progresses as "שנמשיך?"; hint (bulb first = rightmost); back. -->
+    <button class="btn-continue" id="s4-check" type="button" disabled onclick="s4Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="scq-hint" id="s4-hint" type="button" style="visibility:hidden" onclick="s4OpenHint()">
+      <svg class="scq-hint-ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+      <span class="nav-label"><span>هل يمكنني الحصول على تلميح؟</span></span>
+    </button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S5 (screen 5) — OrderedDragAndDropQuestion — slide 92, peak sub-part ד ============
+       Source: 6-10-26_מדעים_יעד 7_להפקה_140926.pptx, slide 92. Presenter note: "שם המסך בפיגמה:
+       OrderedDragAndDropQuestion", "להציג את המשפטים ברצף מבולגן.", "שאלת שיא - סעיף 4 מתוך 4.", "ללא כפתור רמז".
+       (The undated 14:02 deck drops "ללא כפתור רמז" and draws an "אפשר רמז?" button, but neither deck authors any hint
+       text, and the content developer confirmed slide 92 has no hint (issue log G101) -> no hint.)
+       Port of the APPROVED part 01 S18 (slide 47, same template): Figma "OrderedDragAndDropQuestion" family (States
+       01-08, 1717:39511 ...), behaviour = pointer drag (mouse / touch / pen) + pick-then-place for keyboard / tap, one
+       sentence per slot (a drop on a filled slot evicts to the bank), placed sentences stay draggable until checked,
+       "צדקתי?" when all three slots are full and not the arrangement just marked wrong, two attempts, per-slot ✓ / ✗ at
+       the retry (Figma State 05), final wrong -> the solution at once + View My Answer Toggle.
+       Rows: the slot name (טענה / ראיה / נימוק) as the row label, then the 521px slot, as the approved S18. Slide 92 also draws
+       1 / 2 / 3 circles (the Figma "Numbers"); the producer dropped them (2026-10-07): the task is matching a sentence to a
+       named part, not ordering, so the numbers added nothing. Sentences shown mixed (the note): נימוק, טענה, ראיה (the slide's own order is the solution).
+       Block at the module's standard start for this template (S18: first glyph y 42), so no popup view covers the
+       board. Text: the slide's regular first line + its bold second line, words as authored.
+       Feedback = slide 92's boxes: correct "מצוין!" + "הצגתם טיעון בצורה מסודרת ונכונה."; retry "התשובה אינה נכונה
+       במלואה. / שננסה שוב?" (partly-right title; the regular one when no slot is right); final wrong "התשובה אינה נכונה
+       במלואה" + the slide's own second line "התשובה הנכונה מוצגת כעת." and NO body (the slide's wrong box has none, and
+       the correct box's praise does not fit a wrong answer). Peak item ד = this screen. -->
+  <section class="screen" data-screen="5" id="s5">
+    <div class="ord-main">
+      <p class="ord-text" data-reveal="1"><strong>د.</strong> بنوا حجة علمية تفحص ادعاء عائلة منصور.<br><strong>اسحبوا البطاقات إلى المكان الصحيح.</strong></p>
+      <div class="ord-board" data-reveal="2">
+        <!-- DOM order = tab order (sentences, then slots); the visual order is set by .ord-rows / .ord-bank order -->
+        <div class="ord-bank">
+          <button class="ord-card" id="s5-d-reasoning" type="button" aria-pressed="false">متوسط الاستهلاك الشهري لعائلة منصور هو 8&nbsp;م³ في حين أن استهلاك الأسرة المتوسطة المؤلفة من 4&nbsp;أفراد هو 9&nbsp;م³.</button>
+          <button class="ord-card" id="s5-d-claim" type="button" aria-pressed="false">عائلة منصور تستهلك كمية مياه أقل من متوسط العائلة في إسرائيل.</button>
+          <button class="ord-card" id="s5-d-evidence" type="button" aria-pressed="false">فاتورة المياه وحساب المتوسط الشهري يُظهران أن متوسط الاستهلاك الشهري لعائلة منصور كان 8&nbsp;م³، والمتوسط الوطني هو 9&nbsp;م³.</button>
+        </div>
+        <div class="ord-rows">
+          <div class="ord-row"><span class="ord-label" id="s5-l-claim">ادّعاء</span><div class="ord-zone" id="s5-t-claim" role="button" tabindex="0" aria-label="ادّعاء: فارغ"></div></div>
+          <div class="ord-row"><span class="ord-label" id="s5-l-evidence">دليل</span><div class="ord-zone" id="s5-t-evidence" role="button" tabindex="0" aria-label="الدليل: فارغ"></div></div>
+          <div class="ord-row"><span class="ord-label" id="s5-l-reasoning">التبرير</span><div class="ord-zone" id="s5-t-reasoning" role="button" tabindex="0" aria-label="التبرير: فارغ"></div></div>
+        </div>
+      </div>
+      <p class="vh" id="s5-live" aria-live="polite"></p>
+    </div>
+    <!-- FixedNavigationBar: one bar slot - "צדקתי?" checks until resolved, then shows "סיימתי" (the lomda ends here; producer QA 2026-10-12);
+         nav button back. No hint button. -->
+    <button class="btn-continue" id="s5-check" type="button" disabled onclick="s5Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+
+  <!-- ═══ "מצאתם בעיה?" — issue-report dialogs (ADDING-REPORTING-AND-RESUME.md §7) ═══
+       Copied verbatim from methodica-science-body-matter-01-02 (2026-10-19 state). Last children of
+       #app, outside every .screen: .report-modal-overlay is position:absolute; inset:0 against #app,
+       so it aligns with the scaled canvas. All three carry `hidden`; behaviour in
+       ../unit-js/25-report.js (wires #flag-btn by delegation — no onclick on the flag), style in
+       ../unit-css/25-report.css. -->
+  <div id="report-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" type="button" onclick="tryCloseReportModal()" aria-label="إغلاق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">الإبلاغ عن مشكلة</h2>
+      <p class="report-modal-body">هل هناك شيء غير واضح أو لا يعمل كما يجب؟<br>أبلغونا بما حدث لنتمكن من معالجة المشكلة.</p>
+
+      <div class="report-field">
+        <label class="report-label" for="report-type"><span class="required-star">*</span> ما نوع المشكلة</label>
+        <div class="report-custom-select" id="report-type-wrapper">
+          <button class="report-select-btn is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="report-select-value">اختاروا نوع المشكلة</span>
+          </button>
+          <ul class="report-select-list" role="listbox" hidden>
+            <li class="report-select-option" data-value="technical" role="option">عطل تقني أو شيء ما لا يعمل</li>
+            <li class="report-select-option" data-value="unclear" role="option">شيء غير واضح لي</li>
+            <li class="report-select-option" data-value="other" role="option">آخر</li>
+          </ul>
+          <input type="hidden" id="report-type" value="">
+        </div>
+        <span class="report-field-error" id="report-type-error" hidden>اختاروا نوع المشكلة</span>
+      </div>
+
+      <div class="report-field">
+        <label class="report-label" for="report-text"><span class="required-star">*</span> ماذا حدث؟</label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="فصّلوا ماذا حدث لنتمكن من فهم المشكلة" onblur="reportTextBlur()"></textarea>
+        <span class="report-field-error" id="report-text-error" hidden>اكتبوا ماذا حدث</span>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="tryCloseReportModal()">إلغاء</button>
+        <button class="report-submit-btn" type="button" onclick="submitReport()" disabled>إرسال التبليغ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מצב "הדיווח נשלח". דיאלוג נפרד מדיאלוג הנטישה שמתחתיו — אין לאחד ביניהם. -->
+  <div id="report-thanks-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-thanks-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-thanks-title">تم إرسال التبليغ، شكرًا!</h2>
+      <p class="report-modal-body">تلقّينا التبليغ وسنعالجه في أقرب وقت.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" type="button" onclick="closeReportThanks()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- אישור נטישה: נפתח רק כשיש קלט שלא נשלח. -->
+  <div id="report-confirm-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-confirm-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-confirm-title">هل تريدون إغلاق النافذة فعلًا؟</h2>
+      <p class="report-modal-body">إذا ضغطتم على إغلاق فلن يتم إرسال التبليغ</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="forceCloseReportModal()">إغلاق النافذة</button>
+        <button class="report-submit-btn" type="button" onclick="backToReportForm()">أريد التبليغ</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+<!-- 720 platform layer (reporting / resume): shared files first, then the part's own scripts
+     (js/motion.js before js/main.js, as before), 90-boot last. Same ?v= in every part
+     (guide §3.4); 90-boot.js is a separate tag on purpose (§3.2). -->
+<script src="../unit-js/10-identity.js?v=20261102b"></script>
+<script src="../unit-js/20-xapi.js?v=20261102b"></script>
+<script src="../unit-js/25-report.js?v=20261102b"></script>
+<script src="../unit-js/40-resume.js?v=20261102b"></script>
+<script src="../unit-js/50-loader.js?v=20261102b"></script>
+<script src="js/motion.js?v=20261102b"></script>
+<script src="js/main.js?v=20261102b"></script>
+<script src="../unit-js/90-boot.js?v=20261102b"></script></body>
+</html>

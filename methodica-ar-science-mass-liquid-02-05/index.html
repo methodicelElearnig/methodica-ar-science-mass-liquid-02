@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تدريب متقدم — methodica-ar-science-mass-liquid-02-05</title>
+<link rel="stylesheet" href="css/style.css?v=20261102b">
+<link rel="stylesheet" href="css/motion.css?v=20261102b">
+<link rel="stylesheet" href="../unit-css/25-report.css?v=20261102b">
+</head>
+<body>
+<!-- ═══ Boot cover (ADDING-REPORTING-AND-RESUME.md §8.11) ═══
+     Hides screen 0 while a saved position is read and painted (Phase 4, resume), so the learner never
+     sees the first screen flash before the restored one. A SIBLING of #app (scaleApp transforms #app).
+     unit-js/50-loader.js removes it on every exit path (dropBootCover); this inline net removes it
+     after 800 ms regardless — or, while a restore is in flight (window.__resumeInFlight), waits for
+     it up to a hard 6 s. Copied from methodica-science-body-matter-01 (← mass-weight-01). -->
+<div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
+<script>
+(function () {
+  var t0 = Date.now();
+  function tick() {
+    var c = document.getElementById('boot-cover');
+    if (!c || !c.parentNode) return;
+    if (window.__resumeInFlight && Date.now() - t0 < 6000) { setTimeout(tick, 100); return; }
+    c.parentNode.removeChild(c);
+  }
+  setTimeout(tick, 800);
+})();
+</script>
+<div id="app">
+
+  <!-- Global: Report Problem (Figma 207:3590). Visual only — no behaviour
+       wired yet; the Pop-up variant is intentionally not implemented (as parts 01-03). -->
+  <button class="flag-btn" id="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+    <span class="flag-btn__icon" aria-hidden="true"></span>
+    <span class="flag-btn__label" aria-hidden="true">هل وجدتم مشكلة؟</span>
+  </button>
+
+  <!-- S1 feedback popup — the shared Figma "Popup Feedback" (size=Short), as parts 02-03.
+       Outside every .screen (shared popup contract); no close control. -->
+  <div class="scq-popup m-popup hidden" id="s1-popup" onpointerdown="popupPointerDown(event,'s1-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S2 feedback popup — the same shared popup. -->
+  <div class="scq-popup m-popup hidden" id="s2-popup" onpointerdown="popupPointerDown(event,'s2-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- S2 hint — Figma "Hint Card" (4946:39533) over the shared popup backdrop, as part 03.
+       No title (new lomdot, 2026-10-05): white bulb, slide 73's hint text (two paragraphs),
+       "חזרה לשאלה". Closes on that button, a click outside the card, or Escape. -->
+  <div class="scq-hint-overlay m-popup hidden" id="s2-hint-overlay" onclick="s2CloseHintOnBackdrop(event)">
+    <div class="hint-card" role="dialog" aria-modal="true" aria-label="تلميح" aria-describedby="s2-hint-text">
+      <div class="hint-card__text">
+        <svg class="hint-card__ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+        <p class="hint-card__body" id="s2-hint-text">حاولوا تحويل 0.5&nbsp;لتر إلى مل. كم مل ستحصلون عليه؟<br>حوّلوا أيضًا 500&nbsp;سم³ إلى مل. كم مل حصلتم عليه؟</p>
+      </div>
+      <button class="hint-card__close" type="button" onclick="s2CloseHint()"><span class="nav-label"><span>عودة إلى السؤال</span></span></button>
+    </div>
+  </div>
+
+  <!-- S3 feedback popup — the same shared popup (with the View My Answer toggle). -->
+  <div class="scq-popup m-popup hidden" id="s3-popup" onpointerdown="popupPointerDown(event,'s3-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- Global: Image Zoom (720-templates _global-components "Image zoom"), as part 01.
+       Backdrop = shared popup backdrop; panel = Figma "Image Zoom Surface"
+       (4399:22435); close = Figma "Close" Color=Blue (1589:17080 / 1589:17079). -->
+  <div id="img-zoom-modal" class="img-zoom-modal hidden" aria-hidden="true">
+    <div class="img-zoom-modal__backdrop" data-zoom-close="true"></div>
+    <div class="img-zoom-modal__panel" role="dialog" aria-modal="true" aria-label="عرض الصورة مكبّرة">
+      <button class="img-zoom-modal__close" type="button" aria-label="إغلاق الصورة" data-zoom-close="true">
+        <svg class="img-zoom-modal__close-icon" aria-hidden="true" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.651 0.348955C14.4275 0.125519 14.1244 0 13.8084 0C13.4924 0 13.1893 0.125519 12.9658 0.348955L7.5 5.81474L2.03422 0.348955C1.81071 0.125519 1.50762 0 1.19159 0C0.875553 0 0.572458 0.125519 0.348955 0.348955C0.125519 0.572458 0 0.875553 0 1.19159C0 1.50762 0.125519 1.81071 0.348955 2.03422L5.81474 7.5L0.348955 12.9658C0.125519 13.1893 0 13.4924 0 13.8084C0 14.1244 0.125519 14.4275 0.348955 14.651C0.572458 14.8745 0.875553 15 1.19159 15C1.50762 15 1.81071 14.8745 2.03422 14.651L7.5 9.18526L12.9658 14.651C13.1893 14.8745 13.4924 15 13.8084 15C14.1244 15 14.4275 14.8745 14.651 14.651C14.8745 14.4275 15 14.1244 15 13.8084C15 13.4924 14.8745 13.1893 14.651 12.9658L9.18526 7.5L14.651 2.03422C14.8745 1.81071 15 1.50762 15 1.19159C15 0.875553 14.8745 0.572458 14.651 0.348955Z" fill="currentColor"/></svg>
+      </button>
+      <div class="img-zoom-modal__stage" id="img-zoom-modal-stage"></div>
+    </div>
+  </div>
+
+  <!-- S4 feedback popup — the same shared popup. -->
+  <div class="scq-popup m-popup hidden" id="s4-popup" onpointerdown="popupPointerDown(event,'s4-popup')" role="status" aria-live="polite">
+    <p class="scq-popup-title"></p>
+    <div class="scq-popup-body"></div>
+  </div>
+
+  <!-- ============ S0 (screen 0) — TransitionScreen (layout A) — slide 71 ============
+       Source: 6-10-26_מדעים_יעד 7_להפקה_140926.pptx, slide 71 (presentation order; the
+       divider before it, slide 70, reads "ID רכיב 5: methodica-science-mass-liquid-02-05").
+       The current deck per the producer (2026-10-06).
+       Presenter note: "מסך מעבר לתרגול מתקדם", "שם המסך בפיגמה: TransitionScreen",
+       "הגיף הנבחר עם משקולת כבדה שמרים אותה מעל הראש" (clip pair: character-N-workout-big.mp4).
+       Layout: Figma "TransitionScreen - A - Example" (4492:37696), as this lomda's other
+       practice intros (parts 02 S0, 03 S0/S4).
+       Roles: the two bold 48pt paragraphs ("זמן ל-3 שאלות מתקדמות", hyphen unspaced per QA 2026-10-12 / "ועוד הפתעות
+       מעניינות...") -> one headline .s1-title (Heading/H-4, 64 Bold — the slide's 48pt snaps to
+       the role's token), the authored paragraph break kept as <br>; "(זה אומר שעלינו רמה)"
+       (28pt Regular) -> closing line .s1-subtitle (Body/B-1). The slide has no lead-in line.
+       The 28pt #0070C0 empty paragraph is authoring residue.
+       The slide carries no Continue label (no button mockup); "המשך" is the standard label.
+       Practice set (this part's own): 3 questions (slides 72, 73, 74-75) — see
+       advancedProgress in js/main.js. -->
+  <section class="screen active" data-screen="0" id="s0">
+    <div class="s1-content s1-content--a s1-content--stack">
+      <div class="s1-text" data-reveal="1">
+        <div class="s1-title-group">
+          <h1 class="s1-title">حان وقت 3 أسئلة متقدمة<br>ومفاجآت مثيرة أخرى...</h1>
+        </div>
+        <p class="s1-subtitle">(هذا يعني أننا تقدّمنا في المستوى)</p>
+      </div>
+      <!-- Companion clip: the learner's own character from part 01, resolved by
+           S0_CHARACTER in js/main.js (this markup names no media file).
+           Decorative: autoplay once, muted, no loop, no controls, hidden from AT. -->
+      <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+        <div class="s1-video-clip">
+          <video class="s1-char-media" id="s0-char-video" autoplay muted playsinline disablepictureinpicture aria-hidden="true"></video>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), ungated. nav button back
+         (196:6035): first screen of the part, so it is shown only when the session
+         route trail records a part to return to (syncS0Back). -->
+    <button class="btn-continue" id="s0-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" id="s0-back" type="button" hidden onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S1 (screen 1) — SingleChoiceQuestionImage — slide 72 ============
+       Source: 6-10-26 deck, slide 72. Presenter note: "שם המסך בפיגמה:
+       SingleChoiceQuestionImage", "תרגול מתקדם - שאלה 1 מתוך 3", "תמונה בתיקייה: <חוקר וחוקרת>".
+       Figma SingleChoiceQuestionImage State 01 (196:3320), as part 03 S2: question row at
+       y 139 (40px sides, 16px gap); 380px image frame left, text column right.
+       Text: the slide's three context paragraphs are consecutive non-blank paragraphs, so they
+       render as one flow (soft breaks, no added gap); the bold paragraph is the stem
+       (Body/B-6). No blue title. Options keep the slide's order (top to bottom); correct =
+       option 1 (the only one filled green #4CA22E on the slide; the others are blue).
+       Image = the slide's picture (production file "חוקר וחוקרת", 1536 x 1024), re-encoded as a
+       JPEG q90 (same pixels, 2.0MB PNG -> 0.2MB). No zoom (producer 2026-10-06).
+       Feedback = the slide's two boxes: correct "נכון מאוד!" and the incorrect box
+       "התשובה אינה נכונה." share one two-paragraph explanation; the retry box is the
+       2-attempt template default ("שננסה שוב?"). No hint: the slide has no hint button. -->
+  <section class="screen" data-screen="1" id="s1">
+    <!-- Progress question — Figma "Progress question" (3 items). Q1 first in DOM = rightmost. -->
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+      <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="3"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 3</span></div>
+    </nav>
+
+    <div class="scq-question">
+      <div class="scq-main" data-reveal="1">
+        <div class="scq-qtext">
+          <div class="scq-qbody">
+            <p>في معظم دول العالم، ومنها إسرائيل، يُستخدم النظام المتري للقياس.<br>أما في الولايات المتحدة الأمريكية، فلا يزال يُستخدم في الغالب نظام قياس آخر.<br>باحث أمريكي وباحثة إسرائيلية يريدان التعاون في بحث حول تحلية المياه.</p>
+            <p class="scq-qstem" id="s1-stem">لماذا يُعدّ استخدام نظام قياس موحّد شرطًا مهمًا للبحث المشترك والموثوق؟</p>
+          </div>
+        </div>
+        <div class="scq-answers" role="radiogroup" aria-labelledby="s1-stem">
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s1Select('a')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">لأن نظام قياس موحَّد سيتيح مقارنة البيانات بشكل موثوق.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s1Select('b')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">لأن نظام قياس موحد سيتيح الحصول على نتائج متشابهة.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s1Select('c')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">لأن نظام قياس موحَّد سيتيح استخدام أدوات قياس موحَّدة.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="d" onclick="s1Select('d')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">لأن نظام قياس موحَّد سيُغني عن الحاجة إلى إجراء قياسات متكررة.</span>
+          </button>
+        </div>
+      </div>
+      <!-- Image column — Figma "img" (8px padding, hairline over the image). -->
+      <div class="scq-img" data-reveal="2" data-reveal-fade>
+        <div class="scq-img-inner">
+          <img src="assets/img/s1-researchers-handshake.jpg" width="1536" height="1024" alt="باحثة إسرائيلية وباحث أمريكي يرتديان معطفَي مختبر ويتصافحان داخل مختبر، وبجانبهما علم إسرائيل وعلم الولايات المتحدة الأمريكية.">
+        </div>
+      </div>
+    </div>
+
+    <!-- FixedNavigationBar: "צדקתי?" (196:6033 disabled / 196:6027) checks until
+         resolved, then progresses as "שנמשיך?"; nav button back (196:6035). No hint. -->
+    <button class="btn-continue" id="s1-check" type="button" disabled onclick="s1Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S2 (screen 2) — SingleChoiceQuestion (no image) — slide 73 ============
+       Source: 6-10-26 deck, slide 73. Presenter note: "שם המסך בפיגמה: SingleChoiceQuestion",
+       "תרגול מתקדם - שאלה 2 מתוך 3".
+       Figma SingleChoiceQuestion (196:3320, no image column), as part 03 S6: context Body/B-4,
+       stem Body/B-6 (the slide's one bold paragraph), answers column. The slide's three context
+       paragraphs are consecutive non-blank paragraphs -> one flow with soft breaks. Quotes are straight
+       Hebrew-style " (producer 2026-10-06: the slide's curly quotes collided with the letter ל), as part 03 S6. Options verbatim in the slide's order (no final periods, as authored);
+       correct = option 2, the only one filled green (#4CA22E) on the slide. Hint = the slide's
+       hint box, visible from the start. -->
+  <section class="screen" data-screen="2" id="s2">
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+      <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="3"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 3</span></div>
+    </nav>
+
+    <div class="scq-question">
+      <div class="scq-main" data-reveal="1">
+        <div class="scq-qtext">
+          <div class="scq-qbody">
+            <p>في مستودع صيدلية، تظهر ثلاث تسميات على وعاء الدواء السائل نفسه:<br><span class="hq hq-o">"</span>0.5&nbsp;لتر<span class="hq hq-c">"</span>، <span class="hq hq-o">"</span>500&nbsp;مل<span class="hq hq-c">"</span>، <span class="hq hq-o">"</span>500&nbsp;سم³<span class="hq hq-c">"</span>.<br>يخشى مدير المستودع أن يتعلق الأمر بثلاث كميات مختلفة.</p>
+            <p class="scq-qstem" id="s2-stem">ما الصحيح الذي يمكن قوله؟</p>
+          </div>
+        </div>
+        <div class="scq-answers" role="radiogroup" aria-labelledby="s2-stem">
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s2Select('a')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">يتعلق الأمر بثلاث كميات مختلفة، وبالتالي يوجد خطأ في المخزون.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s2Select('b')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">هذه نفس الكمية بالضبط، مكتوبةً بثلاث وحدات قياس مختلفة.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s2Select('c')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">فقط 500&nbsp;مل هي وحدة القياس الصحيحة، والبقية خاطئة.</span>
+          </button>
+          <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="d" onclick="s2Select('d')">
+            <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">لا يمكن معرفة ذلك دون قياس حجم الدواء.</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FixedNavigationBar: "צדקתי?" checks until resolved, then "שנמשיך?"; hint; back. -->
+    <button class="btn-continue" id="s2-check" type="button" disabled onclick="s2Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="scq-hint" id="s2-hint" type="button" style="visibility:hidden" onclick="s2OpenHint()">
+      <svg class="scq-hint-ico" viewBox="0 0 26 22.2883" fill="none" aria-hidden="true"><use href="#ico-bulb"/></svg>
+      <span class="nav-label"><span>هل يمكنني الحصول على تلميح؟</span></span>
+    </button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S3 (screen 3) — DropdownQuestion on an image, part א of question 3 — slide 74 ============
+       Source: 6-10-26 deck, slide 74. Presenter note: "שם המסך בפיגמה: Dropdown Question –
+       השלמה ממחסן ע"ג תמונה", "תמונה בתיקייה: <חשבון מים>. חשוב לצנזר את הפרטים כפי שמצונזרים
+       כאן", "תרגול מתקדם שאלה 3 מתוך 3, סעיף א'", "ללא כפתור רמז" — so no hint.
+       Image = the bill the note names ("חשבון מים פיקטיבי.pdf", page 1, rendered at 3600 px) cropped
+       exactly as the slide crops it (header, both detail panels, the three cards), with the slide's
+       censoring applied in place, values only: name -> משפחת כהן, address -> הפרחים 3, property
+       number -> 123456, contract number -> 11111111, invoice no. -> 4444444444, voucher ->
+       333333333. The unit of the "כמות מים לחיוב" card is the blank; the number 28.06 moved right
+       by the width of the blank (its own pixels). JPEG q90, 1437 x 748. Client round 1 (2026-10-19): corrected bill s3a-water-bill-v2.jpg (1702 x 924, JPEG q90; "משולם בהוראת קבע"; the original file is kept) - slightly different framing, so the blank/hint anchor y moved 87.65% -> 85.82% (x unchanged, 71.08%). Zoom added at QA 2026-10-12 (was: no zoom, producer, part
+       05 S1). Group right-aligned with the text and enlarged to 740 wide (producer 2026-10-06). The slide's red frame and its stacked option boxes are authoring marks — the blank
+       itself is the "marked place".
+       Text: the plain first paragraph is the context; the bold second paragraph is the stem.
+       Options keep the slide's order (top to bottom: סמ"ק, מ"ל, ליטר, מ"ק); correct = מ"ק (the
+       only green box). The slide's units are typed with a plain quote, kept as authored. -->
+  <section class="screen" data-screen="3" id="s3">
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+      <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="3"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 3</span></div>
+    </nav>
+
+    <div class="dqi-wrap" data-reveal="1">
+      <div class="scq-qtext">
+        <div class="scq-qbody">
+          <p>أمامكم مقطع من فاتورة المياه لعائلة حداد.</p>
+          <p class="item-hang scq-qstem" id="s3-title"><span class="item-label">أ. </span>اختاروا وحدة القياس المناسبة في المكان المحدد.</p>
+        </div>
+      </div>
+      <div class="dqi-img" role="group" aria-labelledby="s3-title">
+        <!-- Zoom added at QA (2026-10-12). The wrapper holds only the picture, so the zoom clone never carries the live
+             dropdown (ImageHotspotQuestion.md); tall variant as the part 07 bill. Alt = every value on the bill that
+             bears on the unit (period and its days, persons, use, amount), so a screen-reader user can reason as a
+             sighted one does. -->
+        <!-- Client round 1 (2026-10-19): the blank must work in the enlarged view too. The picture is still cloned alone, but
+             data-zoom-live names the ONE live dropdown, which openImgZoom MOVES into the enlarged clone and closeImgZoom moves
+             back - never a copy, so there is one element and one answer state (s3Sel). -->
+        <div class="dqi-img-inner" data-zoom-wrapper data-zoom-live="s3-wrap-1">
+          <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                  data-zoom-src="assets/img/s3a-water-bill-v2.jpg" data-zoom-tall
+                  data-zoom-alt="مقطع من فاتورة المياه لعائلة حداد، مكبّر. فترة الفاتورة: 26/05/2026 إلى 26/07/2026، 62 يومًا. عدد الأشخاص في العقار: 3. طبيعة استخدام العقار: سكني. المبلغ المستحق (شامل ضريبة القيمة المضافة): 286.11 شيكل. كمية المياه المحاسَب عليها: 28.06، وبعد الرقم تنقص وحدة القياس.">
+            <svg class="img-zoom-btn__icon" aria-hidden="true" width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C11.8661 1 15 4.13371 15 7.99902C15 11.8643 11.8661 14.998 8 14.998C4.1339 14.998 1.00002 11.8643 1 7.99902C1 4.13371 4.13389 1 8 1Z" stroke="currentColor" stroke-width="2"/><path d="M12.6221 14.188L14.2657 12.6141L19.928 18.5274C20.3626 18.9813 20.347 19.7016 19.8931 20.1362C19.4392 20.5708 18.7189 20.5552 18.2843 20.1013L12.6221 14.188Z" fill="currentColor"/></svg>
+          </button>
+          <img src="assets/img/s3a-water-bill-v2.jpg" width="1702" height="924" alt="مقتطف من فاتورة المياه لعائلة حداد. فترة الفاتورة: 26/05/2026 إلى 26/07/2026، 62 يومًا. عدد الأفراد في العقار: 3. طبيعة استخدام العقار: سكني. المبلغ المستحق (شامل ضريبة القيمة المضافة): 286.11 شيكل. في خانة &quot;كمية المياه المحاسَبة&quot; يظهر الرقم 28.06، وتتبعه وحدة القياس المفقودة — وهذا هو المكان المخصص لإكمالها.">
+        </div>
+        <span class="vh" id="s3-w1">وحدة قياس كمية المياه المستحقة للدفع، 28.06</span>
+        <div class="dq-dropdown-wrap dqi-slot" id="s3-wrap-1">
+          <button class="dq-btn" id="s3-btn-1" type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="s3-w1 s3-sel-1" aria-controls="s3-list-1" onclick="s3Toggle(1)" onkeydown="s3BtnKey(event,1)">
+            <span class="dq-selected" id="s3-sel-1"></span>
+            <svg class="dq-chevron" width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true"><path d="M15.6677 0.329895C15.5615 0.225362 15.4351 0.142392 15.2958 0.0857716C15.1566 0.0291509 15.0072 0 14.8564 0C14.7055 0 14.5562 0.0291509 14.4169 0.0857716C14.2776 0.142392 14.1513 0.225362 14.045 0.329895L8.81134 5.43783C8.7051 5.54236 8.57872 5.62533 8.43947 5.68195C8.30021 5.73857 8.15085 5.76772 8 5.76772C7.84915 5.76772 7.69979 5.73857 7.56053 5.68195C7.42128 5.62533 7.29489 5.54236 7.18866 5.43783L1.95497 0.329895C1.84874 0.225362 1.72235 0.142392 1.5831 0.0857716C1.44385 0.0291509 1.29449 0 1.14363 0C0.99278 0 0.843419 0.0291509 0.704167 0.0857716C0.564915 0.142392 0.438528 0.225362 0.332297 0.329895C0.119462 0.538854 0 0.821521 0 1.11616C0 1.4108 0.119462 1.69346 0.332297 1.90242L5.57742 7.02151C6.2202 7.64807 7.09153 8 8 8C8.90847 8 9.7798 7.64807 10.4226 7.02151L15.6677 1.90242C15.8805 1.69346 16 1.4108 16 1.11616C16 0.821521 15.8805 0.538854 15.6677 0.329895Z" fill="currentColor"/></svg>
+            <span class="vh" id="s3-verdict-1"></span>
+          </button>
+          <ul class="dq-list hidden" id="s3-list-1" role="listbox" aria-labelledby="s3-w1">
+            <li class="dq-option" role="option" tabindex="-1" data-value="سم³" aria-selected="false" onclick="s3Select(1,this.dataset.value)" onkeydown="s3OptKey(event,1)">سم³</li>
+            <li class="dq-option" role="option" tabindex="-1" data-value="مل" aria-selected="false" onclick="s3Select(1,this.dataset.value)" onkeydown="s3OptKey(event,1)">مل</li>
+            <li class="dq-option" role="option" tabindex="-1" data-value="لتر" aria-selected="false" onclick="s3Select(1,this.dataset.value)" onkeydown="s3OptKey(event,1)">لتر</li>
+            <li class="dq-option" role="option" tabindex="-1" data-value="م³" aria-selected="false" onclick="s3Select(1,this.dataset.value)" onkeydown="s3OptKey(event,1)">م³</li>
+          </ul>
+        </div>
+        <!-- Click gesture hint on the blank (decorative; _gesture-hints.md click/tap rules). -->
+        <div class="dqg" id="s3-gh" aria-hidden="true">
+          <div class="dqg-ring dqg-ring1"></div>
+          <div class="dqg-ring dqg-ring2"></div>
+          <img class="dqg-hand" src="../unit-assets/img/gesture-hand.svg" alt="" width="28" height="33">
+        </div>
+      </div>
+      <p class="vh" id="s3-live" aria-live="polite"></p>
+    </div>
+
+    <!-- FixedNavigationBar: "צדקתי?" checks until resolved, then progresses as "שנמשיך?"; no hint (note); back. -->
+    <button class="btn-continue" id="s3-check" type="button" disabled onclick="s3Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S4 (screen 4) — StatementAssessmentQuestion — slide 75 ============
+       Source: 6-10-26 deck, slide 75. Presenter note: "שם המסך בפיגמה: StatementAssessmentQuestion",
+       "תמונה בתיקייה: <גרף עמודות 2>. חשוב להוסיף את ערכי ציר X ו-Y, כפי שמופיעות בשקף בצהוב",
+       "תרגול מתקדם שאלה 3 מתוך 3, סעיף ב'", "לחיצה על התמונה מגדילה אותה".
+       No template exists for it (yes / no claim about a chart): a local variant of
+       SingleChoiceQuestionImage — two radio pills in a row under the stem, the chart below, all right-
+       aligned as on the slide (its feedback boxes sit at the left). Options keep the slide's order:
+       כן (right) then לא; correct = כן (the only green box).
+       Image = a NEW chart drawn for this question (producer 2026-10-06): the explanation names the range 25.8-29.5 מ"ק, so the four months are 29.5 / 27.4 / 28.6 / 25.8 (min and max are the authored ones; the two middle values were chosen inside that range and approved by the producer 2026-10-06). Only approved tokens: bars Subject/500, text Natural/800, axis Natural/600, grid Natural/300, Assistant; the y-axis title "צריכת מים (מ"ק)" is horizontal, above the axis; key "שנת 2026" (the slide's "2026" key, with the word added by the producer). 2222 x 990 PNG. Zoom: required — the button and a click on the image itself.
+       ONE attempt only (producer 2026-10-06: two options, so a second try would give the answer away): the
+       slide's retry box is not built. Feedback = the slide's boxes: correct "מצוין!" + the explanation; the
+       final-wrong box authors "התשובה לא נכונה." (kept as authored), the canonical second line
+       "התשובה הנכונה מוצגת." follows. No hint (none on the slide). -->
+  <section class="screen" data-screen="4" id="s4">
+    <nav class="progress-question" aria-label="التنقل بين الأسئلة">
+      <div class="progress-question__item" data-question="1"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 1</span></div>
+      <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="2"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 2</span></div>
+      <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+      <div class="progress-question__item" data-question="3"><div class="progress-question__icon"></div><span class="progress-question__label">سؤال 3</span></div>
+    </nav>
+
+    <div class="sa-wrap" data-reveal="1">
+      <div class="scq-qtext">
+        <div class="scq-qbody">
+          <p>أمامكم رسم بياني لبيانات الاستهلاك من فاتورة المياه لعائلة حداد.</p>
+          <p class="item-hang scq-qstem" id="s4-stem"><span class="item-label">ب. </span>هل يمكن الادعاء بأن استهلاك المياه لعائلة حداد مستقر نسبيًا على مدار فترات الفوترة الأربع في عام 2026؟</p>
+        </div>
+      </div>
+      <div class="scq-answers scq-answers--row" role="radiogroup" aria-labelledby="s4-stem">
+        <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s4Select('a')">
+          <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">نعم</span>
+        </button>
+        <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s4Select('b')">
+          <span class="scq-radio" aria-hidden="true"></span><span class="scq-opt-text">لا</span>
+        </button>
+      </div>
+      <div class="scq-img sa-img">
+        <div class="scq-img-inner" data-zoom-wrapper>
+          <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                  data-zoom-src="assets/img/s4-water-chart.png"
+                  data-zoom-alt="رسم بياني عمودي لاستهلاك المياه لعائلة حداد في كل شهر من عام 2026، بالمتر المكعب: يناير 29.5، فبراير 27.4، مارس 28.6، أبريل 25.8.">
+            <svg class="img-zoom-btn__icon" aria-hidden="true" width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C11.8661 1 15 4.13371 15 7.99902C15 11.8643 11.8661 14.998 8 14.998C4.1339 14.998 1.00002 11.8643 1 7.99902C1 4.13371 4.13389 1 8 1Z" stroke="currentColor" stroke-width="2"/><path d="M12.6221 14.188L14.2657 12.6141L19.928 18.5274C20.3626 18.9813 20.347 19.7016 19.8931 20.1362C19.4392 20.5708 18.7189 20.5552 18.2843 20.1013L12.6221 14.188Z" fill="currentColor"/></svg>
+          </button>
+          <img class="sa-chart" src="assets/img/s4-water-chart.png" width="2222" height="990" alt="رسم بياني عمودي لاستهلاك المياه لعائلة حداد في كل شهر من عام 2026، بالمتر المكعب: يناير 29.5، فبراير 27.4، مارس 28.6، أبريل 25.8."
+               data-zoom-src="assets/img/s4-water-chart.png" data-zoom-alt="رسم بياني عمودي لاستهلاك المياه لعائلة حداد في كل شهر من عام 2026، بالمتر المكعب: يناير 29.5، فبراير 27.4، مارس 28.6، أبريل 25.8.">
+        </div>
+      </div>
+    </div>
+
+    <!-- FixedNavigationBar: "צדקתי?" checks until resolved, then progresses as "שנמשיך?"; no hint; back. -->
+    <button class="btn-continue" id="s4-check" type="button" disabled onclick="s4Primary()"><span class="nav-label"><span>هل إجابتي صحيحة؟</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S5 (screen 5) — TransitionScreen, knowledge item "הידעת?" — slide 76 ============
+       Source: 6-10-26 deck, slide 76. Presenter note: "פריט ידע מעשיר", "שם המסך בפיגמה: TransitionScreen",
+       "האלמנטים עולים סביב הנער בהדרגה, ובסוף בועית השאלה" + six stock-photo URLs (toilet, bath, laundry,
+       dishwasher, sink, plant). The slide embeds the downloaded pictures — those are used (plus the bottle the
+       slide also shows). The picture of the boy is the slide's own still (not the companion character).
+       Text: "הידעת?" (40pt bold) -> headline Heading/H-4; "צריכת המים הממוצעת לאדם בישראל היא כ-165 ליטרים ליום."
+       -> closing line Body/B-1, 24px apart as in Figma TransitionScreen ShortText (4905:25066); layout A's 48px is not used. Number + unit joined by a no-break space.
+       Bubble: "איך זה יכול להיות??" in the Figma "bubble text" shape (mirrored, tail toward the boy's head); the slide's
+       bold run is not carried over (the component's text is Body/B-7 Regular). Continue = the slide's "בואו נגלה".
+       Images: boy / plant / bottle re-encoded as JPEG with the off-white ground lifted to pure #fff (as the climbing
+       clip); the bottle is the producer-supplied picture (2026-10-06, replaces the watermarked stock preview), cropped to the bottle. Items keep the slide's positions
+       and sizes.
+       Motion (animation-system, 4 groups — the engine's maximum): text (1, float), boy (2, fade), all seven objects
+       together as one unit (3, float — the note's "בהדרגה" is the text → boy → objects → bubble sequence, not a stagger
+       per object), bubble last (4, float — the note: "ובסוף בועית השאלה"). The objects are marked one by one with the same
+       group number because .s5-stage also holds the boy and the bubble (mixed-container exception, Rule precedence #6).
+       Producer decision 2026-10-10: regrouped from one-object-per-group (9 groups). -->
+  <section class="screen" data-screen="5" id="s5">
+    <div class="s1-content s1-content--a s5-content">
+      <div class="s1-text" data-reveal="1">
+        <div class="s1-title-group">
+          <h1 class="s1-title">هل تعلم؟</h1>
+        </div>
+        <p class="s1-subtitle">متوسط استهلاك المياه للفرد في إسرائيل هو نحو 165&nbsp;لترًا في اليوم.</p>
+      </div>
+      <div class="s5-stage">
+        <img class="s5-boy" data-reveal="2" data-reveal-fade src="assets/img/s5-boy.jpg" width="600" height="900" alt="صبي يحك رأسه ويمسك قنينة ماء، يبدو مندهشًا.">
+        <img class="s5-bath" data-reveal="3" src="assets/img/s5-bath.png" width="240" height="240" alt="حوض استحمام">
+        <img class="s5-bottle" data-reveal="3" src="assets/img/s5-bottle.jpg" width="136" height="400" alt="قنينة ماء">
+        <img class="s5-toilet" data-reveal="3" src="assets/img/s5-toilet.png" width="280" height="373" alt="مرحاض">
+        <img class="s5-plant" data-reveal="3" src="assets/img/s5-plant.jpg" width="356" height="240" alt="شتلة تنمو في التربة">
+        <img class="s5-washer" data-reveal="3" src="assets/img/s5-washer.png" width="288" height="384" alt="غسالة ملابس">
+        <img class="s5-sink" data-reveal="3" src="assets/img/s5-sink.png" width="288" height="192" alt="حوض مطبخ">
+        <img class="s5-dishwasher" data-reveal="3" src="assets/img/s5-dishwasher.png" width="230" height="240" alt="غسالة أطباق">
+        <div class="s1-bubble s5-bubble" data-reveal="4">
+          <svg class="s1-bubble-shape" viewBox="0 0 202 94" aria-hidden="true"><path d="M1.5 89.2002V4.7998C1.50006 4.68232 1.55352 4.4188 1.97363 4.02148C2.39718 3.62093 3.09107 3.19131 4.07227 2.79883C6.02633 2.01727 8.82844 1.5 12 1.5H174C177.172 1.5 179.974 2.01727 181.928 2.79883C182.909 3.19131 183.603 3.62093 184.026 4.02148C184.446 4.4188 184.5 4.68232 184.5 4.7998V39.5996C184.5 40.1531 184.804 40.6584 185.286 40.9189L185.385 40.9678L198.302 46.7812L185.398 52.4258C184.887 52.6498 184.544 53.1382 184.504 53.6895L184.5 53.7998V89.2002C184.5 89.3177 184.446 89.5812 184.026 89.9785C183.603 90.3791 182.909 90.8087 181.928 91.2012C179.974 91.9827 177.172 92.5 174 92.5H12C8.82844 92.5 6.02633 91.9827 4.07227 91.2012C3.09107 90.8087 2.39718 90.3791 1.97363 89.9785C1.55352 89.5812 1.50006 89.3177 1.5 89.2002Z"/></svg>
+          <p class="s1-bubble-text">كيف يمكن أن يكون هذا؟؟</p>
+        </div>
+      </div>
+    </div>
+    <!-- FixedNavigationBar: nav button Next (196:6027), ungated (a TransitionScreen); nav button back (196:6035). -->
+    <button class="btn-continue" type="button" onclick="advanceScreen()"><span class="nav-label"><span>هيا نكتشف</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+  <!-- ============ S6 (screen 6) — interactive doughnut — slide 77 ============
+       Source: 6-10-26 deck, slide 77 (the last slide of this component). Presenter note: "אותו נער מהמסך
+       הקודם, רק הפעם עולה סביבו תרשים שמסביר את צריכת המים הממוצעת ביום לאדם בישראל. איטראקטיבי - בלחיצה על
+       כל צבע בתרשים עולה חץ עם תמונת הרכיב והטקסט שלו. כפתור נדלק לאחר הצגת כל המידע." No template name given:
+       a local interactive screen (clickable chart + reveal), continue gated on all six being revealed.
+       Chart = the slide's native doughnut (chart1.xml): six slices 0.33 / 0.33 / 0.18 / 0.06 / 0.05 / 0.05 with the
+       data labels 54.4 / 54.4 / 30 / 10 / 8 / 8 (litres; the slide says 165 in total). Which slice is which category is read
+       from where the slide's connectors meet the ring: shower, toilet flush, kitchen (drinking, cooking, dishes), bathroom
+       sink, laundry, garden and car washing. Slice colours: the slide's chart uses the Office theme accents (not Science tokens), so the slices use approved tokens chosen
+       for contrast (producer 2026-10-06: approved if accessible) — every slice >= 3:1 against the white page / white gaps (WCAG 1.4.11),
+       every number >= 3:1 on its slice (21px Bold = large text): Subject/900 + white 15.3, Subject/500 + #303030 4.4, Subject/800 + white
+       5.2, Subject/600 + #303030 3.7, Natural/800 + white 13.2, Subject/700 + white 4.6.
+       Callouts follow the slide's arrangement (side and height); the arrows are the Figma arrow (5451:35712) shortened to one length (40px; all 10px shorter at QA 2026-10-12, callouts moved in by the same vector), in
+       Natural/800 for contrast; the category pictures are the slide's own, +7.5% (producer 2026-10-06), then x1.4 at QA 2026-10-12 when the callouts became one at a time and x1.15 again (Nimrod; sink and washer 5px higher to keep 10px from the ring)
+       (each grows away from its arrow end, its label moved out by the same amount; the toilet now centred on its arrow, room above the bar;
+       the plant x1.3 - above it sits the end of the instruction line; the washer and its label 25px higher, so its lower corner
+       clears the ring by 10px, like the sink - its arrow now meets the lower half of its edge;
+       kitchen: dishwasher 95px wide and the bottle 65px tall, about 0.8 of it - a bottle taller than the dishwasher read wrong, producer).
+       Text: the bold line then the instruction ("הצבעים בתרשים" became "כל חלקי התרשים" — a colour is not an accessible
+       target to name, producer 2026-10-06);  "165 ליטרים" joined by a no-break space. Boy = the same still as S5.
+       Motion (animation-system): group 1 = text (float) + boy (fade), group 2 = the ring (rises around him); the
+       callouts own their click-reveal (fade) and are not part of the screen reveal. Continue = the slide's "המשך". -->
+  <section class="screen" data-screen="6" id="s6">
+    <div class="s6-text" data-reveal="1">
+      <div class="scq-qtext">
+        <div class="scq-qbody">
+          <p class="scq-qstem" id="s6-lead">أمامكم مخطط يُظهر توزيع متوسط الاستهلاك اليومي للمياه لشخص واحد في إسرائيل باللترات (المجموع 165&nbsp;لترًا).</p>
+          <p>انقروا على كل أجزاء الرسم البياني لاكتشاف أي فئة يمثلها كل رقم:</p>
+        </div>
+      </div>
+    </div>
+    <div class="s6-stage">
+      <img class="s6-boy" data-reveal="1" data-reveal-fade src="assets/img/s5-boy.jpg" width="600" height="900" alt="">
+      <svg class="s6-ring" data-reveal="2" data-reveal-fade viewBox="0 0 1280 710" role="group" aria-labelledby="s6-lead">
+      <g class="s6-co s6-arrow" data-co="shower">
+        <path class="s6-arrow-shaft" d="M893.6 292.7 L867.7 304.5"/>
+        <path class="s6-arrow-head" d="M871.6 291.1 L866.3 305.1 L880.3 310.4"/>
+      </g>
+      <g class="s6-co s6-arrow" data-co="toilet">
+        <path class="s6-arrow-shaft" d="M864.8 566.8 L840.9 551.3"/>
+        <path class="s6-arrow-head" d="M854.3 547.3 L839.7 550.5 L842.8 565.1"/>
+      </g>
+      <g class="s6-co s6-arrow" data-co="kitchen">
+        <path class="s6-arrow-shaft" d="M453 410 L481.5 410"/>
+        <path class="s6-arrow-head" d="M472.4 420.6 L483 410 L472.4 399.4"/>
+      </g>
+      <g class="s6-co s6-arrow" data-co="sink">
+        <path class="s6-arrow-shaft" d="M508.9 266.7 L537.3 268.9"/>
+        <path class="s6-arrow-head" d="M527.5 278.7 L538.8 269 L529.1 257.6"/>
+      </g>
+      <g class="s6-co s6-arrow" data-co="laundry">
+        <path class="s6-arrow-shaft" d="M572.2 207.4 L594.3 225.5"/>
+        <path class="s6-arrow-head" d="M580.6 228 L595.5 226.5 L594 211.5"/>
+      </g>
+      <g class="s6-co s6-arrow" data-co="garden">
+        <path class="s6-arrow-shaft" d="M658.6 176.6 L656.9 205"/>
+        <path class="s6-arrow-head" d="M646.8 195.3 L656.8 206.5 L668 196.6"/>
+      </g>
+      <g class="s6-slice" data-k="shower" role="button" tabindex="0" aria-label="54.4 لترًا. انقروا لاكتشاف الفئة">
+        <path d="M689 210 A200 200 0 0 1 864.3 506.4 L820.4 482.3 A150 150 0 0 0 689 260 Z" fill="#002060"/>
+        <text x="839.6" y="320.9" fill="#FFFFFF">54.4</text>
+      </g>
+      <g class="s6-slice" data-k="toilet" role="button" tabindex="0" aria-label="54.4 لترًا. انقروا لاكتشاف الفئة">
+        <path d="M864.3 506.4 A200 200 0 0 1 520.1 517.2 L562.4 490.4 A150 150 0 0 0 820.4 482.3 Z" fill="#019DE5"/>
+        <text x="694.5" y="584.9" fill="#303030">54.4</text>
+      </g>
+      <g class="s6-slice" data-k="kitchen" role="button" tabindex="0" aria-label="30 لترًا. انقروا لاكتشاف الفئة">
+        <path d="M520.1 517.2 A200 200 0 0 1 520.1 302.8 L562.4 329.6 A150 150 0 0 0 562.4 490.4 Z" fill="#0070C0"/>
+        <text x="514" y="410" fill="#FFFFFF">30</text>
+      </g>
+      <g class="s6-slice" data-k="sink" role="button" tabindex="0" aria-label="10 لترات. انقروا لاكتشاف الفئة">
+        <path d="M520.1 302.8 A200 200 0 0 1 571.4 248.2 L600.8 288.6 A150 150 0 0 0 562.4 329.6 Z" fill="#0690D0"/>
+        <text x="561.4" y="290.2" fill="#303030">10</text>
+      </g>
+      <g class="s6-slice" data-k="laundry" role="button" tabindex="0" aria-label="8 لترات. انقروا لاكتشاف الفئة">
+        <path d="M571.4 248.2 A200 200 0 0 1 627.2 219.8 L642.6 267.3 A150 150 0 0 0 600.8 288.6 Z" fill="#303030"/>
+        <text x="609.6" y="254.1" fill="#FFFFFF">8</text>
+      </g>
+      <g class="s6-slice" data-k="garden" role="button" tabindex="0" aria-label="8 لترات. انقروا لاكتشاف الفئة">
+        <path d="M627.2 219.8 A200 200 0 0 1 689 210 L689 260 A150 150 0 0 0 642.6 267.3 Z" fill="#007AC6"/>
+        <text x="661.6" y="237.2" fill="#FFFFFF">8</text>
+      </g>
+      <!-- "Seen" marks (producer, QA 2026-10-12): with one callout at a time the learner needs to see which slices are
+           already opened before "המשך" lights. The Figma correct icon (196:6229) on a white disc, centred on the ring's
+           inner edge at each slice's mid-angle (the shower's at 78 deg instead of 59, clear of its "54.4"); decorative (the slice's
+           aria-label carries the state). -->
+      <g class="s6-seen" data-seen="shower" transform="translate(824.7 367.8)" aria-hidden="true"><circle cx="11" cy="11" r="13" fill="#fff"/><circle cx="11" cy="11" r="11" fill="#609E12"/><path d="M9.10917 15.1876C8.7479 15.1877 8.40142 15.0442 8.14618 14.7885L5.23471 11.8781C4.92144 11.5647 4.92144 11.0567 5.23471 10.7434C5.54809 10.4301 6.05607 10.4301 6.36945 10.7434L9.10917 13.4831L16.3573 6.23493C16.6707 5.92165 17.1787 5.92165 17.4921 6.23493C17.8053 6.5483 17.8053 7.05628 17.4921 7.36966L10.0722 14.7885C9.81693 15.0442 9.47045 15.1877 9.10917 15.1876Z" fill="#fff"/></g>
+      <g class="s6-seen" data-seen="toilet" transform="translate(682.7 548.9)" aria-hidden="true"><circle cx="11" cy="11" r="13" fill="#fff"/><circle cx="11" cy="11" r="11" fill="#609E12"/><path d="M9.10917 15.1876C8.7479 15.1877 8.40142 15.0442 8.14618 14.7885L5.23471 11.8781C4.92144 11.5647 4.92144 11.0567 5.23471 10.7434C5.54809 10.4301 6.05607 10.4301 6.36945 10.7434L9.10917 13.4831L16.3573 6.23493C16.6707 5.92165 17.1787 5.92165 17.4921 6.23493C17.8053 6.5483 17.8053 7.05628 17.4921 7.36966L10.0722 14.7885C9.81693 15.0442 9.47045 15.1877 9.10917 15.1876Z" fill="#fff"/></g>
+      <g class="s6-seen" data-seen="kitchen" transform="translate(528 399)" aria-hidden="true"><circle cx="11" cy="11" r="13" fill="#fff"/><circle cx="11" cy="11" r="11" fill="#609E12"/><path d="M9.10917 15.1876C8.7479 15.1877 8.40142 15.0442 8.14618 14.7885L5.23471 11.8781C4.92144 11.5647 4.92144 11.0567 5.23471 10.7434C5.54809 10.4301 6.05607 10.4301 6.36945 10.7434L9.10917 13.4831L16.3573 6.23493C16.6707 5.92165 17.1787 5.92165 17.4921 6.23493C17.8053 6.5483 17.8053 7.05628 17.4921 7.36966L10.0722 14.7885C9.81693 15.0442 9.47045 15.1877 9.10917 15.1876Z" fill="#fff"/></g>
+      <g class="s6-seen" data-seen="sink" transform="translate(568.6 296.3)" aria-hidden="true"><circle cx="11" cy="11" r="13" fill="#fff"/><circle cx="11" cy="11" r="11" fill="#609E12"/><path d="M9.10917 15.1876C8.7479 15.1877 8.40142 15.0442 8.14618 14.7885L5.23471 11.8781C4.92144 11.5647 4.92144 11.0567 5.23471 10.7434C5.54809 10.4301 6.05607 10.4301 6.36945 10.7434L9.10917 13.4831L16.3573 6.23493C16.6707 5.92165 17.1787 5.92165 17.4921 6.23493C17.8053 6.5483 17.8053 7.05628 17.4921 7.36966L10.0722 14.7885C9.81693 15.0442 9.47045 15.1877 9.10917 15.1876Z" fill="#fff"/></g>
+      <g class="s6-seen" data-seen="laundry" transform="translate(609.9 265.4)" aria-hidden="true"><circle cx="11" cy="11" r="13" fill="#fff"/><circle cx="11" cy="11" r="11" fill="#609E12"/><path d="M9.10917 15.1876C8.7479 15.1877 8.40142 15.0442 8.14618 14.7885L5.23471 11.8781C4.92144 11.5647 4.92144 11.0567 5.23471 10.7434C5.54809 10.4301 6.05607 10.4301 6.36945 10.7434L9.10917 13.4831L16.3573 6.23493C16.6707 5.92165 17.1787 5.92165 17.4921 6.23493C17.8053 6.5483 17.8053 7.05628 17.4921 7.36966L10.0722 14.7885C9.81693 15.0442 9.47045 15.1877 9.10917 15.1876Z" fill="#fff"/></g>
+      <g class="s6-seen" data-seen="garden" transform="translate(654.5 250.8)" aria-hidden="true"><circle cx="11" cy="11" r="13" fill="#fff"/><circle cx="11" cy="11" r="11" fill="#609E12"/><path d="M9.10917 15.1876C8.7479 15.1877 8.40142 15.0442 8.14618 14.7885L5.23471 11.8781C4.92144 11.5647 4.92144 11.0567 5.23471 10.7434C5.54809 10.4301 6.05607 10.4301 6.36945 10.7434L9.10917 13.4831L16.3573 6.23493C16.6707 5.92165 17.1787 5.92165 17.4921 6.23493C17.8053 6.5483 17.8053 7.05628 17.4921 7.36966L10.0722 14.7885C9.81693 15.0442 9.47045 15.1877 9.10917 15.1876Z" fill="#fff"/></g>
+      </svg>
+        <img class="s6-co s6-co-img" data-co="shower" src="assets/img/s5-bath.png" style="left:895.6px;top:220.8px;width:143.8px" alt="">
+        <p class="s6-co s6-co-label" data-co="shower" style="left:1049.3px;top:292.7px;text-align:left">الاستحمام والاغتسال</p>
+        <img class="s6-co s6-co-img" data-co="toilet" src="assets/img/s5-toilet.png" style="left:868.8px;top:501.4px;width:98.2px" alt="">
+        <p class="s6-co s6-co-label" data-co="toilet" style="left:977px;top:566.8px;text-align:left">شطف المرحاض</p>
+        <img class="s6-co s6-co-img" data-co="kitchen" src="assets/img/s5-dishwasher.png" style="left:340.8px;top:353px;width:109.2px" alt="">
+        <img class="s6-co s6-co-img" data-co="kitchen" src="assets/img/s5-bottle.jpg" style="left:297.1px;top:372.7px;width:25.3px" alt="">
+        <p class="s6-co s6-co-label" data-co="kitchen" style="right:1000.3px;top:410px;text-align:right">المطبخ: الشرب، والطهي<br>وغسل الأواني</p>
+        <img class="s6-co s6-co-img" data-co="sink" src="assets/img/s5-sink.png" style="left:351.3px;top:219.8px;width:154.6px" alt="">
+        <p class="s6-co s6-co-label" data-co="sink" style="right:938.7px;top:261.7px;text-align:right">حوض الحمام</p>
+        <img class="s6-co s6-co-img" data-co="laundry" src="assets/img/s5-washer.png" style="left:465.5px;top:111.7px;width:104.6px" alt="">
+        <p class="s6-co s6-co-label" data-co="laundry" style="right:824.5px;top:177.4px;text-align:right">غسيل الملابس</p>
+        <img class="s6-co s6-co-img" data-co="garden" src="assets/img/s5-plant.jpg" style="left:611.1px;top:112.2px;width:96.2px" alt="">
+        <p class="s6-co s6-co-label" data-co="garden" style="left:715.3px;top:144.6px;text-align:left">تنسيق الحدائق وغسيل السيارة</p>
+      <!-- Click gesture hint on the biggest slice (decorative; twice, then gone — see s6GhStart). Anchor = a point on the
+           shower slice (angle 35 deg, mid-ring), clear of its number. -->
+      <div class="dqg" id="s6-gh" aria-hidden="true" style="--gx:789.4px;--gy:266.6px">
+        <div class="dqg-ring dqg-ring1"></div>
+        <div class="dqg-ring dqg-ring2"></div>
+        <img class="dqg-hand" src="../unit-assets/img/gesture-hand.svg" alt="" width="28" height="33">
+      </div>
+      <p class="vh" id="s6-live" aria-live="polite"></p>
+    </div>
+    <!-- FixedNavigationBar: Next stays disabled until every slice has been opened; back. -->
+    <button class="btn-continue" id="s6-continue" type="button" disabled onclick="advanceScreen()"><span class="nav-label"><span>متابعة</span></span></button>
+    <button class="btn-back" type="button" onclick="goBack()"><span class="nav-label"><span>عودة</span></span></button>
+  </section>
+
+
+  <!-- Shared icon: the Figma hint bulb (nav button 196:6024 "Group"; the Hint Card's
+       "iocn/idea\white\large" is the same shape at 40px). currentColor fill. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ico-bulb" viewBox="0 0 26 22.2883">
+      <path fill="currentColor" d="M17.7926 2.76346C16.3676 1.37911 14.5057 0.687763 12.5489 0.815548C9.07997 1.04163 6.27288 3.9168 6.01798 7.50135C5.85649 9.77363 6.70352 11.9443 8.34376 13.4548C9.23038 14.2723 9.74018 15.465 9.74018 16.7265H11.2284H14.7733H16.2616C16.2616 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.791 2.76018L17.7926 2.76346ZM13.0001 5.54525C11.6702 5.54525 10.5856 6.66583 10.5856 8.04525C10.5856 8.46956 10.2516 8.81524 9.84151 8.81524C9.43145 8.81524 9.09739 8.46956 9.09739 8.04525C9.09739 5.8172 10.8485 4.00527 13.0001 4.00527C13.4133 4.00527 13.7474 4.35094 13.7474 4.77526C13.7474 5.19957 13.4133 5.54525 13.0001 5.54525Z"/>
+      <path fill="currentColor" d="M9.73859 19.6245C9.73859 20.3289 9.99824 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73859V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z"/>
+      <path fill="currentColor" d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46962 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46962 25.9999 8.0453C25.9999 7.62099 25.6659 7.27531 25.2558 7.27531Z"/>
+      <path fill="currentColor" d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46962 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46962 4.13701 8.0453H4.1386Z"/>
+      <path fill="currentColor" d="M20.8702 3.11398C21.0174 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.8039 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4411 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4031 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z"/>
+      <path fill="currentColor" d="M4.70374 13.1172L2.53311 14.69C2.19588 14.9341 2.11514 15.4141 2.35104 15.763C2.49512 15.9777 2.72627 16.0923 2.96217 16.0923C3.10941 16.0923 3.25824 16.0465 3.38806 15.9531L5.55869 14.3803C5.89592 14.1362 5.97667 13.6562 5.74076 13.3073C5.50486 12.9583 5.04097 12.8731 4.70374 13.1189V13.1172Z"/>
+      <path fill="currentColor" d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8905 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z"/>
+      <path fill="currentColor" d="M5.55868 1.71322L3.38806 0.140473C3.05083 -0.10363 2.58694 -0.0184393 2.35103 0.328875C2.11513 0.677827 2.19746 1.15784 2.53311 1.40194L4.70373 2.97469C4.83356 3.06971 4.98238 3.11394 5.12962 3.11394C5.36394 3.11394 5.5951 2.99926 5.74076 2.78465C5.97666 2.4357 5.89433 1.95568 5.55868 1.71158V1.71322Z"/>
+    </symbol>
+  </svg>
+
+
+  <!-- ═══ "מצאתם בעיה?" — issue-report dialogs (ADDING-REPORTING-AND-RESUME.md §7) ═══
+       Copied verbatim from methodica-science-body-matter-01-02 (2026-10-19 state). Last children of
+       #app, outside every .screen: .report-modal-overlay is position:absolute; inset:0 against #app,
+       so it aligns with the scaled canvas. All three carry `hidden`; behaviour in
+       ../unit-js/25-report.js (wires #flag-btn by delegation — no onclick on the flag), style in
+       ../unit-css/25-report.css. -->
+  <div id="report-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" type="button" onclick="tryCloseReportModal()" aria-label="إغلاق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">الإبلاغ عن مشكلة</h2>
+      <p class="report-modal-body">هل هناك شيء غير واضح أو لا يعمل كما يجب؟<br>أبلغونا بما حدث لنتمكن من معالجة المشكلة.</p>
+
+      <div class="report-field">
+        <label class="report-label" for="report-type"><span class="required-star">*</span> ما نوع المشكلة</label>
+        <div class="report-custom-select" id="report-type-wrapper">
+          <button class="report-select-btn is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="report-select-value">اختاروا نوع المشكلة</span>
+          </button>
+          <ul class="report-select-list" role="listbox" hidden>
+            <li class="report-select-option" data-value="technical" role="option">عطل تقني أو شيء ما لا يعمل</li>
+            <li class="report-select-option" data-value="unclear" role="option">شيء غير واضح لي</li>
+            <li class="report-select-option" data-value="other" role="option">آخر</li>
+          </ul>
+          <input type="hidden" id="report-type" value="">
+        </div>
+        <span class="report-field-error" id="report-type-error" hidden>اختاروا نوع المشكلة</span>
+      </div>
+
+      <div class="report-field">
+        <label class="report-label" for="report-text"><span class="required-star">*</span> ماذا حدث؟</label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="فصّلوا ماذا حدث لنتمكن من فهم المشكلة" onblur="reportTextBlur()"></textarea>
+        <span class="report-field-error" id="report-text-error" hidden>اكتبوا ماذا حدث</span>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="tryCloseReportModal()">إلغاء</button>
+        <button class="report-submit-btn" type="button" onclick="submitReport()" disabled>إرسال التبليغ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מצב "הדיווח נשלח". דיאלוג נפרד מדיאלוג הנטישה שמתחתיו — אין לאחד ביניהם. -->
+  <div id="report-thanks-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-thanks-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-thanks-title">تم إرسال التبليغ، شكرًا!</h2>
+      <p class="report-modal-body">تلقّينا التبليغ وسنعالجه في أقرب وقت.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" type="button" onclick="closeReportThanks()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- אישור נטישה: נפתח רק כשיש קלט שלא נשלח. -->
+  <div id="report-confirm-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-confirm-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-confirm-title">هل تريدون إغلاق النافذة فعلًا؟</h2>
+      <p class="report-modal-body">إذا ضغطتم على إغلاق فلن يتم إرسال التبليغ</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="forceCloseReportModal()">إغلاق النافذة</button>
+        <button class="report-submit-btn" type="button" onclick="backToReportForm()">أريد التبليغ</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+<!-- 720 platform layer (reporting / resume): shared files first, then the part's own scripts
+     (js/motion.js before js/main.js, as before), 90-boot last. Same ?v= in every part
+     (guide §3.4); 90-boot.js is a separate tag on purpose (§3.2). -->
+<script src="../unit-js/10-identity.js?v=20261102b"></script>
+<script src="../unit-js/20-xapi.js?v=20261102b"></script>
+<script src="../unit-js/25-report.js?v=20261102b"></script>
+<script src="../unit-js/40-resume.js?v=20261102b"></script>
+<script src="../unit-js/50-loader.js?v=20261102b"></script>
+<script src="js/motion.js?v=20261102b"></script>
+<script src="js/main.js?v=20261102b"></script>
+<script src="../unit-js/90-boot.js?v=20261102b"></script></body>
+</html>
