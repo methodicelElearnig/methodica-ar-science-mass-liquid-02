@@ -551,6 +551,72 @@ section('8. Arabic build');
   ok('identity', 'no Hebrew-unit slug or prefix left in code (outside comments)', heIds.length === 0, heIds.join(', '));
 }
 
+/* ══════════════════ 5. score contract (MOE QA runbook §4 "ציון ומעבר") ══════════════════
+   2026-11-09, fixes 1/2/5 of the 08.11 sheet (pilot: body-matter-01 75559c9). For a part that promises
+   K of N on its first screen: success and score.scaled come from one count of the N threshold questions
+   only (the advanced set never enters), success ⇔ scaled ≥ K/N, and below K the part ends at the gate —
+   one completed success:false, the button disabled, the advanced screens never reached — also after a
+   reload. threshold / challenge: the question screens (sNDone / sNOutcome); gate: the last threshold screen. */
+const SCORE_CONTRACT = {
+  '03': { K: 2, N: 3, threshold: [1, 2, 3], challenge: [5, 6],
+          gate: { screen: 3, btn: 's3-check', cont: 'advanceScreen', next: 4 } }
+};
+section('5. score contract');
+function scSet(w, sc, correct, challengeOk) {
+  const put = (n, right) => w.eval('s' + n + 'Done = true; s' + n + "Outcome = '" + (right ? 'correct' : 'wrong2') + "'");
+  sc.threshold.forEach((n, i) => put(n, i < correct));
+  sc.challenge.forEach((n) => put(n, challengeOk));
+}
+function scRecorder(w, c) {
+  const sent = []; let doc = null;
+  w.METADATA = META[c]; w.XAPI_USING_G = true; w.xapiItemAnswered = {}; w.xapiCompletedObjects = {};
+  w.sendStatement720 = (verb, type, result, ctx) => sent.push({ verb, result: result || null, ctx: ctx || null });
+  w.loadState720 = () => doc;
+  w.saveState720 = (id, o) => { doc = JSON.parse(JSON.stringify(o)); return true; };
+  w.saveState720Debounced = (id, o) => { doc = JSON.parse(JSON.stringify(o)); };
+  w.readUnitState(); w._resumeReady = true;
+  return { sent, doc: () => doc, comps: () => sent.filter((s) => s.verb === 'completed' && !(s.ctx && s.ctx.objectId)) };
+}
+if (JSDOM) for (const c of Object.keys(SCORE_CONTRACT)) {
+  const sc = SCORE_CONTRACT[c];
+  const r = loadPart(c); const w = r.w;
+  for (let k = 0; k <= sc.N; k++) for (const chal of [false, true]) {
+    scSet(w, sc, k, chal);
+    const res = w.xapiPartResult();
+    const tag = k + '/' + sc.N + (chal ? ' + advanced all right' : ' + advanced all wrong');
+    ok(c, 'result ' + tag + ': success = correct ≥ ' + sc.K, res.success === (k >= sc.K), JSON.stringify(res));
+    ok(c, 'result ' + tag + ': scaled = correct / ' + sc.N + ' (advanced set not counted)', Math.abs(res.score.scaled - k / sc.N) < 1e-9, JSON.stringify(res));
+    ok(c, 'result ' + tag + ': success ⇔ scaled ≥ K/N', res.success === (res.score.scaled >= sc.K / sc.N - 1e-9));
+  }
+  /* the gate, K−1 and K (runbook §4: one round with Y−1 correct, one with Y) */
+  for (const k of [sc.K - 1, sc.K]) {
+    const rg = loadPart(c); const wg = rg.w; const rec = scRecorder(wg, c);
+    scSet(wg, sc, k, false); wg.goTo(sc.gate.screen);
+    const btn = wg.document.getElementById(sc.gate.btn);
+    wg[sc.gate.cont](); if (k < sc.K) wg[sc.gate.cont]();   /* at K the second click would leave the next screen too (advanceScreen) */
+    const comps = rec.comps(); const at = wg.eval('currentScreen');
+    if (k < sc.K) {
+      ok(c, 'gate ' + k + '/' + sc.N + ': exactly one completed for two clicks', comps.length === 1, String(comps.length));
+      ok(c, 'gate ' + k + '/' + sc.N + ': completed success:false, scaled ' + (k / sc.N), comps[0] && comps[0].result.success === false && Math.abs(comps[0].result.score.scaled - k / sc.N) < 1e-9, JSON.stringify(comps[0] && comps[0].result));
+      ok(c, 'gate ' + k + '/' + sc.N + ': stays on the gate screen, advanced screens not shown', at === sc.gate.screen, String(at));
+      ok(c, 'gate ' + k + '/' + sc.N + ': button disabled, aria-disabled', btn && btn.disabled && btn.getAttribute('aria-disabled') === 'true');
+      /* reload with the ledger and the saved progress: the gate still holds, nothing is sent again */
+      const payload = JSON.parse(JSON.stringify(wg.capturePartPayload()));
+      const rr = loadPart(c); const wr = rr.w; const saved = rec.doc();
+      const rec2 = scRecorder(wr, c); wr.loadState720 = () => saved; wr.readUnitState();
+      wr.applyResumeVars(payload); wr.goTo(sc.gate.screen);
+      const btnR = wr.document.getElementById(sc.gate.btn);
+      ok(c, 'gate resume: button disabled after a reload with the ledger', btnR && btnR.disabled, btnR && btnR.textContent);
+      wr[sc.gate.cont]();
+      ok(c, 'gate resume: no second completed, still on the gate screen', rec2.comps().length === 0 && wr.eval('currentScreen') === sc.gate.screen);
+      ok(c, 'gate resume: no console.error', rr.errors.length === 0, rr.errors.slice(0, 2).join(' | '));
+    } else {
+      ok(c, 'gate ' + k + '/' + sc.N + ': no completed, continues to screen ' + sc.gate.next, comps.length === 0 && at === sc.gate.next, comps.length + ' @' + at);
+    }
+    ok(c, 'gate ' + k + '/' + sc.N + ': no console.error', rg.errors.length === 0, rg.errors.slice(0, 2).join(' | '));
+  }
+}
+
 /* ═══════════════════════════════ summary ═══════════════════════════════ */
 console.log('\n' + pass + ' passed, ' + failures.length + ' failed' + (skipped ? ', ' + skipped + ' skipped' : ''));
 if (failures.length) { console.log('\nFAILURES'); for (const f of failures) console.log(f); process.exit(1); }
