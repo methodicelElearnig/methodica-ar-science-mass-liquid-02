@@ -859,6 +859,9 @@ function s3MarkOf(k) {
   return s3Wrong.has(k) ? 'wrong' : null;
 }
 /* Single owner of the fields + bar state, derived from the recorded state. */
+/* S3 is the part's end when the gate stopped it (08.11 sheet fix 5): after a reload partEnded is false, so the LEDGER
+   decides (2026-11-09: every s3Render keeps the button disabled, not only the restore, which the feedback re-show re-rendered). */
+const s3Ended = () => partEnded || (s3Done && !basicPracticePassed() && typeof xapiComponentEnded === 'function' && xapiComponentEnded());
 function s3Render() {
   S3_KEYS.forEach(k => {
     const field = document.getElementById('s3-field-' + k), inp = s3In(k), mark = s3MarkOf(k);
@@ -872,7 +875,8 @@ function s3Render() {
   });
   const btn = document.getElementById('s3-check');
   setNavLabel(btn, s3Done ? 'متابعة' : 'هل إجابتي صحيحة؟');
-  btn.disabled = s3Done ? partEnded : (!s3Filled() || s3Sig() === s3LastWrong);   // Retry gate; resolved = on until the component ended (below the gate the click ends it)
+  btn.disabled = s3Done ? s3Ended() : (!s3Filled() || s3Sig() === s3LastWrong);   // Retry gate; resolved = on until the component ended (below the gate the click ends it)
+  if (s3Done && s3Ended()) btn.setAttribute('aria-disabled', 'true');
   document.getElementById('s3-hint').hidden = s3Done;                                          // the hint retires on resolve
 }
 function s3FocusField(k) { if (!s3Locked(k)) s3In(k).focus(); }
@@ -1525,14 +1529,7 @@ function restoreScreenUI(n) {
     case 1: setNavLabel(document.getElementById('s1-check'), s1Done ? 'متابعة' : 'هل إجابتي صحيحة؟'); syncPracticeProgressNav(document.getElementById('s1')); s1Render(); break;
     case 2: syncPracticeProgressNav(document.getElementById('s2')); s2Render(); break;
     case 3:
-      syncPracticeProgressNav(document.getElementById('s3')); s3Render();
-      /* S3 is the part's end when the gate stopped it (2026-11-09, 08.11 sheet fix 5): once completed was sent,
-         its button stays disabled after a reload (restoreEndedButton only knows XAPI_END_BTN, the S6 end). */
-      if (s3Done && !basicPracticePassed() && xapiComponentEnded()) {
-        const b3 = document.getElementById('s3-check');
-        if (b3) { b3.disabled = true; b3.setAttribute('aria-disabled', 'true'); }
-      }
-      break;
+      syncPracticeProgressNav(document.getElementById('s3')); s3Render(); break;   /* s3Render keeps an ended S3 disabled (s3Ended) */
     case 5: setNavLabel(document.getElementById('s5-check'), s5Done ? 'متابعة' : 'هل إجابتي صحيحة؟'); syncPracticeProgressNav(document.getElementById('s5')); s5Render(); break;
     case 6: syncPracticeProgressNav(document.getElementById('s6')); s6Render(); break;
     default: break;   /* 0, 4 — TransitionScreens: no state */

@@ -607,6 +607,9 @@ if (JSDOM) for (const c of Object.keys(SCORE_CONTRACT)) {
       wr.applyResumeVars(payload); wr.goTo(sc.gate.screen);
       const btnR = wr.document.getElementById(sc.gate.btn);
       ok(c, 'gate resume: button disabled after a reload with the ledger', btnR && btnR.disabled, btnR && btnR.textContent);
+      /* the initial restore also re-shows the resolved question's feedback, which re-renders the screen (live Kata round 09.11): any later render keeps it shut */
+      wr['s' + sc.gate.screen + 'Render']();
+      ok(c, 'gate resume: button still disabled after a later render of the screen', btnR && btnR.disabled && btnR.getAttribute('aria-disabled') === 'true', btnR && String(btnR.disabled));
       wr[sc.gate.cont]();
       ok(c, 'gate resume: no second completed, still on the gate screen', rec2.comps().length === 0 && wr.eval('currentScreen') === sc.gate.screen);
       ok(c, 'gate resume: no console.error', rr.errors.length === 0, rr.errors.slice(0, 2).join(' | '));
