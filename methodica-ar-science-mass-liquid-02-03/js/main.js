@@ -212,12 +212,13 @@ const SCREEN_RESULT = {
   6: () => s6Done ? (s6Outcome === 'correct' ? 'correct' : 'incorrect') : null
 };
 /* The basic practice's score: questions scored correct (a question with lettered sub-parts
-   counts only when all of them are right) against passThreshold. */
-function practicePassed(set) {
-  const correct = set.questions.filter(q => progressItemResult(q) === 'correct').length;
-  return correct >= set.passThreshold;
+   counts only when all of them are right) against passThreshold. One count feeds the S3 gate,
+   success and score.scaled (2026-11-09, 08.11 sheet fixes 1, 2 — xapiPartResult below). */
+function practiceCorrect(set) {
+  return set.questions.filter(q => progressItemResult(q) === 'correct').length;
 }
-const basicPracticePassed = () => practicePassed(practiceProgress);
+const basicPracticeCorrect = () => practiceCorrect(practiceProgress);
+const basicPracticePassed = () => basicPracticeCorrect() >= practiceProgress.passThreshold;
 function progressItemResult(q) {
   if (!q.screens.length) return null;
   const results = q.screens.map(n => (SCREEN_RESULT[n] ? SCREEN_RESULT[n]() : null));
@@ -1390,12 +1391,11 @@ var XAPI_END_BTN = 's6-check';   /* the part's last button (D-8, restoreEndedBut
 /* The component result for its 'completed' (guide §6.4: the denominator is what the learner was told). */
 function xapiPartResult() {
   /* The intro promises 3 questions and 'ענו נכון על 2 שאלות ומעלה כדי להתקדם' — the gate is the basic set
-     (2 of 3). The score counts every question the component asked (5: basic 3 + advanced 2), so the gate is
-     narrower than the denominator (guide §6.4 — documented here on purpose). A learner stopped at S3 has
-     the advanced questions unanswered: they count as not correct. */
-  const all = practiceProgress.questions.concat(advancedProgress.questions);
-  const ok = all.filter(q => progressItemResult(q) === 'correct').length;
-  return { success: basicPracticePassed(), score: { scaled: ok / all.length } };
+     (2 of 3). 2026-11-09 (08.11 sheet fixes 1, 2): success and score.scaled come from the same count of
+     those 3 questions only. The 2 advanced questions (S5, S6) send their own answered and never enter the
+     component result (until now: scaled = correct of all 5 / 5). */
+  const ok = basicPracticeCorrect();
+  return { success: ok >= practiceProgress.passThreshold, score: { scaled: ok / practiceProgress.questions.length } };
 }
 
 /* The last click of the part: report, disable, navigate nowhere (xapiEndComponent). Called on the
@@ -1524,7 +1524,15 @@ function restoreScreenUI(n) {
   switch (n) {
     case 1: setNavLabel(document.getElementById('s1-check'), s1Done ? 'متابعة' : 'هل إجابتي صحيحة؟'); syncPracticeProgressNav(document.getElementById('s1')); s1Render(); break;
     case 2: syncPracticeProgressNav(document.getElementById('s2')); s2Render(); break;
-    case 3: syncPracticeProgressNav(document.getElementById('s3')); s3Render(); break;
+    case 3:
+      syncPracticeProgressNav(document.getElementById('s3')); s3Render();
+      /* S3 is the part's end when the gate stopped it (2026-11-09, 08.11 sheet fix 5): once completed was sent,
+         its button stays disabled after a reload (restoreEndedButton only knows XAPI_END_BTN, the S6 end). */
+      if (s3Done && !basicPracticePassed() && xapiComponentEnded()) {
+        const b3 = document.getElementById('s3-check');
+        if (b3) { b3.disabled = true; b3.setAttribute('aria-disabled', 'true'); }
+      }
+      break;
     case 5: setNavLabel(document.getElementById('s5-check'), s5Done ? 'متابعة' : 'هل إجابتي صحيحة؟'); syncPracticeProgressNav(document.getElementById('s5')); s5Render(); break;
     case 6: syncPracticeProgressNav(document.getElementById('s6')); s6Render(); break;
     default: break;   /* 0, 4 — TransitionScreens: no state */
