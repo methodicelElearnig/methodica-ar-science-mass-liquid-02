@@ -106,7 +106,7 @@ ok('stub', '__reset names no donor unit', !/volume-solid|body-matter|ratio-01|ma
 const KATA_PATTERNS = fs.existsSync(path.join(REPO, '_test', 'kata-patterns.json')) ? readJson(path.join(REPO, '_test', 'kata-patterns.json')) : {};
 const KATA_KNOWN = {
   /* '006/q1' was here until 2026-11-12: Kata glued both alternatives into ONE 6-pair pattern. The page now reports the slide's
-     4 pairs for either right order (monday 12.11.26); kata-patterns.json carries that pattern — the Kata PATCH waits for נמרוד. */
+     4 pairs for either right order (monday 12.11.26); kata-patterns.json carries that pattern, which Kata recomputed after the questions-only PATCH of 2026-11-12. */
   /* '004/q1' was here until 2026-10-29: Kata had סמ"ק/מ"ק swapped, 3000 without the comma and mixed ״/" stepIds.
      Fixed by a questions-only PATCH of item 03-004 (נמרוד approved, monday item 13378313536); kata-patterns.json carries the corrected pattern. */
 };
