@@ -558,8 +558,10 @@ function s3Num(raw) {
 }
 /* The month: trimmed, inner spaces collapsed, Hebrew geresh/gershayim ignored. */
 const s3Word = raw => raw.trim().replace(/\s+/g, ' ').replace(/["\u05f3\u05f4']/g, '');
+/* The Levantine name of January is right too: the bill used to print كانون الثاني (monday 12.11.26, AR 07-001). */
+const S3_MONTH_ALSO = ['كانون الثاني'];
 function s3FieldRight(k) {
-  if (k === 'm') return s3Word(s3In(k).value) === S3Q.correct.m;
+  if (k === 'm') { const w = s3Word(s3In(k).value); return w === S3Q.correct.m || S3_MONTH_ALSO.includes(w); }
   return s3Num(s3In(k).value) === S3Q.correct[k];
 }
 /* Retry-gate signature: the month as a word, the numbers parsed (raw text while one does not parse). */
@@ -619,9 +621,11 @@ function s3Check() {
   s3Attempts++;
   const right = {};
   S3_KEYS.forEach(k => { right[k] = s3FieldRight(k); });
-  /* xAPI: performance — after the field loop (right is final only then); the raw typed text of the three fields, in the metadata steps order (month, m³, litres) (guide §6.3). */
+  /* xAPI: performance — after the field loop (right is final only then); the three fields in the metadata steps order (month, m³, litres) (guide §6.3).
+     A right field reports Kata's form (S3_CORRECT_TEXT: 9000 and 9,000 both → "9,000", كانون الثاني → "يناير", guide §6.3c
+     rule 6) — Kata holds ONE 3-step pattern (monday 12.11.26, 07-001 q2). A wrong field reports the raw typed text. */
   xapiAnswered('001', 'q2', S3_KEYS.every(k => right[k]), S3_KEYS.every(k => right[k]) || s3Attempts >= S3Q.maxAttempts,
-    { steps: S3_KEYS.map(k => s3In(k).value) });
+    { steps: S3_KEYS.map(k => right[k] ? S3_CORRECT_TEXT[k] : s3In(k).value) });
   if (S3_KEYS.every(k => right[k])) { s3Finish('correct'); return; }
   if (s3Attempts >= S3Q.maxAttempts) {
     s3Answer = {};
