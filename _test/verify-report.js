@@ -105,7 +105,8 @@ ok('stub', '__reset names no donor unit', !/volume-solid|body-matter|ratio-01|ma
 /* Kata's correctXapiResponsesPattern per questionId (retrieve of 2026-10-25), and the Kata-side errors it still carries */
 const KATA_PATTERNS = fs.existsSync(path.join(REPO, '_test', 'kata-patterns.json')) ? readJson(path.join(REPO, '_test', 'kata-patterns.json')) : {};
 const KATA_KNOWN = {
-  '006/q1': 'Kata lists both alternatives in ONE 6-pair pattern string (01-006, reported 2026-10-25)'
+  /* '006/q1' was here until 2026-11-12: Kata glued both alternatives into ONE 6-pair pattern. The page now reports the slide's
+     4 pairs for either right order (monday 12.11.26); kata-patterns.json carries that pattern, which Kata recomputed after the questions-only PATCH of 2026-11-12. */
   /* '004/q1' was here until 2026-10-29: Kata had סמ"ק/מ"ק swapped, 3000 without the comma and mixed ״/" stepIds.
      Fixed by a questions-only PATCH of item 03-004 (נמרוד approved, monday item 13378313536); kata-patterns.json carries the corrected pattern. */
 };
@@ -618,6 +619,50 @@ if (JSDOM) for (const c of Object.keys(SCORE_CONTRACT)) {
     }
     ok(c, 'gate ' + k + '/' + sc.N + ': no console.error', rg.errors.length === 0, rg.errors.slice(0, 2).join(' | '));
   }
+}
+
+/* ══════════════════ 6. one Kata pattern per question (monday 12.11.26) ══════════════════
+   Kata builds ONE correctXapiResponsesPattern from correctAnswers, so a question with two right forms must report one
+   canonical string. 01-006 q1: perfume/die take מ״ל or סמ״ק — a right answer reports the slide's pairs. 07-001 q2: litres
+   9000 or 9,000 (ar: month كانون الثاني or يناير) — a right field reports Kata's form. Driven through the real call sites. */
+section('6. one Kata pattern per question');
+const kataPat = (c, item, k) => { const q = META[c].subContent.find((it) => it.id.replace(/\/$/, '').endsWith('-' + item)).questions.find((x) => x.questionId.endsWith('/' + k)); return KATA_PATTERNS[q.questionId] || []; };
+/* each run is a fresh page that answers one question, so the last `answered` / `answered.last` is that question's */
+const answeredOf = (rec) => { const a = rec.sent.filter((s) => s.verb === 'answered' || s.verb === 'answered.last').pop(); return a && a.result && a.result.response; };
+if (JSDOM) {
+  const swapped = { 's7-d-cc': 's7-t-perfume', 's7-d-ml': 's7-t-dice', 's7-d-l': 's7-t-bucket', 's7-d-m3': 's7-t-truck' };
+  const slide = { 's7-d-ml': 's7-t-perfume', 's7-d-cc': 's7-t-dice', 's7-d-l': 's7-t-bucket', 's7-d-m3': 's7-t-truck' };
+  for (const [tag, place] of [['slide order', slide], ['swapped מ״ל/סמ״ק', swapped]]) {
+    const r = loadPart('01'); const w = r.w; const rec = scRecorder(w, '01');
+    w.goTo(7); w.eval('s7Done = false; s7Attempts = 0; Object.assign(s7Place, ' + JSON.stringify(place) + ')'); w.s7Check();
+    const resp = answeredOf(rec, '006', 'q1'), pat = kataPat('01', '006', 'q1');
+    ok('01', '006/q1 right answer (' + tag + ') = the one Kata pattern', pat.length === 1 && resp === pat[0], resp + ' vs ' + JSON.stringify(pat));
+    ok('01', '006/q1 (' + tag + '): no console.error', r.errors.length === 0, r.errors.slice(0, 2).join(' | '));
+  }
+  { /* a wrong answer still reports what was placed */
+    const r = loadPart('01'); const w = r.w; const rec = scRecorder(w, '01');
+    w.goTo(7); w.eval('s7Done = false; s7Attempts = 0; Object.assign(s7Place, ' + JSON.stringify({ 's7-d-l': 's7-t-perfume', 's7-d-cc': 's7-t-dice', 's7-d-ml': 's7-t-bucket', 's7-d-m3': 's7-t-truck' }) + ')'); w.s7Check();
+    const resp = answeredOf(rec, '006', 'q1') || '';
+    ok('01', '006/q1 a wrong answer reports the placed pairs', resp.includes(w.eval("S7_LABEL['s7-d-l']") + '[.]' + w.eval("S7_NAME['s7-t-perfume']")), resp);
+  }
+  const month = w0 => w0.eval('S3_CORRECT_TEXT.m');
+  const s3Run = (vals) => {
+    const r = loadPart('07'); const w = r.w; const rec = scRecorder(w, '07');
+    w.goTo(3); w.eval("s3Done = false; s3Attempts = 0; s3LastWrong = null");
+    const v = vals(w); for (const k of ['m', 'q', 'l']) w.eval('s3In')(k).value = v[k];
+    w.s3Check();
+    return { r, w, resp: answeredOf(rec, '001', 'q2') };
+  };
+  const pat07 = kataPat('07', '001', 'q2');
+  const cases = [['9,000', (w) => ({ m: month(w), q: '9', l: '9,000' })], ['9000', (w) => ({ m: month(w), q: '9', l: '9000' })]];
+  if (/ar-/.test(UNIT_SLUG)) cases.push(['كانون الثاني', () => ({ m: 'كانون الثاني', q: '9', l: '9000' })]);
+  for (const [tag, vals] of cases) {
+    const { r, resp } = s3Run(vals);
+    ok('07', '001/q2 right answer (' + tag + ') = the one Kata pattern', pat07.length === 1 && resp === pat07[0], resp + ' vs ' + JSON.stringify(pat07));
+    ok('07', '001/q2 (' + tag + '): no console.error', r.errors.length === 0, r.errors.slice(0, 2).join(' | '));
+  }
+  { const { resp } = s3Run((w) => ({ m: month(w), q: '9', l: '900' }));
+    ok('07', '001/q2 a wrong litres value reports the typed text', /\[\.\]900$/.test(resp || ''), resp); }
 }
 
 /* ═══════════════════════════════ summary ═══════════════════════════════ */

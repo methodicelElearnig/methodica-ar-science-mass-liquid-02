@@ -22,6 +22,11 @@ from volume-solid-01 (its `__reset` clears the right keys). Two changes of our o
   `correctAnswers` order**, the order Kata builds `correctXapiResponsesPattern` in; wrong pairs follow
   in source, target order. `_test/kata-patterns.json` holds Kata's patterns and the harness (H14)
   checks every right answer against them.
+- **One Kata pattern per question** (monday 12.11.26). Kata builds ONE `correctXapiResponsesPattern` from
+  `correctAnswers`, so a question with two right forms reports one canonical string: 01-006 q1 (perfume / die take
+  either ml or cc) reports the slide's 4 pairs for either right order; 07-001 q2 reports a right field in Kata's
+  form (`S3_CORRECT_TEXT`: litres `9000` → `9,000`; ar month `كانون الثاني` → `يناير`). Wrong answers report what
+  the learner gave. `_test/verify-report.js` §6 drives both call sites.
 - `sendStatementOnce` marks nothing when there is no sender (`sendStatement720` undefined) — the
   ledger must never claim a statement that never left.
 

@@ -1082,8 +1082,11 @@ function s7Check() {
   s7Attempts++;
   const marks = s7MarksFor(s7Place);
   const allCorrect = Object.values(marks).every(v => v === 'correct');
-  /* xAPI: item 006 q1 (matching) — source = the unit chip, target = the product zone (metadata answers.source / answers.target) */
-  xapiAnswered('006', 'q1', allCorrect, allCorrect || s7Attempts >= S7Q.maxAttempts, { pairs: s7Targets().map(t => ({ source: S7_LABEL[s7In(t)], target: S7_NAME[t] })) });
+  /* xAPI: item 006 q1 (matching) — source = the unit chip, target = the product zone (metadata answers.source / answers.target).
+     A right answer reports the slide's pairs (S7Q.reveal) even when the learner swapped مل and سم³ (1 مل = 1 سم³, both
+     accepted): Kata holds ONE pattern, built from correctAnswers (monday 12.11.26, 01-006). Wrong answers report as placed. */
+  const s7Reported = t => allCorrect ? S7Q.reveal[t] : s7In(t);
+  xapiAnswered('006', 'q1', allCorrect, allCorrect || s7Attempts >= S7Q.maxAttempts, { pairs: s7Targets().map(t => ({ source: S7_LABEL[s7Reported(t)], target: S7_NAME[t] })) });
   if (allCorrect) {
     s7Marks = marks; s7Finish('correct');
   } else if (s7Attempts >= S7Q.maxAttempts) {

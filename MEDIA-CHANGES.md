@@ -314,3 +314,18 @@ The Arabic unit sets every font to `Calibri, Arial, sans-serif`, and the Assista
 | 186 | remove | `unit-assets/fonts/assistant-bold.ttf` | — | 49,752 | 0 | unreferenced (Arabic uses Calibri) | verify-assets |
 | 187 | remove | `unit-assets/fonts/assistant-regular.ttf` | — | 49,792 | 0 | unreferenced (Arabic uses Calibri) | verify-assets |
 | 188 | remove | `unit-assets/fonts/assistant-semibold.ttf` | — | 49,804 | 0 | unreferenced (Arabic uses Calibri) | verify-assets |
+
+## 11. Arabic water bill re-lettered (Arabic unit, 2026-11-12) — 1 file, content change
+
+Monday 12.11.26 (AR 07-001, items "high" and "medium"): the bill printed the Levantine month names (كانون الثاني / شباط /
+آذار) and the customer عائلة ليفي. The question, the hotspot labels, the alt text, the player and the metadata say
+يناير / فبراير / مارس and عائلة منصور. Only those text runs changed: the billing period line (re-set whole, centred as
+before), the customer name (right edge kept at x 957) and the three month cells (centred in the cell). Shaping: GDI+
+(Uniscribe), Segoe UI Bold for the period and the name, Segoe UI Semibold for the months, with the size calibrated on
+the old text's ink. Each old run was erased with background pixels sampled from its own row, and the patch was mapped to
+the file's own 155-colour palette (exact nearest entry, no dither). The palette, the dimensions and every other pixel
+are unchanged. Script and before/after: `../../_bill-fix/` (outside the repo). The `?v=` bump of 2026-11-12 busts the cache.
+
+| # | op | path | new path | before | after | before (WxH mode) | after (WxH mode) | display box (design px) | tool + parameters | verified |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 189 | re-letter | `methodica-ar-science-mass-liquid-02-07/assets/img/s2-water-bill-levi.png` | `methodica-ar-science-mass-liquid-02-07/assets/img/s2-water-bill-levi.png` | 576,211 | 570,062 | 1198x1313 P | 1198x1313 P | 740x811 | `_bill-fix/compose.py` + `render.ps1` (GDI+); oxipng -o4 --strip safe | before/after at 100% and at ×10 contrast; verify-assets |
