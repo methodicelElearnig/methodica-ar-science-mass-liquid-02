@@ -665,6 +665,46 @@ if (JSDOM) {
     ok('07', '001/q2 a wrong litres value reports the typed text', /\[\.\]900$/.test(resp || ''), resp); }
 }
 
+/* ══════════════════ 7. Back never closes an item (B-2, monday 13454123722, 2026-11-13) ══════════════════
+   For parts 02, 03, 05: screen 2 (item 002, single choice, two attempts) wrong once → Back to s1 → NO item
+   'completed'; back to s2, right, forward → exactly one, after the right answer, carrying no failed result. */
+section('7. back never closes an item (B-2)');
+function bpRecorder(w, c) {
+  const sent = []; let doc = null;
+  w.METADATA = META[c]; w.XAPI_USING_G = true; w.xapiItemAnswered = {}; w.xapiCompletedObjects = {};
+  w.sendStatement720 = (verb, type, result, ctx) => {
+    sent.push({ verb, result: result || null, ctx: ctx || null });
+    if (verb.split('.')[0] === 'answered' && ctx && ctx.parentId) w.xapiItemAnswered[ctx.parentId] = true;
+  };
+  w.loadState720 = () => doc;
+  w.saveState720 = (id, o) => { doc = JSON.parse(JSON.stringify(o)); return true; };
+  w.saveState720Debounced = (id, o) => { doc = JSON.parse(JSON.stringify(o)); };
+  w.readUnitState(); w._resumeReady = true;
+  return { sent, itemDone: (item) => sent.filter((x) => x.verb === 'completed' && x.ctx && x.ctx.objectId === w.xapiItemId(item)) };
+}
+if (JSDOM) for (const c of ['02', '03', '05']) {
+  const r = loadPart(c); const w = r.w; const rec = bpRecorder(w, c);
+  const item = '002', tag = 'B s2 (item ' + item + ')';
+  const correct = w.eval('S2Q.correctId');
+  const wrong = [...w.document.querySelectorAll('#s2 .scq-opt[data-id]')].map((o) => o.dataset.id).find((id) => id !== correct);
+  w.goTo(1); w.goTo(2);
+  w.s2Select(wrong); w.s2Check();
+  ok(c, tag + ': the wrong first try is recorded', w.XAPI_Q_RESULTS['002/q1'] === false, JSON.stringify(w.XAPI_Q_RESULTS));
+  w.goBack();
+  ok(c, tag + ': Back goes to s1', w.eval('currentScreen') === 1, String(w.eval('currentScreen')));
+  ok(c, tag + ': no item completed on the Back', rec.itemDone(item).length === 0, JSON.stringify(rec.itemDone(item).map((x) => x.result)));
+  w.goTo(2);
+  w.s2Select(correct); w.s2Check();
+  w.goTo(3);
+  const done = rec.itemDone(item);
+  const ans = rec.sent.filter((x) => x.verb.split('.')[0] === 'answered' && x.ctx && x.ctx.parentId === w.xapiItemId(item));
+  ok(c, tag + ': exactly one item completed after the right answer and a forward move', done.length === 1, String(done.length));
+  ok(c, tag + ': it carries no failed result, comes after the right answer, and the last answered is success:true',
+     done[0] && !(done[0].result && done[0].result.success === false) && ans.length && ans[ans.length - 1].result.success === true && rec.sent.indexOf(done[0]) > rec.sent.indexOf(ans[ans.length - 1]),
+     JSON.stringify(done[0] && done[0].result) + ' / ' + JSON.stringify(ans.map((x) => x.result && x.result.success)));
+  ok(c, tag + ': no console.error', r.errors.length === 0, r.errors.slice(0, 2).join(' | '));
+}
+
 /* ═══════════════════════════════ summary ═══════════════════════════════ */
 console.log('\n' + pass + ' passed, ' + failures.length + ' failed' + (skipped ? ', ' + skipped + ' skipped' : ''));
 if (failures.length) { console.log('\nFAILURES'); for (const f of failures) console.log(f); process.exit(1); }
