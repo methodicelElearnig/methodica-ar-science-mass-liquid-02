@@ -94,11 +94,11 @@ ok('identity', 'RESULT_KEYS lists the 06 and 07 verdict keys', JSON.stringify(rk
 const loader = read(path.join(BASE, 'unit-js', '50-loader.js'));
 const lib = (/\(RESUME_ENABLED \? 'xapi-720-(\w)\.js' : 'xapi-720-(\w)\.js'\)/.exec(loader) || []);
 const gate = (/xapi-720-\[([a-z]+)\]\\\.js/.exec(loader) || [])[1] || '';
-ok('loader', 'library letter is k with resume (i without)', lib[1] === 'k' && lib[2] === 'i', lib.join('/'));
-ok('loader', 'the loaded letters are inside the XAPI_USING_G gate', gate.includes('k') && gate.includes('i'), gate);
-ok('loader', 'the stub carries a gated letter', fs.existsSync(path.join(REPO, '_test', 'xapi-720-k.js')) && /xapi-720-[ghijk]\.js$/.test('_test/xapi-720-k.js'));
+ok('loader', 'library letter is l with resume (i without; -l since 2026-11-13)', lib[1] === 'l' && lib[2] === 'i', lib.join('/'));
+ok('loader', 'the loaded letters are inside the XAPI_USING_G gate', gate.includes('l') && gate.includes('i'), gate);
+ok('loader', 'the stub carries a gated letter', fs.existsSync(path.join(REPO, '_test', 'xapi-720-l.js')) && /xapi-720-[ghijkl]\.js$/.test('_test/xapi-720-l.js'));
 ok('loader', 'settleMetadata waits for a promise-valued METADATA', /function settleMetadata\(cb\)/.test(loader) && /settleMetadata\(function \(\) \{/.test(loader));
-const stub = read(path.join(REPO, '_test', 'xapi-720-k.js'));
+const stub = read(path.join(REPO, '_test', 'xapi-720-l.js'));
 ok('stub', '__reset clears this unit\'s keys', stub.includes("'" + CHAR_KEY + "'") && RESULT_KEYS.every((k) => stub.includes("'" + k + "'")) && stub.includes("lomda_nav_edges::" + UNIT_SLUG));
 ok('stub', '__reset names no donor unit', !/volume-solid|body-matter|ratio-01|mass-measure/.test(stripComments(stub).split('__reset')[1] || ''));
 

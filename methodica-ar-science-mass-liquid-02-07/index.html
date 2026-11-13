@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>سؤال الذروة — methodica-ar-science-mass-liquid-02-07</title>
+<!-- The xAPI library is loaded by unit-js/50-loader.js from the end of <body>, after the parser has queued every
+     image below; on a slow line its request went out only after the last image, which delayed the resume restore
+     (2026-11-03, BOOT-AND-RESUME-HARDENING §2.3). A preload from <head> puts it first in the queue. The href must be
+     byte-equal to the URL 50-loader.js builds (no ?v=, no crossorigin) or the browser fetches it twice; the library
+     letter here changes together with LIB720 there (the harness checks it). -->
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapiwrapper.min.js">
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapi-720-l.js">
+<link rel="preconnect" href="https://kata.cet.ac.il">
 <link rel="stylesheet" href="css/style.css?v=20261113">
 <link rel="stylesheet" href="css/motion.css?v=20261113">
 <link rel="stylesheet" href="../unit-css/25-report.css?v=20261113">
@@ -18,6 +26,10 @@
 <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
 <script>
 (function () {
+  /* A Kata launch (registration in the URL) may restore a document: raise the flag HERE, before any script
+     loads. bootXAPI raises it too, but from the last script tag — on a cold cache after the 800 ms below, so
+     the cover fell before the flag existed (2026-11-03). Without a registration (local, dev) nothing changes. */
+  if (/[?&]registration=/.test(location.search)) window.__resumeInFlight = true;
   var t0 = Date.now();
   function tick() {
     var c = document.getElementById('boot-cover');
@@ -183,7 +195,7 @@
       </div>
       <div class="s1-video-wrap" data-reveal="2" data-reveal-fade>
         <div class="s1-video-clip">
-          <img class="s1-still" src="assets/img/s1-levi-family.png" width="1678" height="937" alt="عائلة منصور: أم، وأب، وبنت، وولد. كل واحد منهم يحمل شيئًا له علاقة بالماء: حوض غسيل، وخرطوم ري، وكوب ماء، ورأس دش.">
+          <img class="s1-still" src="assets/img/s1-levi-family.png" width="1678" height="937" alt="عائلة منصور: أم، وأب، وبنت، وولد. كل واحد منهم يحمل شيئًا له علاقة بالماء: حوض غسيل، وخرطوم ري، وكوب ماء، ورأس دش." loading="lazy">
         </div>
       </div>
     </div>
@@ -229,7 +241,7 @@
       <!-- Bill column — Figma "img" frame (8px padding, hairline), sized to the picture at the zone's height. -->
       <div class="scq-img hs-img" data-reveal="2" data-reveal-fade>
         <div class="scq-img-inner hs-bill-wrap">
-          <img class="hs-bill" src="assets/img/s2-water-bill-levi.png" width="1055" height="1156" alt="فاتورة المياه الدورية لعائلة منصور من شركة مياه المدينة، للفترة من يناير إلى مارس 2026. 4 أفراد. تفاصيل الاستهلاك: يناير 9 م³، فبراير 7 م³، مارس 8 م³، المجموع 24 م³. ملاحظة: متوسط استهلاك الأسرة في إسرائيل هو 9 م³ شهريًا.">
+          <img class="hs-bill" src="assets/img/s2-water-bill-levi.png" width="1055" height="1156" alt="فاتورة المياه الدورية لعائلة منصور من شركة مياه المدينة، للفترة من يناير إلى مارس 2026. 4 أفراد. تفاصيل الاستهلاك: يناير 9 م³، فبراير 7 م³، مارس 8 م³، المجموع 24 م³. ملاحظة: متوسط استهلاك الأسرة في إسرائيل هو 9 م³ شهريًا." loading="lazy">
         </div>
         <!-- Hotspot layer over the bill's box. role=checkbox: more than one can be checked (MultipleChoiceQuestion.md). -->
         <!-- Dot positions set by the producer 2026-10-08 (her marked boxes): each dot sits in the middle of the row it refers to,
@@ -283,7 +295,7 @@
     <div class="hs-stage">
       <div class="scq-img hs-img" data-reveal="2" data-reveal-fade>
         <div class="scq-img-inner hs-bill-wrap">
-          <img class="hs-bill" src="assets/img/s2-water-bill-levi.png" width="1055" height="1156" alt="فاتورة المياه الدورية لعائلة منصور من شركة مياه المدينة، للفترة من يناير إلى مارس 2026. 4 أفراد. تفاصيل الاستهلاك: يناير 9 م³، فبراير 7 م³، مارس 8 م³، المجموع 24 م³. ملاحظة: متوسط استهلاك الأسرة في إسرائيل هو 9 م³ شهريًا.">
+          <img class="hs-bill" src="assets/img/s2-water-bill-levi.png" width="1055" height="1156" alt="فاتورة المياه الدورية لعائلة منصور من شركة مياه المدينة، للفترة من يناير إلى مارس 2026. 4 أفراد. تفاصيل الاستهلاك: يناير 9 م³، فبراير 7 م³، مارس 8 م³، المجموع 24 م³. ملاحظة: متوسط استهلاك الأسرة في إسرائيل هو 9 م³ شهريًا." loading="lazy">
         </div>
       </div>
       <div class="hs-zoom-frame" aria-hidden="true"></div>   <!-- the frame of the cropped bill (decorative); its rect is written by hsLayout() -->

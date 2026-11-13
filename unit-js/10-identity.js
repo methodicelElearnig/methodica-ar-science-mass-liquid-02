@@ -39,7 +39,8 @@ function shortId(u) { return String(u || '').replace(/\/+$/, '').split('/').pop(
    the four hooks (capturePartPayload / applyResumeVars / applyResumeDom / restoreScreenUI) at the
    end of every part's js/main.js, the boot cover in every index.html (docs-and-tools/RESUME.md).
    ⚠️ This flag also changes reporting, not only restoring: it makes 50-loader.js load
-   xapi-720-k.js (the build with the State layer) instead of xapi-720-i.js. Do not switch it off to
+   xapi-720-l.js (the build with the State layer and, since 2026-11-13, the leave save) instead of
+   xapi-720-i.js, and every part's <head> preloads that exact URL. Do not switch it off to
    debug a restore — use ?resetState. */
 var RESUME_ENABLED = true;
 

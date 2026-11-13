@@ -2499,10 +2499,14 @@ function dismissRetryPopup(popupId, done) {
 window.addEventListener('DOMContentLoaded', () => {
   scaleApp();
   initNavLabels();
-  Object.keys(SCREEN_IMAGES).forEach(mountScreenImage);   // preload: images fade in on entry and must not reveal empty
   resetScreenState(0);
   Motion.reveal(document.querySelector('.screen.active'));   // animation-system initial-load hook
 });
+/* preload: the screen images fade in on entry and must not reveal empty. On 'load', not DOMContentLoaded
+   (2026-11-13, BOOT-AND-RESUME-HARDENING §2.3): mounted at parse they put 3.8 MB of hidden-screen art on the line
+   together with the xAPI library and the state read the resume restore waits for. 'load' comes after the library
+   (50-loader.js inserts it during the parse); a screen entered earlier mounts its own (s3Enter / s6wEnter / s6). */
+window.addEventListener('load', () => Object.keys(SCREEN_IMAGES).forEach(mountScreenImage));
 scaleApp();
 
 /* ─── Dev mode: postMessage bridge ───────────────────────
