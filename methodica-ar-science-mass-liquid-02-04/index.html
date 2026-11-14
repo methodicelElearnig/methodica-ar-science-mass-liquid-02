@@ -4,9 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>methodica-ar-science-mass-liquid-02-04</title>
-<link rel="stylesheet" href="css/style.css?v=20261112">
-<link rel="stylesheet" href="css/motion.css?v=20261112">
-<link rel="stylesheet" href="../unit-css/25-report.css?v=20261112">
+<!-- The xAPI library is loaded by unit-js/50-loader.js from the end of <body>, after the parser has queued every
+     image below; on a slow line its request went out only after the last image, which delayed the resume restore
+     (2026-11-03, BOOT-AND-RESUME-HARDENING §2.3). A preload from <head> puts it first in the queue. The href must be
+     byte-equal to the URL 50-loader.js builds (no ?v=, no crossorigin) or the browser fetches it twice; the library
+     letter here changes together with LIB720 there (the harness checks it). -->
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapiwrapper.min.js">
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapi-720-l.js">
+<link rel="preconnect" href="https://kata.cet.ac.il">
+<link rel="stylesheet" href="css/style.css?v=20261113">
+<link rel="stylesheet" href="css/motion.css?v=20261113">
+<link rel="stylesheet" href="../unit-css/25-report.css?v=20261113">
 </head>
 <body>
 <!-- ═══ Boot cover (ADDING-REPORTING-AND-RESUME.md §8.11) ═══
@@ -18,6 +26,10 @@
 <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
 <script>
 (function () {
+  /* A Kata launch (registration in the URL) may restore a document: raise the flag HERE, before any script
+     loads. bootXAPI raises it too, but from the last script tag — on a cold cache after the 800 ms below, so
+     the cover fell before the flag existed (2026-11-03). Without a registration (local, dev) nothing changes. */
+  if (/[?&]registration=/.test(location.search)) window.__resumeInFlight = true;
   var t0 = Date.now();
   function tick() {
     var c = document.getElementById('boot-cover');
@@ -241,12 +253,12 @@
 <!-- 720 platform layer (reporting / resume): shared files first, then the part's own scripts
      (js/motion.js before js/main.js, as before), 90-boot last. Same ?v= in every part
      (guide §3.4); 90-boot.js is a separate tag on purpose (§3.2). -->
-<script src="../unit-js/10-identity.js?v=20261112"></script>
-<script src="../unit-js/20-xapi.js?v=20261112"></script>
-<script src="../unit-js/25-report.js?v=20261112"></script>
-<script src="../unit-js/40-resume.js?v=20261112"></script>
-<script src="../unit-js/50-loader.js?v=20261112"></script>
-<script src="js/motion.js?v=20261112"></script>
-<script src="js/main.js?v=20261112"></script>
-<script src="../unit-js/90-boot.js?v=20261112"></script></body>
+<script src="../unit-js/10-identity.js?v=20261113"></script>
+<script src="../unit-js/20-xapi.js?v=20261113"></script>
+<script src="../unit-js/25-report.js?v=20261113"></script>
+<script src="../unit-js/40-resume.js?v=20261113"></script>
+<script src="../unit-js/50-loader.js?v=20261113"></script>
+<script src="js/motion.js?v=20261113"></script>
+<script src="js/main.js?v=20261113"></script>
+<script src="../unit-js/90-boot.js?v=20261113"></script></body>
 </html>

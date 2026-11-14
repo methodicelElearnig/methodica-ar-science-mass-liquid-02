@@ -94,11 +94,11 @@ ok('identity', 'RESULT_KEYS lists the 06 and 07 verdict keys', JSON.stringify(rk
 const loader = read(path.join(BASE, 'unit-js', '50-loader.js'));
 const lib = (/\(RESUME_ENABLED \? 'xapi-720-(\w)\.js' : 'xapi-720-(\w)\.js'\)/.exec(loader) || []);
 const gate = (/xapi-720-\[([a-z]+)\]\\\.js/.exec(loader) || [])[1] || '';
-ok('loader', 'library letter is k with resume (i without)', lib[1] === 'k' && lib[2] === 'i', lib.join('/'));
-ok('loader', 'the loaded letters are inside the XAPI_USING_G gate', gate.includes('k') && gate.includes('i'), gate);
-ok('loader', 'the stub carries a gated letter', fs.existsSync(path.join(REPO, '_test', 'xapi-720-k.js')) && /xapi-720-[ghijk]\.js$/.test('_test/xapi-720-k.js'));
+ok('loader', 'library letter is l with resume (i without; -l since 2026-11-13)', lib[1] === 'l' && lib[2] === 'i', lib.join('/'));
+ok('loader', 'the loaded letters are inside the XAPI_USING_G gate', gate.includes('l') && gate.includes('i'), gate);
+ok('loader', 'the stub carries a gated letter', fs.existsSync(path.join(REPO, '_test', 'xapi-720-l.js')) && /xapi-720-[ghijkl]\.js$/.test('_test/xapi-720-l.js'));
 ok('loader', 'settleMetadata waits for a promise-valued METADATA', /function settleMetadata\(cb\)/.test(loader) && /settleMetadata\(function \(\) \{/.test(loader));
-const stub = read(path.join(REPO, '_test', 'xapi-720-k.js'));
+const stub = read(path.join(REPO, '_test', 'xapi-720-l.js'));
 ok('stub', '__reset clears this unit\'s keys', stub.includes("'" + CHAR_KEY + "'") && RESULT_KEYS.every((k) => stub.includes("'" + k + "'")) && stub.includes("lomda_nav_edges::" + UNIT_SLUG));
 ok('stub', '__reset names no donor unit', !/volume-solid|body-matter|ratio-01|mass-measure/.test(stripComments(stub).split('__reset')[1] || ''));
 
@@ -663,6 +663,46 @@ if (JSDOM) {
   }
   { const { resp } = s3Run((w) => ({ m: month(w), q: '9', l: '900' }));
     ok('07', '001/q2 a wrong litres value reports the typed text', /\[\.\]900$/.test(resp || ''), resp); }
+}
+
+/* ══════════════════ 7. Back never closes an item (B-2, monday 13454123722, 2026-11-13) ══════════════════
+   For parts 02, 03, 05: screen 2 (item 002, single choice, two attempts) wrong once → Back to s1 → NO item
+   'completed'; back to s2, right, forward → exactly one, after the right answer, carrying no failed result. */
+section('7. back never closes an item (B-2)');
+function bpRecorder(w, c) {
+  const sent = []; let doc = null;
+  w.METADATA = META[c]; w.XAPI_USING_G = true; w.xapiItemAnswered = {}; w.xapiCompletedObjects = {};
+  w.sendStatement720 = (verb, type, result, ctx) => {
+    sent.push({ verb, result: result || null, ctx: ctx || null });
+    if (verb.split('.')[0] === 'answered' && ctx && ctx.parentId) w.xapiItemAnswered[ctx.parentId] = true;
+  };
+  w.loadState720 = () => doc;
+  w.saveState720 = (id, o) => { doc = JSON.parse(JSON.stringify(o)); return true; };
+  w.saveState720Debounced = (id, o) => { doc = JSON.parse(JSON.stringify(o)); };
+  w.readUnitState(); w._resumeReady = true;
+  return { sent, itemDone: (item) => sent.filter((x) => x.verb === 'completed' && x.ctx && x.ctx.objectId === w.xapiItemId(item)) };
+}
+if (JSDOM) for (const c of ['02', '03', '05']) {
+  const r = loadPart(c); const w = r.w; const rec = bpRecorder(w, c);
+  const item = '002', tag = 'B s2 (item ' + item + ')';
+  const correct = w.eval('S2Q.correctId');
+  const wrong = [...w.document.querySelectorAll('#s2 .scq-opt[data-id]')].map((o) => o.dataset.id).find((id) => id !== correct);
+  w.goTo(1); w.goTo(2);
+  w.s2Select(wrong); w.s2Check();
+  ok(c, tag + ': the wrong first try is recorded', w.XAPI_Q_RESULTS['002/q1'] === false, JSON.stringify(w.XAPI_Q_RESULTS));
+  w.goBack();
+  ok(c, tag + ': Back goes to s1', w.eval('currentScreen') === 1, String(w.eval('currentScreen')));
+  ok(c, tag + ': no item completed on the Back', rec.itemDone(item).length === 0, JSON.stringify(rec.itemDone(item).map((x) => x.result)));
+  w.goTo(2);
+  w.s2Select(correct); w.s2Check();
+  w.goTo(3);
+  const done = rec.itemDone(item);
+  const ans = rec.sent.filter((x) => x.verb.split('.')[0] === 'answered' && x.ctx && x.ctx.parentId === w.xapiItemId(item));
+  ok(c, tag + ': exactly one item completed after the right answer and a forward move', done.length === 1, String(done.length));
+  ok(c, tag + ': it carries no failed result, comes after the right answer, and the last answered is success:true',
+     done[0] && !(done[0].result && done[0].result.success === false) && ans.length && ans[ans.length - 1].result.success === true && rec.sent.indexOf(done[0]) > rec.sent.indexOf(ans[ans.length - 1]),
+     JSON.stringify(done[0] && done[0].result) + ' / ' + JSON.stringify(ans.map((x) => x.result && x.result.success)));
+  ok(c, tag + ': no console.error', r.errors.length === 0, r.errors.slice(0, 2).join(' | '));
 }
 
 /* ═══════════════════════════════ summary ═══════════════════════════════ */

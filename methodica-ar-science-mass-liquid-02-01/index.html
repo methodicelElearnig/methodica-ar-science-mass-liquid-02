@@ -4,9 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>وحدات الحجم واستخداماتها — methodica-ar-science-mass-liquid-02-01</title>
-<link rel="stylesheet" href="css/style.css?v=20261112">
-<link rel="stylesheet" href="css/motion.css?v=20261112">
-<link rel="stylesheet" href="../unit-css/25-report.css?v=20261112">
+<!-- The xAPI library is loaded by unit-js/50-loader.js from the end of <body>, after the parser has queued every
+     image below; on a slow line its request went out only after the last image, which delayed the resume restore
+     (2026-11-03, BOOT-AND-RESUME-HARDENING §2.3). A preload from <head> puts it first in the queue. The href must be
+     byte-equal to the URL 50-loader.js builds (no ?v=, no crossorigin) or the browser fetches it twice; the library
+     letter here changes together with LIB720 there (the harness checks it). -->
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapiwrapper.min.js">
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapi-720-l.js">
+<link rel="preconnect" href="https://kata.cet.ac.il">
+<link rel="stylesheet" href="css/style.css?v=20261113">
+<link rel="stylesheet" href="css/motion.css?v=20261113">
+<link rel="stylesheet" href="../unit-css/25-report.css?v=20261113">
 </head>
 <body>
 <!-- ═══ Boot cover (ADDING-REPORTING-AND-RESUME.md §8.11) ═══
@@ -18,6 +26,10 @@
 <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
 <script>
 (function () {
+  /* A Kata launch (registration in the URL) may restore a document: raise the flag HERE, before any script
+     loads. bootXAPI raises it too, but from the last script tag — on a cold cache after the 800 ms below, so
+     the cover fell before the flag existed (2026-11-03). Without a registration (local, dev) nothing changes. */
+  if (/[?&]registration=/.test(location.search)) window.__resumeInFlight = true;
   var t0 = Date.now();
   function tick() {
     var c = document.getElementById('boot-cover');
@@ -230,13 +242,13 @@
                   data-zoom-alt="قصة مصورة في ثلاث لقطات: مشترٍ يطلب من البائع ذراعًا واحدة من القماش؛ ثلاثة أذرع بأطوال مختلفة — ذراع الملك، وذراع أبي، وذراعي — والبائع يسأل: ذراع مَن؟؛ المشتري والبائع يحكّان رأسيهما: كيف يمكن معرفة ذلك؟">
             <svg class="img-zoom-btn__icon" aria-hidden="true" width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C11.8661 1 15 4.13371 15 7.99902C15 11.8643 11.8661 14.998 8 14.998C4.1339 14.998 1.00002 11.8643 1 7.99902C1 4.13371 4.13389 1 8 1Z" stroke="currentColor" stroke-width="2"/><path d="M12.6221 14.188L14.2657 12.6141L19.928 18.5274C20.3626 18.9813 20.347 19.7016 19.8931 20.1362C19.4392 20.5708 18.7189 20.5552 18.2843 20.1013L12.6221 14.188Z" fill="currentColor"/></svg>
           </button>
-          <div class="s2-panel__media"><img class="s2-panel__img" src="assets/img/s2-comic-panel-1.png" width="1774" height="887" alt="صورة 1: في السوق، يقف مشترٍ أمام بائع أقمشة يتكئ على منضدة تعرض بَكَرات قماش ملونة."></div>
+          <div class="s2-panel__media"><img class="s2-panel__img" src="assets/img/s2-comic-panel-1.png" width="1774" height="887" alt="صورة 1: في السوق، يقف مشترٍ أمام بائع أقمشة يتكئ على منضدة تعرض بَكَرات قماش ملونة." loading="lazy"></div>
           <p class="comic-bubble comic-bubble--beak-left s2-bubble-1">أعطني ذراعًا*<br>واحدةً من القماش<svg class="comic-beak comic-beak--sm" viewBox="0 -3 18 13" aria-hidden="true"><path class="comic-beak__fill" d="M1.5 -3 V0 L9 8.6 L16.5 0 V-3 Z"/><path class="comic-beak__line" d="M0 0 L9 10 L18 0"/></svg></p>
           <p class="comic-caption s2-footnote">*الذراع: الجزء الممتد بين المرفق وراحة اليد في جسم الإنسان</p>
         </div>
         <!-- Panel 2 — group 3. -->
         <div class="s2-panel s2-panel--2" data-reveal="3" data-reveal-fade>
-          <img class="s2-panel__img" src="assets/img/s2-comic-panel-2.png" width="1721" height="914" alt="الصورة 2: ثلاثة أذرع ممدودة بأطوال مختلفة، وفي مقابلها البائع يرفع يديه في حيرة واستغراب.">
+          <img class="s2-panel__img" src="assets/img/s2-comic-panel-2.png" width="1721" height="914" alt="الصورة 2: ثلاثة أذرع ممدودة بأطوال مختلفة، وفي مقابلها البائع يرفع يديه في حيرة واستغراب." loading="lazy">
           <p class="comic-caption s2-label s2-label--1">ذراع<br>الملك</p>
           <p class="comic-caption s2-label s2-label--2">ذراع<br>أبي</p>
           <p class="comic-caption s2-label s2-label--3">ذراعي<br>أنا</p>
@@ -246,7 +258,7 @@
              Speech Bubble graphic language (white fill, 3px Subject/500
              outline) — no thought-bubble component exists in Figma. -->
         <div class="s2-panel s2-panel--3" data-reveal="4" data-reveal-fade>
-          <div class="s2-panel__media"><img class="s2-panel__img" src="assets/img/s1-comic-panel-3.jpg" width="1092" height="728" alt="الصورة 3: المشتري والبائع يحكّان رأسيهما في حيرة."></div>
+          <div class="s2-panel__media"><img class="s2-panel__img" src="assets/img/s1-comic-panel-3.jpg" width="1092" height="728" alt="الصورة 3: المشتري والبائع يحكّان رأسيهما في حيرة." loading="lazy"></div>
           <p class="comic-thought s2-thought"><svg class="comic-thought__shape" viewBox="0 0 70 62" aria-hidden="true">
             <g class="comic-thought__line"><circle cx="22" cy="26" r="14"/><circle cx="37" cy="18" r="15"/><circle cx="51" cy="26" r="13"/><circle cx="44" cy="37" r="12"/><circle cx="28" cy="37" r="12"/><circle cx="12" cy="50" r="4.5"/><circle cx="5" cy="58" r="2.8"/></g>
             <g class="comic-thought__fill"><circle cx="22" cy="26" r="14"/><circle cx="37" cy="18" r="15"/><circle cx="51" cy="26" r="13"/><circle cx="44" cy="37" r="12"/><circle cx="28" cy="37" r="12"/><circle cx="12" cy="50" r="4.5"/><circle cx="5" cy="58" r="2.8"/></g>
@@ -512,19 +524,19 @@
       </div>
       <div class="itd-targets" data-reveal="2" data-reveal-fade>
         <div class="itd-col">
-          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-perfume.png" alt="قنينة عطر" width="199" height="199"></div>
+          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-perfume.png" alt="قنينة عطر" width="199" height="199" loading="lazy"></div>
           <div class="itd-zone" id="s7-t-perfume" role="button" tabindex="0" aria-label="عطر: فارغ"></div>
         </div>
         <div class="itd-col">
-          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-dice.png" alt="مكعب لعب" width="199" height="199"></div>
+          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-dice.png" alt="مكعب لعب" width="199" height="199" loading="lazy"></div>
           <div class="itd-zone" id="s7-t-dice" role="button" tabindex="0" aria-label="مكعب اللعب: فارغ"></div>
         </div>
         <div class="itd-col">
-          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-bucket.png" alt="دلو" width="199" height="199"></div>
+          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-bucket.png" alt="دلو" width="199" height="199" loading="lazy"></div>
           <div class="itd-zone" id="s7-t-bucket" role="button" tabindex="0" aria-label="دلو: فارغ"></div>
         </div>
         <div class="itd-col">
-          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-truck.png" alt="شاحنة" width="199" height="199"></div>
+          <div class="itd-frame"><img class="itd-img" src="assets/img/s7-truck.png" alt="شاحنة" width="199" height="199" loading="lazy"></div>
           <div class="itd-zone" id="s7-t-truck" role="button" tabindex="0" aria-label="شاحنة: فارغة"></div>
         </div>
       </div>
@@ -572,7 +584,7 @@
           <button class="frc-card" data-index="0" type="button" aria-expanded="false" onclick="frc8Flip(this)">
             <span class="vh">قياس حجم جسم هندسي. </span>
             <span class="frc-card-inner">
-              <span class="frc-card-front"><img src="assets/img/s8-box-dimensions.png" alt="علبة كرتون بأبعاد 10 سم ارتفاعًا، 20 سم عرضًا، 30 سم عمقًا" width="1672" height="941"></span>
+              <span class="frc-card-front"><img src="assets/img/s8-box-dimensions.png" alt="علبة كرتون بأبعاد 10 سم ارتفاعًا، 20 سم عرضًا، 30 سم عمقًا" width="1672" height="941" loading="lazy"></span>
               <span class="frc-card-back" aria-hidden="true">
                 <span class="frc-card-back-content">
                   <span class="frc-p">نضرب الطول والارتفاع والعرض للجسم. والنتيجة هي الحجم.</span>
@@ -584,7 +596,7 @@
                        (1608,130)-(1613,720), depth 20 = the side face's bottom edge (1212,920)-(1613,720);
                        each a double-headed arrow ~6px outside its edge, as slide 13's three connectors. -->
                   <span class="frc-fig frc-fig--box">
-                    <img src="assets/img/s8-box-dimensions-410.png" alt="" width="410" height="231">
+                    <img src="assets/img/s8-box-dimensions-410.png" alt="" width="410" height="231" loading="lazy">
                     <svg class="frc-dim-svg" viewBox="0 0 1672 941" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="s8-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="62" markerHeight="62" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z"/></marker></defs><line x1="504.4" y1="-11.8" x2="1612.4" y2="73.2" marker-start="url(#s8-ah)" marker-end="url(#s8-ah)"/><line x1="1668" y1="130" x2="1673" y2="720" marker-start="url(#s8-ah)" marker-end="url(#s8-ah)"/><line x1="1237.4" y1="971" x2="1638.4" y2="771" marker-start="url(#s8-ah)" marker-end="url(#s8-ah)"/></svg>
                     <span class="frc-dim" style="left:63.30%; top:3.26%" data-pos="top">30 سم</span>
                     <span class="frc-dim" style="left:99.91%; top:45.16%" data-pos="right">10 سم</span>
@@ -611,11 +623,11 @@
           <button class="frc-card" data-index="1" type="button" aria-expanded="false" onclick="frc8Flip(this)">
             <span class="vh">قياس حجم سائل. </span>
             <span class="frc-card-inner">
-              <span class="frc-card-front"><img src="assets/img/s8-juice-glass.png" alt="كوب عصير" width="1145" height="1374"></span>
+              <span class="frc-card-front"><img src="assets/img/s8-juice-glass.png" alt="كوب عصير" width="1145" height="1374" loading="lazy"></span>
               <span class="frc-card-back" aria-hidden="true">
                 <span class="frc-card-back-content">
                   <span class="frc-p">سننقل السائل إلى أداة قياس مدرَّجة ونقرأ قيمة الحجم.</span>
-                  <span class="frc-fig frc-fig--cyl"><img src="assets/img/s8-measuring-cup-392.png" alt="مخبار مدرَّج حتى 250 مل" width="213" height="392"></span>
+                  <span class="frc-fig frc-fig--cyl"><img src="assets/img/s8-measuring-cup-392.png" alt="مخبار مدرَّج حتى 250 مل" width="213" height="392" loading="lazy"></span>
                 </span>
               </span>
             </span>
@@ -690,7 +702,7 @@
       </div>
       <!-- DOM order = RTL reading order: cube, arrow, tower, arrow, truck. -->
       <button class="fill-clickable pulse s10-cube" id="s10-cube-btn" type="button" onclick="fill11Click()" aria-label="أضيفوا إلى الصندوق طبقة من 100 مكعب (الطبقة 1 من 10)" style="left:1080.4px; top:331.8px">
-        <img src="assets/img/s10-cube.png" alt="" width="90" height="83">
+        <img src="assets/img/s10-cube.png" alt="" width="90" height="83" loading="lazy">
         <!-- Tap gesture hint (producer 2026-10-04): S8's validated click/tap hint reused as is
              (.frc-gh: Figma "Cursor Click" 3287:22205 + Ripple Ring 1/2 2904:29927, same
              keyframes, timing, reduced-motion and pointer-events rules). Only the anchor is
@@ -702,14 +714,14 @@
           <img class="frc-gh-hand" src="../unit-assets/img/gesture-hand.svg" alt="" width="28" height="33">
         </span>
       </button>
-      <img class="s10-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:935.5px; top:335.0px">
+      <img class="s10-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:935.5px; top:335.0px" loading="lazy">
       <div class="fill-target s10-tower" style="left:700.3px; top:274.6px">
         <div class="cube-stack" id="s10-stack" role="img" aria-label="صندوق سعة 1 لتر فارغ"></div>
         <!-- running totals, one per revealed layer (filled by JS; placed by s10BuildScale) -->
         <ol class="s10-scale" id="s10-scale" aria-live="polite"></ol>
       </div>
-      <img class="s10-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:503.5px; top:335.0px">
-      <img class="s10-truck" src="assets/img/s10-truck.png" alt="شاحنة بصندوق شفاف على شكل مكعب" width="460" height="307" style="left:35.8px; top:220.6px">
+      <img class="s10-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:503.5px; top:335.0px" loading="lazy">
+      <img class="s10-truck" src="assets/img/s10-truck.png" alt="شاحنة بصندوق شفاف على شكل مكعب" width="460" height="307" style="left:35.8px; top:220.6px" loading="lazy">
       <p class="s10-label" style="left:1126.9px; top:543.3px">1 سم³</p>
       <p class="s10-label" style="left:792.5px; top:543.3px">1 لتر</p>
       <p class="s10-label" style="left:253.7px; top:543.3px">1 م³</p>
@@ -752,8 +764,8 @@
         <p>انقروا على الصندوق حتى تمتلئ الشاحنة (في كل نقرة تُضاف إلى الشاحنة طبقة من 100 صندوق)</p>
       </div>
       <!-- DOM order = RTL reading order: cube, arrow, box, arrow, truck. The cube is decorative (no control). -->
-      <img class="s11-cube" src="assets/img/s10-cube.png" alt="مكعب حجمه 1 سم³" width="90" height="83" style="left:1080.4px; top:331.8px">
-      <img class="s11-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:935.5px; top:335.0px">
+      <img class="s11-cube" src="assets/img/s10-cube.png" alt="مكعب حجمه 1 سم³" width="90" height="83" style="left:1080.4px; top:331.8px" loading="lazy">
+      <img class="s11-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:935.5px; top:335.0px" loading="lazy">
       <button class="s11-box pulse" id="s11-box-btn" type="button" onclick="s11Click()" aria-label="أضيفوا إلى الشاحنة طبقة من 100 صندوق (الطبقة 1 من 10)" style="left:700.3px; top:274.6px">
         <div class="fill-target s11-box__obj"><div class="cube-stack" id="s11-stack" aria-hidden="true"></div></div>
         <!-- Tap gesture hint: S8/S10's hint, x1.5 and anchored at the box's bottom-right corner (172, 186) - QA 2026-10-11. -->
@@ -763,12 +775,12 @@
           <img class="frc-gh-hand" src="../unit-assets/img/gesture-hand.svg" alt="" width="28" height="33">
         </span>
       </button>
-      <img class="s11-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:503.5px; top:335.0px">
+      <img class="s11-arrow" src="assets/img/s10-arrow.png" alt="" aria-hidden="true" width="106" height="80" style="left:503.5px; top:335.0px" loading="lazy">
       <!-- running totals beside the truck (slides 28-37): one per revealed layer, filled by JS -->
       <ol class="s11-scale" id="s11-scale" aria-live="polite" style="left:457.1px"></ol>
-      <img class="s11-truck" src="assets/img/s10-truck.png" alt="شاحنة بصندوق شفاف على شكل مكعب" width="460" height="307" style="left:35.8px; top:220.6px">
+      <img class="s11-truck" src="assets/img/s10-truck.png" alt="شاحنة بصندوق شفاف على شكل مكعب" width="460" height="307" style="left:35.8px; top:220.6px" loading="lazy">
       <div class="fill-target s11-cargo" id="s11-cargo" role="img" aria-label="شاحنة فارغة سعتها 1 م³" style="left:182.43px; top:230.72px"><div class="cube-stack" id="s11-load"></div></div>
-      <img class="s11-truck s11-truck--front" src="assets/img/s10-truck.png" alt="" aria-hidden="true" width="460" height="307" style="left:35.8px; top:220.6px; clip-path: polygon(194.3px 96.4px, 201.9px 96.4px, 201.9px 228.7px, 194.3px 228.7px)">
+      <img class="s11-truck s11-truck--front" src="assets/img/s10-truck.png" alt="" aria-hidden="true" width="460" height="307" style="left:35.8px; top:220.6px; clip-path: polygon(194.3px 96.4px, 201.9px 96.4px, 201.9px 228.7px, 194.3px 228.7px)" loading="lazy">
       <p class="s11-label" style="left:1126.9px; top:543.3px">1 سم³</p>
       <p class="s11-label" style="left:792.5px; top:543.3px">1 لتر<span class="s11-label__sub">(1000 سم³)</span></p>
       <p class="s11-label" style="left:253.7px; top:543.3px">1 م³</p>
@@ -847,8 +859,8 @@
       </div>
       <!-- DOM order = RTL reading order: right target, right gap, source, left gap, left target. -->
       <button type="button" class="s13-slot s13-target" id="s13-t-ml" style="left:989.5px">
-        <img class="s13-bucket s13-bucket--outline" src="assets/img/s13-bucket-outline.png" alt="" width="266" height="260" draggable="false">
-        <img class="s13-bucket s13-bucket--full" src="assets/img/bucket.png" alt="" width="250" height="250" draggable="false">
+        <img class="s13-bucket s13-bucket--outline" src="assets/img/s13-bucket-outline.png" alt="" width="266" height="260" draggable="false" loading="lazy">
+        <img class="s13-bucket s13-bucket--full" src="assets/img/bucket.png" alt="" width="250" height="250" draggable="false" loading="lazy">
         <span class="s13-label s13-label--unit"><span>مل / سم³</span></span>
         <span class="s13-label s13-label--full"><span class="s13-val"></span><span>مل / سم³</span></span>
       </button>
@@ -861,7 +873,7 @@
         <span class="s12-conv__arrow" style="left:0px"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
       </div>
       <button type="button" class="s13-slot s13-src" id="s13-src" style="left:522.5px" aria-pressed="false" aria-label="دلو أزرق: 10 لترات من الماء. اسحبوه إلى الدلو الأبيض، أو انقروا عليه ثم انقروا على الدلو الأبيض.">
-        <img class="s13-bucket s13-bucket--full" src="assets/img/bucket.png" alt="" width="250" height="250" draggable="false">
+        <img class="s13-bucket s13-bucket--full" src="assets/img/bucket.png" alt="" width="250" height="250" draggable="false" loading="lazy">
         <span class="s13-label s13-label--full"><span>10</span><span>لتر ماء</span></span>
       </button>
       <div class="s12-conv s12-conv--up" style="left:329px; top:227.5px; width:170px" aria-hidden="true">
@@ -873,8 +885,8 @@
         <span class="s12-conv__arrow" style="left:7px"><img src="../unit-assets/img/s12-arrow-3.svg" alt="" width="153.5" height="22.0919"></span>
       </div>
       <button type="button" class="s13-slot s13-target" id="s13-t-m3" style="left:55.5px">
-        <img class="s13-bucket s13-bucket--outline" src="assets/img/s13-bucket-outline.png" alt="" width="266" height="260" draggable="false">
-        <img class="s13-bucket s13-bucket--full" src="assets/img/bucket.png" alt="" width="250" height="250" draggable="false">
+        <img class="s13-bucket s13-bucket--outline" src="assets/img/s13-bucket-outline.png" alt="" width="266" height="260" draggable="false" loading="lazy">
+        <img class="s13-bucket s13-bucket--full" src="assets/img/bucket.png" alt="" width="250" height="250" draggable="false" loading="lazy">
         <span class="s13-label s13-label--unit"><span>م³</span></span>
         <span class="s13-label s13-label--full"><span class="s13-val"></span><span>م³</span></span>
       </button>
@@ -999,12 +1011,12 @@
       <div class="option-cards option-cards--rtl" role="group" aria-label="اختاروا مثالًا" data-reveal="2">
         <button class="option-card option-card--btn" type="button" id="s16-card-moon" aria-haspopup="dialog" aria-controls="s16-pop-moon" onclick="s16Open_('moon')">
           <span class="option-card-check" aria-hidden="true"><img src="assets/img/feedback-icon-correct.svg" alt="" width="32" height="32"></span>
-          <span class="option-card-img option-card-img--character option-card-img--photo"><img src="assets/img/s16-moon.jpg" alt="القمر المكتمل (البدر)"></span>
+          <span class="option-card-img option-card-img--character option-card-img--photo"><img src="assets/img/s16-moon.jpg" alt="القمر المكتمل (البدر)" loading="lazy"></span>
           <span class="option-card-labels"><span class="option-card-name">الكتلة والوزن على القمر</span></span>
         </button>
         <button class="option-card option-card--btn" type="button" id="s16-card-algae" aria-haspopup="dialog" aria-controls="s16-pop-algae" onclick="s16Open_('algae')">
           <span class="option-card-check" aria-hidden="true"><img src="assets/img/feedback-icon-correct.svg" alt="" width="32" height="32"></span>
-          <span class="option-card-img option-card-img--character option-card-img--photo"><img src="assets/img/s16-algae.jpg" alt="مياه مغطاة بطحالب خضراء مزرقة"></span>
+          <span class="option-card-img option-card-img--character option-card-img--photo"><img src="assets/img/s16-algae.jpg" alt="مياه مغطاة بطحالب خضراء مزرقة" loading="lazy"></span>
           <span class="option-card-labels"><span class="option-card-name">ازدهار الطحالب</span></span>
         </button>
       </div>
@@ -1017,7 +1029,7 @@
         <button class="s16-pop-close" type="button" aria-label="إغلاق" onclick="s16Close_('moon')"><img src="../unit-assets/img/popup-close-x.svg" alt="" width="16" height="16"></button>
         <div class="s16-pop-body">
           <div class="s16-pop-head">
-            <span class="s16-pop-img"><img src="assets/img/s16-moon.jpg" alt="القمر المكتمل (البدر)"></span>
+            <span class="s16-pop-img"><img src="assets/img/s16-moon.jpg" alt="القمر المكتمل (البدر)" loading="lazy"></span>
             <h2 class="s16-pop-title" id="s16-pop-h-moon">الكتلة والوزن على القمر</h2>
           </div>
           <div class="s16-pop-sec"><p class="s16-pop-label">ادّعاء</p><p class="s16-pop-text">ميزان الكفتين الذي يحمل كيلوغرامًا من الأرز وكيلوغرامًا من الأثقال، وكان متوازنًا على الأرض، سيبقى متوازنًا على القمر أيضًا.</p></div>
@@ -1031,7 +1043,7 @@
         <button class="s16-pop-close" type="button" aria-label="إغلاق" onclick="s16Close_('algae')"><img src="../unit-assets/img/popup-close-x.svg" alt="" width="16" height="16"></button>
         <div class="s16-pop-body">
           <div class="s16-pop-head">
-            <span class="s16-pop-img"><img src="assets/img/s16-algae.jpg" alt="مياه مغطاة بطحالب خضراء مزرقة"></span>
+            <span class="s16-pop-img"><img src="assets/img/s16-algae.jpg" alt="مياه مغطاة بطحالب خضراء مزرقة" loading="lazy"></span>
             <h2 class="s16-pop-title" id="s16-pop-h-algae">ازدهار الطحالب</h2>
           </div>
           <div class="s16-pop-sec"><p class="s16-pop-label">ادّعاء</p><p class="s16-pop-text">أدى ارتفاع درجة حرارة المياه في البحيرة إلى نفوق الأسماك.</p></div>
@@ -1350,12 +1362,12 @@
 <!-- 720 platform layer (reporting / resume): shared files first, then the part's own scripts
      (js/motion.js before js/main.js, as before), 90-boot last. Same ?v= in every part
      (guide §3.4); 90-boot.js is a separate tag on purpose (§3.2). -->
-<script src="../unit-js/10-identity.js?v=20261112"></script>
-<script src="../unit-js/20-xapi.js?v=20261112"></script>
-<script src="../unit-js/25-report.js?v=20261112"></script>
-<script src="../unit-js/40-resume.js?v=20261112"></script>
-<script src="../unit-js/50-loader.js?v=20261112"></script>
-<script src="js/motion.js?v=20261112"></script>
-<script src="js/main.js?v=20261112"></script>
-<script src="../unit-js/90-boot.js?v=20261112"></script></body>
+<script src="../unit-js/10-identity.js?v=20261113"></script>
+<script src="../unit-js/20-xapi.js?v=20261113"></script>
+<script src="../unit-js/25-report.js?v=20261113"></script>
+<script src="../unit-js/40-resume.js?v=20261113"></script>
+<script src="../unit-js/50-loader.js?v=20261113"></script>
+<script src="js/motion.js?v=20261113"></script>
+<script src="js/main.js?v=20261113"></script>
+<script src="../unit-js/90-boot.js?v=20261113"></script></body>
 </html>

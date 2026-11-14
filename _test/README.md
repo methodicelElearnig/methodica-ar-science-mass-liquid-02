@@ -52,3 +52,15 @@ Adapted 2026-10-22 from body-matter-01; mutation-tested nine ways on 2026-10-22 
 `?xapiLib=../_test/xapi-720-k.js` on localhost only (from volume-solid-01; `__reset` clears this
 unit's keys). Console helpers: `__stmts() __state() __setState(doc) __dupes() __reset()
 __failWrites(bool|status) __lastState()`.
+
+## write-guard.js — no write before the restore, the leave save (2026-11-13)
+
+```bash
+NODE_PATH=C:/lomda-test/node_modules node _test/write-guard.js [baseDir]
+```
+
+jsdom. BOOT-AND-RESUME-HARDENING-2026-11-03.md §2.6 checks a–p (drain writes the document as read, markSent waits
+for the restore, a failed read closes every write, the boot markup of every part) and §2.10 s–t (the leave save
+through `saveState720OnLeave`, and through `saveState720` on `-k`). Ported from volume-solid-01. Against the
+`2026-11-12` package 54 checks fail. `xapi-720-l.js` is the `-k` stub plus `saveState720OnLeave` / `__leaveWrites()`;
+the loader loads `-l` since 2026-11-13, `-k` stays for the rollback path.

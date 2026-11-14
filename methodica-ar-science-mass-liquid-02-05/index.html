@@ -4,9 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تدريب متقدم — methodica-ar-science-mass-liquid-02-05</title>
-<link rel="stylesheet" href="css/style.css?v=20261112">
-<link rel="stylesheet" href="css/motion.css?v=20261112">
-<link rel="stylesheet" href="../unit-css/25-report.css?v=20261112">
+<!-- The xAPI library is loaded by unit-js/50-loader.js from the end of <body>, after the parser has queued every
+     image below; on a slow line its request went out only after the last image, which delayed the resume restore
+     (2026-11-03, BOOT-AND-RESUME-HARDENING §2.3). A preload from <head> puts it first in the queue. The href must be
+     byte-equal to the URL 50-loader.js builds (no ?v=, no crossorigin) or the browser fetches it twice; the library
+     letter here changes together with LIB720 there (the harness checks it). -->
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapiwrapper.min.js">
+<link rel="preload" as="script" fetchpriority="high" href="https://lomdot.education.gov.il/metodica/720active/common/xapi-720-l.js">
+<link rel="preconnect" href="https://kata.cet.ac.il">
+<link rel="stylesheet" href="css/style.css?v=20261113">
+<link rel="stylesheet" href="css/motion.css?v=20261113">
+<link rel="stylesheet" href="../unit-css/25-report.css?v=20261113">
 </head>
 <body>
 <!-- ═══ Boot cover (ADDING-REPORTING-AND-RESUME.md §8.11) ═══
@@ -18,6 +26,10 @@
 <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
 <script>
 (function () {
+  /* A Kata launch (registration in the URL) may restore a document: raise the flag HERE, before any script
+     loads. bootXAPI raises it too, but from the last script tag — on a cold cache after the 800 ms below, so
+     the cover fell before the flag existed (2026-11-03). Without a registration (local, dev) nothing changes. */
+  if (/[?&]registration=/.test(location.search)) window.__resumeInFlight = true;
   var t0 = Date.now();
   function tick() {
     var c = document.getElementById('boot-cover');
@@ -178,7 +190,7 @@
       <!-- Image column — Figma "img" (8px padding, hairline over the image). -->
       <div class="scq-img" data-reveal="2" data-reveal-fade>
         <div class="scq-img-inner">
-          <img src="assets/img/s1-researchers-handshake.jpg" width="1536" height="1024" alt="باحثة إسرائيلية وباحث أمريكي يرتديان معطفَي مختبر ويتصافحان داخل مختبر، وبجانبهما علم إسرائيل وعلم الولايات المتحدة الأمريكية.">
+          <img src="assets/img/s1-researchers-handshake.jpg" width="1536" height="1024" alt="باحثة إسرائيلية وباحث أمريكي يرتديان معطفَي مختبر ويتصافحان داخل مختبر، وبجانبهما علم إسرائيل وعلم الولايات المتحدة الأمريكية." loading="lazy">
         </div>
       </div>
     </div>
@@ -286,7 +298,7 @@
                   data-zoom-alt="مقطع من فاتورة المياه لعائلة حداد، مكبّر. فترة الفاتورة: 26/05/2026 إلى 26/07/2026، 62 يومًا. عدد الأشخاص في العقار: 3. طبيعة استخدام العقار: سكني. المبلغ المستحق (شامل ضريبة القيمة المضافة): 286.11 شيكل. كمية المياه المحاسَب عليها: 28.06، وبعد الرقم تنقص وحدة القياس.">
             <svg class="img-zoom-btn__icon" aria-hidden="true" width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C11.8661 1 15 4.13371 15 7.99902C15 11.8643 11.8661 14.998 8 14.998C4.1339 14.998 1.00002 11.8643 1 7.99902C1 4.13371 4.13389 1 8 1Z" stroke="currentColor" stroke-width="2"/><path d="M12.6221 14.188L14.2657 12.6141L19.928 18.5274C20.3626 18.9813 20.347 19.7016 19.8931 20.1362C19.4392 20.5708 18.7189 20.5552 18.2843 20.1013L12.6221 14.188Z" fill="currentColor"/></svg>
           </button>
-          <img src="assets/img/s3a-water-bill-v2.jpg" width="1702" height="924" alt="مقتطف من فاتورة المياه لعائلة حداد. فترة الفاتورة: 26/05/2026 إلى 26/07/2026، 62 يومًا. عدد الأفراد في العقار: 3. طبيعة استخدام العقار: سكني. المبلغ المستحق (شامل ضريبة القيمة المضافة): 286.11 شيكل. في خانة &quot;كمية المياه المحاسَبة&quot; يظهر الرقم 28.06، وتتبعه وحدة القياس المفقودة — وهذا هو المكان المخصص لإكمالها.">
+          <img src="assets/img/s3a-water-bill-v2.jpg" width="1702" height="924" alt="مقتطف من فاتورة المياه لعائلة حداد. فترة الفاتورة: 26/05/2026 إلى 26/07/2026، 62 يومًا. عدد الأفراد في العقار: 3. طبيعة استخدام العقار: سكني. المبلغ المستحق (شامل ضريبة القيمة المضافة): 286.11 شيكل. في خانة &quot;كمية المياه المحاسَبة&quot; يظهر الرقم 28.06، وتتبعه وحدة القياس المفقودة — وهذا هو المكان المخصص لإكمالها." loading="lazy">
         </div>
         <span class="vh" id="s3-w1">وحدة قياس كمية المياه المستحقة للدفع، 28.06</span>
         <div class="dq-dropdown-wrap dqi-slot" id="s3-wrap-1">
@@ -362,7 +374,7 @@
             <svg class="img-zoom-btn__icon" aria-hidden="true" width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1C11.8661 1 15 4.13371 15 7.99902C15 11.8643 11.8661 14.998 8 14.998C4.1339 14.998 1.00002 11.8643 1 7.99902C1 4.13371 4.13389 1 8 1Z" stroke="currentColor" stroke-width="2"/><path d="M12.6221 14.188L14.2657 12.6141L19.928 18.5274C20.3626 18.9813 20.347 19.7016 19.8931 20.1362C19.4392 20.5708 18.7189 20.5552 18.2843 20.1013L12.6221 14.188Z" fill="currentColor"/></svg>
           </button>
           <img class="sa-chart" src="assets/img/s4-water-chart.png" width="2222" height="990" alt="رسم بياني عمودي لاستهلاك المياه لعائلة حداد في كل شهر من عام 2026، بالمتر المكعب: يناير 29.5، فبراير 27.4، مارس 28.6، أبريل 25.8."
-               data-zoom-src="assets/img/s4-water-chart.png" data-zoom-alt="رسم بياني عمودي لاستهلاك المياه لعائلة حداد في كل شهر من عام 2026، بالمتر المكعب: يناير 29.5، فبراير 27.4، مارس 28.6، أبريل 25.8.">
+               data-zoom-src="assets/img/s4-water-chart.png" data-zoom-alt="رسم بياني عمودي لاستهلاك المياه لعائلة حداد في كل شهر من عام 2026، بالمتر المكعب: يناير 29.5، فبراير 27.4، مارس 28.6، أبريل 25.8." loading="lazy">
         </div>
       </div>
     </div>
@@ -398,14 +410,14 @@
         <p class="s1-subtitle">متوسط استهلاك المياه للفرد في إسرائيل هو نحو 165&nbsp;لترًا في اليوم.</p>
       </div>
       <div class="s5-stage">
-        <img class="s5-boy" data-reveal="2" data-reveal-fade src="assets/img/s5-boy.jpg" width="600" height="900" alt="صبي يحك رأسه ويمسك قنينة ماء، يبدو مندهشًا.">
-        <img class="s5-bath" data-reveal="3" src="assets/img/s5-bath.png" width="240" height="240" alt="حوض استحمام">
-        <img class="s5-bottle" data-reveal="3" src="assets/img/s5-bottle.jpg" width="136" height="400" alt="قنينة ماء">
-        <img class="s5-toilet" data-reveal="3" src="assets/img/s5-toilet.png" width="280" height="373" alt="مرحاض">
-        <img class="s5-plant" data-reveal="3" src="assets/img/s5-plant.jpg" width="356" height="240" alt="شتلة تنمو في التربة">
-        <img class="s5-washer" data-reveal="3" src="assets/img/s5-washer.png" width="288" height="384" alt="غسالة ملابس">
-        <img class="s5-sink" data-reveal="3" src="assets/img/s5-sink.png" width="288" height="192" alt="حوض مطبخ">
-        <img class="s5-dishwasher" data-reveal="3" src="assets/img/s5-dishwasher.png" width="230" height="240" alt="غسالة أطباق">
+        <img class="s5-boy" data-reveal="2" data-reveal-fade src="assets/img/s5-boy.jpg" width="600" height="900" alt="صبي يحك رأسه ويمسك قنينة ماء، يبدو مندهشًا." loading="lazy">
+        <img class="s5-bath" data-reveal="3" src="assets/img/s5-bath.png" width="240" height="240" alt="حوض استحمام" loading="lazy">
+        <img class="s5-bottle" data-reveal="3" src="assets/img/s5-bottle.jpg" width="136" height="400" alt="قنينة ماء" loading="lazy">
+        <img class="s5-toilet" data-reveal="3" src="assets/img/s5-toilet.png" width="280" height="373" alt="مرحاض" loading="lazy">
+        <img class="s5-plant" data-reveal="3" src="assets/img/s5-plant.jpg" width="356" height="240" alt="شتلة تنمو في التربة" loading="lazy">
+        <img class="s5-washer" data-reveal="3" src="assets/img/s5-washer.png" width="288" height="384" alt="غسالة ملابس" loading="lazy">
+        <img class="s5-sink" data-reveal="3" src="assets/img/s5-sink.png" width="288" height="192" alt="حوض مطبخ" loading="lazy">
+        <img class="s5-dishwasher" data-reveal="3" src="assets/img/s5-dishwasher.png" width="230" height="240" alt="غسالة أطباق" loading="lazy">
         <div class="s1-bubble s5-bubble" data-reveal="4">
           <svg class="s1-bubble-shape" viewBox="0 0 202 94" aria-hidden="true"><path d="M1.5 89.2002V4.7998C1.50006 4.68232 1.55352 4.4188 1.97363 4.02148C2.39718 3.62093 3.09107 3.19131 4.07227 2.79883C6.02633 2.01727 8.82844 1.5 12 1.5H174C177.172 1.5 179.974 2.01727 181.928 2.79883C182.909 3.19131 183.603 3.62093 184.026 4.02148C184.446 4.4188 184.5 4.68232 184.5 4.7998V39.5996C184.5 40.1531 184.804 40.6584 185.286 40.9189L185.385 40.9678L198.302 46.7812L185.398 52.4258C184.887 52.6498 184.544 53.1382 184.504 53.6895L184.5 53.7998V89.2002C184.5 89.3177 184.446 89.5812 184.026 89.9785C183.603 90.3791 182.909 90.8087 181.928 91.2012C179.974 91.9827 177.172 92.5 174 92.5H12C8.82844 92.5 6.02633 91.9827 4.07227 91.2012C3.09107 90.8087 2.39718 90.3791 1.97363 89.9785C1.55352 89.5812 1.50006 89.3177 1.5 89.2002Z"/></svg>
           <p class="s1-bubble-text">كيف يمكن أن يكون هذا؟؟</p>
@@ -449,7 +461,7 @@
       </div>
     </div>
     <div class="s6-stage">
-      <img class="s6-boy" data-reveal="1" data-reveal-fade src="assets/img/s5-boy.jpg" width="600" height="900" alt="">
+      <img class="s6-boy" data-reveal="1" data-reveal-fade src="assets/img/s5-boy.jpg" width="600" height="900" alt="" loading="lazy">
       <svg class="s6-ring" data-reveal="2" data-reveal-fade viewBox="0 0 1280 710" role="group" aria-labelledby="s6-lead">
       <g class="s6-co s6-arrow" data-co="shower">
         <path class="s6-arrow-shaft" d="M893.6 292.7 L867.7 304.5"/>
@@ -510,18 +522,18 @@
       <g class="s6-seen" data-seen="laundry" transform="translate(609.9 265.4)" aria-hidden="true"><circle cx="11" cy="11" r="13" fill="#fff"/><circle cx="11" cy="11" r="11" fill="#609E12"/><path d="M9.10917 15.1876C8.7479 15.1877 8.40142 15.0442 8.14618 14.7885L5.23471 11.8781C4.92144 11.5647 4.92144 11.0567 5.23471 10.7434C5.54809 10.4301 6.05607 10.4301 6.36945 10.7434L9.10917 13.4831L16.3573 6.23493C16.6707 5.92165 17.1787 5.92165 17.4921 6.23493C17.8053 6.5483 17.8053 7.05628 17.4921 7.36966L10.0722 14.7885C9.81693 15.0442 9.47045 15.1877 9.10917 15.1876Z" fill="#fff"/></g>
       <g class="s6-seen" data-seen="garden" transform="translate(654.5 250.8)" aria-hidden="true"><circle cx="11" cy="11" r="13" fill="#fff"/><circle cx="11" cy="11" r="11" fill="#609E12"/><path d="M9.10917 15.1876C8.7479 15.1877 8.40142 15.0442 8.14618 14.7885L5.23471 11.8781C4.92144 11.5647 4.92144 11.0567 5.23471 10.7434C5.54809 10.4301 6.05607 10.4301 6.36945 10.7434L9.10917 13.4831L16.3573 6.23493C16.6707 5.92165 17.1787 5.92165 17.4921 6.23493C17.8053 6.5483 17.8053 7.05628 17.4921 7.36966L10.0722 14.7885C9.81693 15.0442 9.47045 15.1877 9.10917 15.1876Z" fill="#fff"/></g>
       </svg>
-        <img class="s6-co s6-co-img" data-co="shower" src="assets/img/s5-bath.png" style="left:895.6px;top:220.8px;width:143.8px" alt="">
+        <img class="s6-co s6-co-img" data-co="shower" src="assets/img/s5-bath.png" style="left:895.6px;top:220.8px;width:143.8px" alt="" loading="lazy">
         <p class="s6-co s6-co-label" data-co="shower" style="left:1049.3px;top:292.7px;text-align:left">الاستحمام والاغتسال</p>
-        <img class="s6-co s6-co-img" data-co="toilet" src="assets/img/s5-toilet.png" style="left:868.8px;top:501.4px;width:98.2px" alt="">
+        <img class="s6-co s6-co-img" data-co="toilet" src="assets/img/s5-toilet.png" style="left:868.8px;top:501.4px;width:98.2px" alt="" loading="lazy">
         <p class="s6-co s6-co-label" data-co="toilet" style="left:977px;top:566.8px;text-align:left">شطف المرحاض</p>
-        <img class="s6-co s6-co-img" data-co="kitchen" src="assets/img/s5-dishwasher.png" style="left:340.8px;top:353px;width:109.2px" alt="">
-        <img class="s6-co s6-co-img" data-co="kitchen" src="assets/img/s5-bottle.jpg" style="left:297.1px;top:372.7px;width:25.3px" alt="">
+        <img class="s6-co s6-co-img" data-co="kitchen" src="assets/img/s5-dishwasher.png" style="left:340.8px;top:353px;width:109.2px" alt="" loading="lazy">
+        <img class="s6-co s6-co-img" data-co="kitchen" src="assets/img/s5-bottle.jpg" style="left:297.1px;top:372.7px;width:25.3px" alt="" loading="lazy">
         <p class="s6-co s6-co-label" data-co="kitchen" style="right:1000.3px;top:410px;text-align:right">المطبخ: الشرب، والطهي<br>وغسل الأواني</p>
-        <img class="s6-co s6-co-img" data-co="sink" src="assets/img/s5-sink.png" style="left:351.3px;top:219.8px;width:154.6px" alt="">
+        <img class="s6-co s6-co-img" data-co="sink" src="assets/img/s5-sink.png" style="left:351.3px;top:219.8px;width:154.6px" alt="" loading="lazy">
         <p class="s6-co s6-co-label" data-co="sink" style="right:938.7px;top:261.7px;text-align:right">حوض الحمام</p>
-        <img class="s6-co s6-co-img" data-co="laundry" src="assets/img/s5-washer.png" style="left:465.5px;top:111.7px;width:104.6px" alt="">
+        <img class="s6-co s6-co-img" data-co="laundry" src="assets/img/s5-washer.png" style="left:465.5px;top:111.7px;width:104.6px" alt="" loading="lazy">
         <p class="s6-co s6-co-label" data-co="laundry" style="right:824.5px;top:177.4px;text-align:right">غسيل الملابس</p>
-        <img class="s6-co s6-co-img" data-co="garden" src="assets/img/s5-plant.jpg" style="left:611.1px;top:112.2px;width:96.2px" alt="">
+        <img class="s6-co s6-co-img" data-co="garden" src="assets/img/s5-plant.jpg" style="left:611.1px;top:112.2px;width:96.2px" alt="" loading="lazy">
         <p class="s6-co s6-co-label" data-co="garden" style="left:715.3px;top:144.6px;text-align:left">تنسيق الحدائق وغسيل السيارة</p>
       <!-- Click gesture hint on the biggest slice (decorative; twice, then gone — see s6GhStart). Anchor = a point on the
            shower slice (angle 35 deg, mid-ring), clear of its number. -->
@@ -638,12 +650,12 @@
 <!-- 720 platform layer (reporting / resume): shared files first, then the part's own scripts
      (js/motion.js before js/main.js, as before), 90-boot last. Same ?v= in every part
      (guide §3.4); 90-boot.js is a separate tag on purpose (§3.2). -->
-<script src="../unit-js/10-identity.js?v=20261112"></script>
-<script src="../unit-js/20-xapi.js?v=20261112"></script>
-<script src="../unit-js/25-report.js?v=20261112"></script>
-<script src="../unit-js/40-resume.js?v=20261112"></script>
-<script src="../unit-js/50-loader.js?v=20261112"></script>
-<script src="js/motion.js?v=20261112"></script>
-<script src="js/main.js?v=20261112"></script>
-<script src="../unit-js/90-boot.js?v=20261112"></script></body>
+<script src="../unit-js/10-identity.js?v=20261113"></script>
+<script src="../unit-js/20-xapi.js?v=20261113"></script>
+<script src="../unit-js/25-report.js?v=20261113"></script>
+<script src="../unit-js/40-resume.js?v=20261113"></script>
+<script src="../unit-js/50-loader.js?v=20261113"></script>
+<script src="js/motion.js?v=20261113"></script>
+<script src="js/main.js?v=20261113"></script>
+<script src="../unit-js/90-boot.js?v=20261113"></script></body>
 </html>
